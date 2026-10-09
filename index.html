@@ -260,7 +260,9 @@
   .cx-tipo{ display:inline-block; font-family:'Source Sans 3', sans-serif; font-size:var(--t-6); line-height:1.3;
     letter-spacing:.3px; padding:1px 7px; border-radius:var(--r-chip); border:1px solid var(--papel-linea);
     color:var(--ink-2); background:var(--papel-alto); white-space:nowrap; font-style:normal; }
+  .cx-tipo.cx-provisional{ border-style:dashed; background:none; color:var(--ink-3); white-space:normal; }
   .ev-cx{ flex:1; min-width:0; }
+  .ev-cx-h.ev-cx-prov{ color:var(--ink-3); } .ev-cx-i + .ev-cx-h.ev-cx-prov{ margin-top:8px; }
   .ev-cx-h{ margin-bottom:4px; }
   .ev-cx-i{ margin:0 0 7px; }
   .ev-cx-i:last-child{ margin-bottom:0; }
@@ -581,7 +583,7 @@
   /* conexiones curadas: lista AT → NT */
   #conexLayer{ display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:14px 6% 80px; }
   /* ronda 11: AT ← → NT, dos listas enfrentadas */
-  #grafoEnf{ display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:10px 5% 0; --ge-gutter:min(260px, 22vw); }
+  #grafoEnf{ display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; scrollbar-gutter:stable; padding:10px 5% 0; --ge-gutter:min(260px, 22vw); }
   #grafoEnf .ge-res{ font-size:var(--t-5); color:var(--parchment-dim); line-height:1.45; max-width:760px; margin-bottom:8px; }
   #grafoEnf .ge-ctl{ display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; font-size:var(--t-5); color:var(--parchment-dim); margin-bottom:8px; }
   #grafoEnf .ge-seg{ display:inline-flex; border:1px solid var(--line-dim); border-radius:100px; overflow:hidden; }
@@ -609,16 +611,20 @@
   #grafoEnf .ge-col.at .ge-t::after{ right:0; } #grafoEnf .ge-col.nt .ge-t::after{ left:0; }
   #grafoEnf .ge-t .ge-r{ display:block; font-size:var(--t-6); color:var(--parchment-dim); }
   #grafoEnf .ge-t:hover{ background:rgba(201,162,39,0.08); }
-  #grafoEnf .ge-t.on{ color:var(--gold-bright); font-weight:600; }
-  #grafoEnf .ge-t.par{ color:var(--gold-bright); }
-  #grafoEnf .ge-t.tenue{ opacity:.4; }
+  #grafoEnf .ge-t.on{ color:var(--gold-bright); font-weight:600; background:rgba(201,162,39,0.16); }
+  #grafoEnf .ge-t.par{ color:var(--gold-bright); background:rgba(201,162,39,0.07); }
+  #grafoEnf .ge-t.tenue{ opacity:.3; }
+  /* en el tema claro el dorado del texto es oscuro: el fondo, más suave, para no bajar de 4,5:1 (barrido_temas) */
+  body.light #grafoEnf .ge-t.on{ background:rgba(201,162,39,0.09); } body.light #grafoEnf .ge-t.par{ background:rgba(201,162,39,0.04); }
   #grafoEnf .ge-t.fuera{ opacity:.45; }
   #grafoEnf .ge-t:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:-2px; }
-  #grafoEnf path.ge-h{ fill:none; stroke-width:1.3; opacity:.5; }
+  #grafoEnf path.ge-h{ fill:none; stroke-width:1.3; opacity:.15; }   /* ronda 14: en reposo, tenues */
   #grafoEnf path.ge-h.curada{ stroke:var(--gold); } #grafoEnf path.ge-h.lxx{ stroke:var(--accent-violet); }
   #grafoEnf path.ge-h.mismo{ stroke-dasharray:4 3; }
-  #grafoEnf path.ge-h.tenue{ opacity:.1; }
-  #grafoEnf path.ge-h.on{ opacity:1; stroke-width:2.6; } #grafoEnf path.ge-h.curada.on{ stroke:var(--gold-bright); }
+  /* ronda 14: en orden bíblico los hilos cruzarían toda la página: sin un título elegido no se dibujan */
+  #grafoEnf .ge-red.canon path.ge-h:not(.on){ display:none; }
+  #grafoEnf path.ge-h.tenue{ opacity:.06; }
+  #grafoEnf path.ge-h.on{ opacity:1; stroke-width:3.2; } #grafoEnf path.ge-h.curada.on{ stroke:var(--gold-bright); }
   #grafoEnf .ge-pie{ position:sticky; bottom:0; z-index:2; margin:16px -5.5556% 0; padding:10px 5.5556% 12px; min-height:50px;
     background:var(--select-bg); border-top:1px solid var(--line-dim); font-size:var(--t-4); line-height:1.4; color:var(--parchment); }
   #grafoEnf .ge-pie b{ color:var(--gold-bright); font-weight:600; }
@@ -1285,7 +1291,7 @@ body.light{ --accent-blue-ink:#34608B; }
         <option value="2">2 saltos</option>
       </select>
       <label id="grafoRefsLabel" class="toggle" style="display:none;"><input type="checkbox" id="grafoRefs"> refs cruzadas (sin curar)</label>
-      <label id="grafoLXXLabel" class="toggle" style="display:none;"><input type="checkbox" id="grafoLXX" checked> puentes LXX</label>
+      <label id="grafoLXXLabel" class="toggle" style="display:none;"><input type="checkbox" id="grafoLXX"> puentes LXX</label>
       <label id="grafoLXXAllLabel" class="toggle" style="display:none;" title="Por defecto solo se dibujan pares G↔H compartidos por 4 parejas de títulos o menos; los frecuentes (salvador, gloria, vida, espíritu…) unen media Biblia y solo hacen ruido"><input type="checkbox" id="grafoLXXAll"> incluir LXX frecuentes</label>
       <label id="grafoSplitLabel" class="toggle" style="display:none;"><input type="checkbox" id="grafoSplit"> AT ← → NT</label>
       <button id="grafoBackBtn" class="hbtn" style="display:none;">← Volver</button>
@@ -1436,6 +1442,9 @@ body.light{ --accent-blue-ink:#34608B; }
 // y se recuerda en este navegador (localStorage funciona porque este archivo
 // se abre local, no dentro del sandbox de Artifacts).
 window.addEventListener("error", (e) => {
+  // ronda 14: el aviso «ResizeObserver loop…» del navegador no es un error del muro (no corta nada): no se
+  // muestra. Los demás, sí.
+  if (/^ResizeObserver loop/.test(e.message || "")) return;
   let banner = document.getElementById("errorBanner");
   if (!banner) {
     banner = document.createElement("div");
@@ -1573,13 +1582,20 @@ const TIPOS_CONEXION = {
   "YHWH→Cristo":  "Sin contacto textual: lo que el origen dice de YHWH, el destino lo dice de Jesús.",
   "continuidad":  "Los dos están en el mismo testamento: un texto posterior retoma o desarrolla uno anterior."
 };
+// ronda 14: una conexión de ConectaCon sin su fila en Jesus_Conexiones (una promovida en el taller) es provisional:
+// se dice así, sin tipo ni nota inventados. null = no hay conexión curada entre los dos.
+const CONEX_PROVISIONAL = "Conexión provisional · pendiente de clasificación";
 function conexInfoDe(a, b){
   const A = nodeById[a], B = nodeById[b];
   const i = (A && A.conexInfo && A.conexInfo[b]) || (B && B.conexInfo && B.conexInfo[a]);
-  return i ? { tipo: i[0], fuente: i[1], nota: i[2] } : null;
+  if (i) return { tipo: i[0], fuente: i[1], nota: i[2] };
+  const enlazados = (A && (A.conectaCon || []).includes(b)) || (B && (B.conectaCon || []).includes(a));
+  return enlazados ? { tipo: "", fuente: "", nota: "", provisional: true } : null;
 }
 function conexTipoEt(tipo){ return tipo === "YHWH→Cristo" ? "YHWH → Cristo" : tipo; }
+function conexTipoTexto(i){ return i.provisional ? CONEX_PROVISIONAL : conexTipoEt(i.tipo); }
 function conexChip(info){
+  if (info && info.provisional) return `<span class="cx-tipo cx-provisional" title="Promovida en el taller: todavía sin tipo ni nota en Jesus_Conexiones">${CONEX_PROVISIONAL}</span>`;
   return info && info.tipo ? `<span class="cx-tipo" title="${escHtml(TIPOS_CONEXION[info.tipo] || "")}">${escHtml(conexTipoEt(info.tipo))}</span>` : "";
 }
 // para el buscador: qué tipos tiene cada título, saliendo o llegando (normalizados: «alusion», «yhwhcristo»)
@@ -1587,8 +1603,9 @@ let conexTiposNodo = null;
 function conexTiposDe(id){
   if (!conexTiposNodo){
     conexTiposNodo = {};
-    rawNodes.forEach(n => Object.entries(n.conexInfo || {}).forEach(([d, i]) => {
-      const t = advNorm(i[0]).replace(/[^a-z]/g, "");
+    rawNodes.forEach(n => (n.conectaCon || []).forEach(d => {
+      const i = conexInfoDe(n.id, d); if (!i) return;
+      const t = i.provisional ? "provisional" : advNorm(i.tipo).replace(/[^a-z]/g, "");
       [n.id, d].forEach(x => (conexTiposNodo[x] = conexTiposNodo[x] || new Set()).add(t));
     }));
   }
@@ -3200,7 +3217,7 @@ function grafoLXXIsRare(e){ return e.rel.lxx.some(pair => grafoLXXPairCount[pair
 function grafoEdgeType(e){ return e.rel.curada ? "curada" : e.rel.lxx.length ? "lxx" : e.rel.ref ? "ref" : "mismo"; }
 function grafoEdgeTooltip(e){
   const parts = [];
-  if (e.rel.curada){ const i = conexInfoDe(e.a, e.b); parts.push("✓ conexión revisada a mano" + (i ? ": " + conexTipoEt(i.tipo) + (i.nota ? "\n   " + i.nota : "") : "")); }
+  if (e.rel.curada){ const i = conexInfoDe(e.a, e.b); parts.push("✓ conexión revisada a mano" + (i ? ": " + conexTipoTexto(i) + (i.nota ? "\n   " + i.nota : "") : "")); }
   e.rel.lxx.forEach(pair => parts.push(`α la misma palabra en la traducción griega: ${parLXXTexto(pair)}${grafoLXXPairCount[pair] > GRAFO_LXX_RARE_MAX ? " (la comparten " + (grafoLXXPairCount[pair] / 2) + " parejas de títulos)" : ""}`));
   if (e.rel.ref) parts.push("↗ referencia marginal de la Biblia");
   if (e.rel.mismo) parts.push("≡ mismo pasaje");
@@ -3458,12 +3475,14 @@ function renderGrafo(){
   if (grafoFocusId && nodeById[grafoFocusId] && !(adj[grafoFocusId] || []).length){
     grafoEnfOcultar();
     const t = nodeById[grafoFocusId].title;
+    // ronda 14: con «puentes LXX» apagada por defecto, un título puede tener vínculos que no se ven
+    const otros = grafoEdgesAll.some(e => (e.a === grafoFocusId || e.b === grafoFocusId) && !e.rel.curada && (e.rel.lxx.length || e.rel.ref));
     grafoFocusId = null;
     grafoLayer.select(".grafo-links").selectAll("line").remove();
     grafoLayer.select(".grafo-nodes").selectAll("g").remove();
     grafoNodeSel = null; grafoLinkSel = null;
     document.getElementById("grafoHint").innerHTML = "";
-    grafoElegirMostrar({ aislado: true, titulo: t });
+    grafoElegirMostrar({ aislado: true, titulo: t, otros });
     return;
   }
   if (!grafoFocusId && !grafoVerTodo){
@@ -3841,7 +3860,9 @@ function grafoElegirMostrar(motivo){
   const aislado = motivo && motivo.aislado;
   el.querySelector("h3").textContent = aislado ? "Sin conexiones todavía" : "Elegí un título";
   el.querySelector(".ge-sub").innerHTML = aislado
-    ? `<b>${motivo.titulo}</b> todavía no tiene conexiones con otros títulos del catálogo, así que no hay red que dibujar. Elegí otro:`
+    ? (motivo.otros
+      ? `<b>${escHtml(motivo.titulo)}</b> no tiene conexiones revisadas a mano; sus vínculos son por la traducción griega o por referencias marginales: encendé «puentes LXX» o «refs cruzadas» para verlos. O elegí otro:`
+      : `<b>${escHtml(motivo.titulo)}</b> todavía no tiene conexiones con otros títulos del catálogo, así que no hay red que dibujar. Elegí otro:`)
     : "El grafo muestra la red de <b>un</b> título: con qué otros está conectado y por dónde. Empezá por uno y navegá desde ahí.";
   grafoRenderLista();
   el.classList.add("on");
@@ -3904,7 +3925,7 @@ function grafoEnfRender(){
       <span class="ge-seg" role="group" aria-label="Orden del Nuevo Testamento"><button data-v="par" class="${grafoEnfOrden === "par" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "par"}">a la altura de su par</button><button data-v="canon" class="${grafoEnfOrden === "canon" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "canon"}">en orden bíblico</button></span>
       <span class="ge-ley"><span>${linea(false, "var(--gold)")}revisado a mano</span>${nLxx ? `<span>${linea(false, "var(--accent-violet)")}la misma palabra en la traducción griega</span>` : ""}<span>${linea(true, "var(--parchment-dim)")}dentro del mismo Testamento</span></span></div>
     <div class="ge-cab"><div class="at">Antiguo Testamento</div><div class="medio">vínculos</div><div class="nt">Nuevo Testamento</div></div>
-    <div class="ge-red"><div class="ge-col at">${lista(AT, true)}</div><div class="ge-hilos"><svg aria-hidden="true"></svg></div>
+    <div class="ge-red${grafoEnfOrden === "canon" ? " canon" : ""}"><div class="ge-col at">${lista(AT, true)}</div><div class="ge-hilos"><svg aria-hidden="true"></svg></div>
       <div class="ge-col nt${grafoEnfOrden === "par" ? " par" : ""}">${grafoEnfOrden === "par" ? NT.map(n => item(n, n.ref)).join("") : lista(NT, true)}</div></div>
     <div class="ge-pie" aria-live="polite"></div>`;
   grafoEnf.style.display = "block";
@@ -3969,7 +3990,7 @@ function grafoEnfElegir(id){
   if (!grafoEnfSel){ pie.innerHTML = `<span class="ge-nota">Tocá un título para ver con cuáles se conecta; el segundo toque abre su ficha.</span>`; return; }
   const n = nodeById[grafoEnfSel], P = [...grafoEnfDatos.vec[grafoEnfSel]].map(i => nodeById[i]).sort((a, b) => a.canonIdx - b.canonIdx);
   pie.innerHTML = `<b>${escHtml(n.title)}</b> · ${escHtml(n.ref)} — se conecta con ` +
-    P.map(p => { const i = conexInfoDe(grafoEnfSel, p.id); return `<button class="ge-ir" data-id="${p.id}">${escHtml(p.title)}</button> (${escHtml(p.ref)}${i ? " · " + escHtml(conexTipoEt(i.tipo)) : ""})`; }).join(", ") +
+    P.map(p => { const i = conexInfoDe(grafoEnfSel, p.id); return `<button class="ge-ir" data-id="${p.id}">${escHtml(p.title)}</button> (${escHtml(p.ref)}${i ? " · " + escHtml(conexTipoTexto(i)) : ""})`; }).join(", ") +
     `. <button class="ge-ficha">abrir la ficha</button> · <button class="ge-red-btn">ver su red</button>`;
   pie.querySelectorAll(".ge-ir").forEach(b => b.addEventListener("click", () => {
     const t = grafoEnf.querySelector(`.ge-t[data-id="${b.dataset.id}"]`);
@@ -3979,7 +4000,14 @@ function grafoEnfElegir(id){
   pie.querySelector(".ge-ficha").addEventListener("click", () => openPanel(nodeById[grafoEnfSel]));
   pie.querySelector(".ge-red-btn").addEventListener("click", () => grafoFocus(grafoEnfSel));
 }
-new ResizeObserver(() => grafoEnfUbicar()).observe(grafoEnf);
+// ronda 14: solo cuenta el ancho (la altura la cambia grafoEnfUbicar) y la ubicación corre en el cuadro
+// siguiente, una vez, y no vuelve a entrar si el ancho no cambió
+let grafoEnfAncho = -1, grafoEnfCuadro = 0;
+new ResizeObserver(entradas => {
+  const w = Math.round(entradas[entradas.length - 1].contentRect.width);
+  if (w === grafoEnfAncho || grafoEnfCuadro) return;
+  grafoEnfCuadro = requestAnimationFrame(() => { grafoEnfCuadro = 0; grafoEnfAncho = w; grafoEnfUbicar(); });
+}).observe(grafoEnf);
 if (document.fonts) document.fonts.ready.then(() => grafoEnfUbicar());
 function grafoVerMapa(){ grafoVerTodo = true; grafoElegirOcultar(); renderGrafo(); }
 function grafoOverview(){
@@ -4211,13 +4239,20 @@ function tiempoGoTo(id){
 // tales, nunca se siguen solas. Un título que ya está en el camino se marca
 // como ciclo (⟳) y no se puede volver a agregar.
 const cadenasLayer = document.getElementById("cadenasLayer");
-const cadOut = {}, cadIn = {};
-rawNodes.forEach(n => (n.conectaCon || []).forEach(t => {
-  if (!nodeById[t]) return;
-  (cadOut[n.id] = cadOut[n.id] || []).push(t);
-  (cadIn[t] = cadIn[t] || []).push(n.id);
-}));
-const cadRoots = rawNodes.filter(n => cadOut[n.id] && !cadIn[n.id]).sort((a, b) => a.canonIdx - b.canonIdx);
+// ronda 14: los tres se rehacen al promover una conexión (cadIndexar), en el lugar: los demás los leen por nombre
+const cadOut = {}, cadIn = {}, cadRoots = [];
+function cadIndexar(){
+  for (const k in cadOut) delete cadOut[k];
+  for (const k in cadIn) delete cadIn[k];
+  rawNodes.forEach(n => (n.conectaCon || []).forEach(t => {
+    if (!nodeById[t]) return;
+    (cadOut[n.id] = cadOut[n.id] || []).push(t);
+    (cadIn[t] = cadIn[t] || []).push(n.id);
+  }));
+  cadRoots.length = 0;
+  cadRoots.push(...rawNodes.filter(n => cadOut[n.id] && !cadIn[n.id]).sort((a, b) => a.canonIdx - b.canonIdx));
+}
+cadIndexar();
 let cadPath = [];   // [{ id, rel }]  rel = cómo se llegó a este título desde el anterior
 let cadOpenBranches = null; // id de la tarjeta con el selector de ramas abierto
 
@@ -4328,7 +4363,7 @@ function renderCadenas(){
     const n = nodeById[step.id];
     if (i > 0){
       const info = step.rel === "curada" ? conexInfoDe(cadPath[i - 1].id, step.id) : null;
-      html += `<div class="cad-arrow${step.rel === "curada" ? " curada" : " ext"}"${info && info.nota ? ` title="${escHtml(info.nota)}"` : ""}><span>${info ? "✓ " + escHtml(conexTipoEt(info.tipo)) : cadRelLabel(step.rel)}</span>→</div>`;
+      html += `<div class="cad-arrow${step.rel === "curada" ? " curada" : " ext"}"${info && info.nota ? ` title="${escHtml(info.nota)}"` : ""}><span>${info ? "✓ " + escHtml(conexTipoTexto(info)) : cadRelLabel(step.rel)}</span>→</div>`;
     }
     html += `<div class="cad-stack">${cadCard(n, step, i)}`;
     if (!step.cycle){
@@ -4344,7 +4379,7 @@ function renderCadenas(){
         </div>`;
         if (open){
           const row = c => `<div class="cad-cand${c.cycle ? " cycle" : ""}${c.rel === "curada" ? " curada" : ""}" ${c.cycle ? "" : `onclick='cadExtend(${i}, ${JSON.stringify(c.id)}, ${JSON.stringify(c.rel)})'`}>
-            <span class="cad-cand-rel">${c.cycle ? "⟳" : (c.rel === "curada" && conexInfoDe(n.id, c.id)) ? "✓ " + escHtml(conexTipoEt(conexInfoDe(n.id, c.id).tipo)) : cadRelLabel(c.rel)}${c.rare === false ? " <i>(par frecuente)</i>" : ""}</span>
+            <span class="cad-cand-rel">${c.cycle ? "⟳" : (c.rel === "curada" && conexInfoDe(n.id, c.id)) ? "✓ " + escHtml(conexTipoTexto(conexInfoDe(n.id, c.id))) : cadRelLabel(c.rel)}${c.rare === false ? " <i>(par frecuente)</i>" : ""}</span>
             <span class="cad-cand-title">${nodeById[c.id].title}</span> <span class="cad-cand-ref">${nodeById[c.id].ref}</span>
             ${c.cycle ? `<span class="cad-cand-cycle">ya está en la cadena</span>` : ""}
           </div>`;
@@ -4435,12 +4470,12 @@ function renderConex(){
   const tipos = ["AT → NT", "AT → AT", "NT → NT"].concat(todas.some(r => conexTipoDe(r) === "NT → AT") ? ["NT → AT"] : []);
   if (conexTipo !== "todas" && !tipos.includes(conexTipo)) conexTipo = "todas";
   const rowsTab = conexTipo === "todas" ? todas : todas.filter(r => conexTipoDe(r) === conexTipo);
-  const tipoDe = r => (conexInfoDe(r.src.id, r.dst.id) || {}).tipo || "";
-  const clases = Object.keys(TIPOS_CONEXION).filter(t => rowsTab.some(r => tipoDe(r) === t));
+  const tipoDe = r => { const i = conexInfoDe(r.src.id, r.dst.id); return i ? (i.provisional ? "provisional" : i.tipo) : ""; };
+  const clases = Object.keys(TIPOS_CONEXION).concat("provisional").filter(t => rowsTab.some(r => tipoDe(r) === t));
   if (conexClase !== "todos" && !clases.includes(conexClase)) conexClase = "todos";
   const rows = conexClase === "todos" ? rowsTab : rowsTab.filter(r => tipoDe(r) === conexClase);
   const filtroTipos = clases.length ? `<div class="cx-tipos" role="group" aria-label="Tipo de conexión"><span>Tipo:</span>${[["todos", `todos (${rowsTab.length})`]].concat(clases.map(t => [t, `${conexTipoEt(t)} (${rowsTab.filter(r => tipoDe(r) === t).length})`]))
-    .map(([k, txt]) => `<button type="button" class="${conexClase === k ? "on" : ""}" aria-pressed="${conexClase === k}" title="${escHtml(TIPOS_CONEXION[k] || "")}" onclick='conexClaseElegir(${JSON.stringify(k)})'>${escHtml(txt)}</button>`).join("")}</div>` : "";
+    .map(([k, txt]) => `<button type="button" class="${conexClase === k ? "on" : ""}" aria-pressed="${conexClase === k}" title="${escHtml(TIPOS_CONEXION[k] || (k === "provisional" ? CONEX_PROVISIONAL : ""))}" onclick='conexClaseElegir(${JSON.stringify(k)})'>${escHtml(txt)}</button>`).join("")}</div>` : "";
   const tabs = `<div class="cx-tabs" role="tablist">${[["todas", `Todas (${todas.length})`]].concat(tipos.map(t => [t, `${t} (${todas.filter(r => conexTipoDe(r) === t).length})`]))
     .map(([k, txt]) => `<button type="button" role="tab" class="cx-tab${conexTipo === k ? " on" : ""}" aria-selected="${conexTipo === k}" onclick='conexElegir(${JSON.stringify(k)})'>${txt}</button>`).join("")}</div>`;
   const visRows = rows.filter(r => isVisible(r.src) || isVisible(r.dst));
@@ -4671,16 +4706,8 @@ function candRender(){
     ${allRows.length > rows.length ? `<div class="cand-more"><button class="hbtn ghost" onclick="candLimit += 150; candRender()">mostrar 150 más (${allRows.length - rows.length} restantes)</button></div>` : ""}`;
 }
 function candApprove(srcId, dstId){
-  promoteToConecta(srcId, dstId);
+  promoteToConecta(srcId, dstId);   // ronda 14: el grafo y las cadenas los pone al día promoteToConecta
   closePanel();
-  // que el grafo y las cadenas lo vean ya, sin recargar
-  try {
-    const key = srcId < dstId ? srcId + "|" + dstId : dstId + "|" + srcId;
-    let e = grafoEdgesAll.find(x => x.key === key);
-    if (!e){ e = { key, a: srcId, b: dstId, rel: { curada: false, ref: false, lxx: [], mismo: false } }; grafoEdgesAll.push(e); }
-    e.rel.curada = true;
-    (cadOut[srcId] = cadOut[srcId] || []).push(dstId); (cadIn[dstId] = cadIn[dstId] || []).push(srcId);
-  } catch (e) {}
   candRender();
 }
 function candDiscard(key){
@@ -5850,7 +5877,8 @@ function tokenMatches(d, token){
   }
   if (w === "strong:*") return !!d.strong;
   if (w === "conexion:*") return estaConectado(d);
-  if (w.startsWith("strong:")) return d.strong.toLowerCase().includes(w.slice(7));
+  // ronda 14: strong:H2233 compara igual que H2233 suelto (el código normalizado, no una subcadena)
+  if (w.startsWith("strong:")) return strongDe(w.slice(7)) ? tieneStrong(d, w.slice(7)) : d.strong.toLowerCase().includes(w.slice(7));
   if (w.startsWith("cat:")) return d.cats.some(c => advNorm(c).includes(advNorm(w.slice(4))));
   if (w.startsWith("book:")) return advNorm(d.book).includes(advNorm(w.slice(5)));
   if (w.startsWith("testamento:")) return d.testamento.toLowerCase() === w.slice(11);
@@ -5973,7 +6001,7 @@ function saveViewState(){
       cadPath: cadPath.map(s => ({ id: s.id, rel: s.rel, cycle: !!s.cycle })),
       grafoFocus: grafoFocusId,
       grafoRefs: document.getElementById("grafoRefs").checked,
-      grafoLXX: mobileLXXDefault ? true : document.getElementById("grafoLXX").checked,
+      grafoLXX: document.getElementById("grafoLXX").checked,   // ronda 14: lo que se ve es lo que se guarda
       grafoLXXAll: document.getElementById("grafoLXXAll").checked,
       grafoSplit: grafoSplit,
     }));
@@ -6064,6 +6092,16 @@ function promoteToConecta(sourceId, targetId){
   pendingPromotions.push({ sourceId, targetId, sourceTitle: source.title, targetTitle: nodeById[targetId].title });
   savePromotions();
   updatePromotionsIndicator();
+  // ronda 14: que todas las vistas digan lo mismo ya, sin recargar: el grafo, las cadenas y el filtro por tipo
+  try {
+    const key = sourceId < targetId ? sourceId + "|" + targetId : targetId + "|" + sourceId;
+    let e = grafoEdgesAll.find(x => x.key === key);
+    if (!e){ e = { key, a: sourceId, b: targetId, rel: { curada: false, ref: false, lxx: [], mismo: false } }; grafoEdgesAll.push(e); }
+    e.rel.curada = true; e.dir = e.dir || (sourceId + ">" + targetId);
+  } catch (e) {}
+  cadIndexar(); conexTiposNodo = null;
+  if (layoutMode === "cadenas") renderCadenas();
+  if (layoutMode === "conexiones") renderConex();
   nodeSel.classed("tip-unlinked", d => d.tipologia && !estaConectado(d));
   openPanel(source); // refresca el panel para mostrar el nuevo estado
 }
@@ -6179,9 +6217,13 @@ function urlRead(){
   const p = new URLSearchParams((location.hash || "").replace(/^#/, ""));
   return { vista: p.get("vista"), id: p.get("id") };
 }
+// ronda 14: con una ficha abierta se copia su página para compartir (t/N.html: su título y su descripción en la
+// vista previa, y lleva a la ficha); sin ficha abierta, la dirección de siempre
+const SITIO_URL = "https://jesusenlabiblia.github.io/";
 function urlCopy(){
   urlSync();
-  const url = location.href;
+  const abierta = lastPanelId && nodeById[lastPanelId] && document.getElementById("panel").classList.contains("open") ? lastPanelId : null;
+  const url = abierta ? SITIO_URL + "t/" + abierta + ".html" : location.href;
   const done = () => { const b = document.getElementById("urlCopyBtn"); if (b){ b.textContent = "Enlace copiado ✓"; setTimeout(() => b.textContent = "Copiar enlace", 1500); } };
   if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(() => prompt("Copiá el enlace:", url));
   else prompt("Copiá el enlace:", url);
@@ -6204,7 +6246,7 @@ function fichaTitulo(d){
   return { t: m[1].trim(), sub: dentro };
 }
 function evLink(t){
-  return `<span class="ev-link" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>${t.title}</span>`;
+  return `<span class="ev-link" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>${escHtml(t.title)}</span>`;
 }
 function evLista(ts, max){
   const m = max || 3, vis = ts.slice(0, m), resto = ts.length - vis.length;
@@ -6256,10 +6298,14 @@ function evidRenglon3(d){
   if (sal.length || ent.length){
     // ronda 13: una línea por conexión, con su tipo y su nota debajo
     const item = (t, dir, info) => `<div class="ev-cx-i"><span class="ev-cx-dir">${dir}</span> ${evLink(t)} ${conexChip(info)}${info && info.nota ? `<div class="cx-nota">${escHtml(info.nota)}</div>` : ""}</div>`;
-    const n = sal.length + ent.length;
+    // ronda 14: las provisionales (promovidas en el taller, sin fila en Jesus_Conexiones) van aparte
+    const filas = sal.map(t => [t, "sale hacia", conexInfoDe(d.id, t.id)]).concat(ent.map(t => [t, "llega desde", conexInfoDe(t.id, d.id)]));
+    const rev = filas.filter(f => !(f[2] && f[2].provisional)), prov = filas.filter(f => f[2] && f[2].provisional);
+    const n = rev.length, np = prov.length;
     return `<div class="evid-l"><span class="evid-ic" style="color:var(--gold)">\u2192</span>
-      <div class="ev-cx"><div class="ev-cx-h">${n === 1 ? "Una conexión revisada a mano:" : n + " conexiones revisadas a mano:"}</div>
-      ${sal.map(t => item(t, "sale hacia", conexInfoDe(d.id, t.id))).join("")}${ent.map(t => item(t, "llega desde", conexInfoDe(t.id, d.id))).join("")}</div></div>`;
+      <div class="ev-cx">${n ? `<div class="ev-cx-h">${n === 1 ? "Una conexión revisada a mano:" : n + " conexiones revisadas a mano:"}</div>
+      ${rev.map(f => item(...f)).join("")}` : ""}${np ? `<div class="ev-cx-h ev-cx-prov">${np === 1 ? "Conexión provisional · sin revisar:" : np + " conexiones provisionales · sin revisar:"}</div>
+      ${prov.map(f => item(...f)).join("")}` : ""}</div></div>`;
   }
   const lxx = (d.puenteLXX || []).filter(p => nodeById[p.id]);
   if (lxx.length){
@@ -6287,7 +6333,7 @@ function notaEnlaces(txt, d, enlazar){
   return txt.replace(/#(\d+)\b/g, (m, n) => {
     const t = nodeById[n];
     if (!t) return m;
-    const nombre = "«" + fichaTitulo(t).t + "»";
+    const nombre = "«" + escHtml(fichaTitulo(t).t) + "»";
     if (!enlazar || t.id === d.id) return nombre;
     return `<button type="button" class="ficha-link" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>${nombre}</button>`;
   });
@@ -6306,7 +6352,7 @@ function notasBoxes(d, enlazar){
   if (resto) partes.push({ tipo: cur, texto: resto });
   if (!partes.length) return "";
   return partes.map(p => {
-    p.texto = notaEnlaces(p.texto, d, enlazar);
+    p.texto = notaEnlaces(escHtml(p.texto), d, enlazar);   // ronda 14: la nota es texto; los «#N», enlaces
     if (p.tipo === "REVISAR")
       return esTaller() ? `<div class="nota-box rev"><span class="nb-et">Pendiente de revisión</span>${p.texto}</div>` : "";
     if (p.tipo === "TIPOLOGIA")
@@ -6411,7 +6457,7 @@ function fichaOriginal(d){
     return `<div class="og-dicc-e">
       ${v.lema ? `<div class="og-pal"><span${vocAttr(c)}>${escHtml(v.lema)}</span>${v.pron ? ` <span class="og-pron">${escHtml(v.pron)}</span>` : ""}</div>` : ""}
       ${texto ? `<div class="og-glosa">${texto}${corta ? "…" : ""}${completa}</div>` : ""}
-      <div class="og-pie"><span>${freq ? `${freq} veces en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
+      <div class="og-pie"><span>${freq ? `${freq} apariciones del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
         <span class="og-strong">${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${c} ↗</a>` : c}</span></div>
     </div>`;
   }).join("");
@@ -6459,7 +6505,7 @@ function fichaOriginalCodigos(d){
       ${pal.map(p => `<div class="og-pal">${p}</div>`).join("")}
       ${g.simple ? `<div class="og-simple">${escHtml(g.simple)}</div>` : ""}
       ${texto ? `<div class="og-glosa">${texto}${corta ? "…" : ""}${completa}</div>` : ""}
-      <div class="og-pie"><span>${freq ? `${freq} veces en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
+      <div class="og-pie"><span>${freq ? `${freq} apariciones del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
         <span class="og-strong">${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${g.code} ↗</a>` : g.code}</span></div>
     </div>`;
   }).join("");
@@ -6481,9 +6527,9 @@ function fichaGemelos(d){
   const k = (d.title || "").trim().toLowerCase();
   const otros = rawNodes.filter(n => n.id !== d.id && (n.title || "").trim().toLowerCase() === k);
   if (!otros.length) return "";
-  const enl = otros.map(t => `<button type="button" class="ficha-link" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>${t.ref}</button>`);
+  const enl = otros.map(t => `<button type="button" class="ficha-link" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>${escHtml(t.ref)}</button>`);
   const lista = enl.length === 1 ? enl[0] : enl.slice(0, -1).join(", ") + " y " + enl[enl.length - 1];
-  return `<div class="ficha-gemelo">${otros.length === 1 ? "Hay otro" : "Hay otros " + otros.length} «${fichaTitulo(d).t}» en ${lista}.</div>`;
+  return `<div class="ficha-gemelo">${otros.length === 1 ? "Hay otro" : "Hay otros " + otros.length} «${escHtml(fichaTitulo(d).t)}» en ${lista}.</div>`;
 }
 function fichaMenu(d){
   const id = JSON.stringify(d.id);
@@ -7660,10 +7706,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document
 // ya trae una elección para "puentes LXX", esa gana — a cualquier ancho — y la
 // reducción no se aplica ni se guarda (ver patch_vs1).
 if (innerWidth < 720){
-  if (jebSavedLXX === null){
-    document.getElementById("grafoLXX").checked = false;          // solo curadas: 98 aristas en vez de 259
-    mobileLXXDefault = true;
-  }
+  // ronda 14: «puentes LXX» empieza apagada en todos los anchos (el HTML ya la trae así); lo guardado gana
   document.getElementById("lexRarity").value = "6";               // léxica: raíces distintivas
   matrixOpts.group = "period"; matrixOpts.value = "pct";          // matriz: 10 columnas en vez de 60
 }
