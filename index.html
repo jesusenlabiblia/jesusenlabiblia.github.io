@@ -583,7 +583,9 @@
   /* conexiones curadas: lista AT → NT */
   #conexLayer{ display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:14px 6% 80px; }
   /* ronda 11: AT ← → NT, dos listas enfrentadas */
-  #grafoEnf{ display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; scrollbar-gutter:stable; padding:10px 5% 0; --ge-gutter:min(260px, 22vw); }
+  /* ronda 15: las columnas usan todo el ancho; a cada lado, un carril angosto para los arcos del mismo Testamento */
+  #grafoEnf{ display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; scrollbar-gutter:stable; padding:10px 20px 0;
+    --ge-gutter:clamp(110px, 15vw, 220px); --ge-margen:30px; }
   #grafoEnf .ge-res{ font-size:var(--t-5); color:var(--parchment-dim); line-height:1.45; max-width:760px; margin-bottom:8px; }
   #grafoEnf .ge-ctl{ display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; font-size:var(--t-5); color:var(--parchment-dim); margin-bottom:8px; }
   #grafoEnf .ge-seg{ display:inline-flex; border:1px solid var(--line-dim); border-radius:100px; overflow:hidden; }
@@ -591,18 +593,55 @@
   #grafoEnf .ge-seg button.on{ background:var(--gold); color:#141005; font-weight:600; }
   #grafoEnf .ge-ley{ display:flex; flex-wrap:wrap; gap:4px 16px; }
   #grafoEnf .ge-ley svg{ display:inline-block; width:30px; height:10px; vertical-align:middle; margin-right:4px; }
-  #grafoEnf .ge-cab{ display:grid; grid-template-columns:1fr var(--ge-gutter) 1fr; position:sticky; top:-10px; z-index:2;
+  /* ronda 15: el encabezado en una línea; las cifras, la explicación y la leyenda detrás de ⓘ */
+  #grafoEnf .ge-ctl{ flex-wrap:nowrap; }
+  #grafoEnf .ge-info-btn{ flex:none; width:32px; height:32px; border-radius:50%; border:1px solid var(--line-dim); background:transparent;
+    color:var(--gold-bright); font:600 var(--t-3)/1 'Source Sans 3', sans-serif; cursor:pointer; }
+  #grafoEnf .ge-info-btn[aria-expanded="true"]{ background:var(--gold); color:#141005; border-color:var(--gold); }
+  #grafoEnf .ge-info{ border:1px solid var(--line-dim); border-radius:10px; padding:10px 14px; margin:0 0 8px; max-width:820px; }
+  #grafoEnf .ge-info .ge-res{ margin:0 0 6px; }
+  #grafoEnf .ge-info .ge-ley{ font-size:var(--t-5); color:var(--parchment-dim); }
+  /* el navegador de libros: una fila que se desliza, fija con la cabecera de las columnas */
+  #grafoEnf .ge-libros{ grid-column:1 / -1; min-width:0; display:flex; gap:4px; overflow-x:auto; padding:0 0 8px; margin-bottom:6px;
+    border-bottom:1px solid var(--line-dim); scrollbar-width:thin; }
+  #grafoEnf .ge-cab .ge-libros{ font:400 var(--t-6) 'Source Sans 3', sans-serif; letter-spacing:0; text-transform:none; }
+  #grafoEnf .ge-libros button{ flex:none; font:600 var(--t-6) 'Source Sans 3', sans-serif; color:var(--parchment); background:transparent;
+    border:1px solid var(--line-dim); border-radius:100px; padding:4px 9px; min-height:28px; cursor:pointer; }
+  #grafoEnf .ge-libros button:hover, #grafoEnf .ge-libros button:focus-visible{ border-color:var(--gold); color:var(--gold-bright); }
+  #grafoEnf .ge-libros .ge-lib-sep{ flex:none; width:1px; margin:2px 6px; background:var(--line-dim); }
+  /* la capa para tocar un hilo: trazos anchos e invisibles encima de los que se ven */
+  #grafoEnf .ge-toque{ position:absolute; top:0; overflow:visible; pointer-events:none; z-index:1; }
+  #grafoEnf .ge-toque path{ fill:none; stroke:transparent; stroke-width:14; pointer-events:stroke; cursor:pointer; }
+  #grafoEnf .ge-red.canon .ge-toque path:not(.on){ display:none; }
+  #grafoEnf path.ge-h.elegido{ opacity:1; stroke-width:4.2; }
+  /* la tarjeta de la conexión, junto al hilo */
+  #grafoEnf .ge-tarjeta{ position:absolute; z-index:3; width:min(320px, calc(100% - 16px)); background:var(--select-bg); color:var(--parchment);
+    border:1px solid var(--gold); border-radius:12px; padding:12px 14px; box-shadow:0 8px 28px rgba(0,0,0,.35); font-size:var(--t-5); line-height:1.4; }
+  #grafoEnf .ge-tj-x{ position:absolute; top:6px; right:8px; background:none; border:0; color:var(--parchment-dim); font-size:var(--t-4); cursor:pointer; min-width:28px; min-height:28px; }
+  #grafoEnf .ge-tj-tipo{ padding-right:28px; }
+  #grafoEnf .ge-tj-def{ display:block; color:var(--parchment-dim); margin-top:4px; }
+  #grafoEnf .ge-tj-lxx{ color:var(--parchment-dim); margin-top:4px; }
+  #grafoEnf .ge-tj-nota{ margin:8px 0 0; }
+  #grafoEnf .ge-tj-lados{ display:flex; align-items:center; gap:6px; margin-top:10px; }
+  #grafoEnf .ge-tj-fl{ color:var(--gold-bright); flex:none; }
+  #grafoEnf .ge-tj-ficha{ flex:1; min-width:0; text-align:left; background:none; border:1px solid var(--line-dim); border-radius:8px; padding:6px 8px;
+    color:var(--parchment); font:inherit; cursor:pointer; }
+  #grafoEnf .ge-tj-ficha b{ display:block; color:var(--gold-bright); font-weight:600; }
+  #grafoEnf .ge-tj-ficha span{ display:block; font-size:var(--t-6); color:var(--parchment-dim); }
+  #grafoEnf .ge-tj-ficha:hover, #grafoEnf .ge-tj-ficha:focus-visible{ border-color:var(--gold); }
+  #grafoEnf .ge-pie button.ge-cx{ font-weight:400; }
+  #grafoEnf .ge-cab{ display:grid; grid-template-columns:var(--ge-margen) 1fr var(--ge-gutter) 1fr var(--ge-margen); position:sticky; top:-10px; z-index:2;
     background:var(--night); border-bottom:1px solid var(--line-dim); padding:12px 0 6px; margin-top:4px; }
   #grafoEnf .ge-cab div{ font:600 var(--t-6) 'Source Sans 3', sans-serif; letter-spacing:.6px; text-transform:uppercase; color:var(--gold-bright); }
-  #grafoEnf .ge-cab .at{ text-align:right; } #grafoEnf .ge-cab .medio{ text-align:center; font-weight:400; text-transform:none; letter-spacing:0; color:var(--parchment-dim); }
-  #grafoEnf .ge-red{ position:relative; display:grid; grid-template-columns:1fr var(--ge-gutter) 1fr; padding-top:6px; }
-  #grafoEnf .ge-hilos{ grid-column:2; position:relative; }
+  #grafoEnf .ge-cab .at{ grid-column:2; text-align:right; } #grafoEnf .ge-cab .nt{ grid-column:4; } #grafoEnf .ge-cab .medio{ grid-column:3;  text-align:center; font-weight:400; text-transform:none; letter-spacing:0; color:var(--parchment-dim); }
+  #grafoEnf .ge-red{ position:relative; display:grid; grid-template-columns:var(--ge-margen) 1fr var(--ge-gutter) 1fr var(--ge-margen); padding-top:6px; }
+  #grafoEnf .ge-hilos{ grid-column:3; grid-row:1; position:relative; }
   #grafoEnf .ge-hilos svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
   #grafoEnf .ge-col{ position:relative; }
-  #grafoEnf .ge-col.at{ grid-column:1; } #grafoEnf .ge-col.nt{ grid-column:3; }
+  #grafoEnf .ge-col.at{ grid-column:2; grid-row:1; } #grafoEnf .ge-col.nt{ grid-column:4; grid-row:1; }
   #grafoEnf .ge-libro{ font:500 italic var(--t-3) 'Cormorant Garamond', Georgia, serif; color:var(--gold-bright); padding:10px 16px 2px; }
   #grafoEnf .ge-col.at .ge-libro{ text-align:right; }
-  #grafoEnf .ge-t{ display:block; width:100%; background:none; border:0; color:var(--parchment); font:inherit; font-size:var(--t-4); line-height:1.25;
+  #grafoEnf .ge-t{ display:block; width:100%; background:none; border:0; color:var(--parchment); font:inherit; font-size:14px; line-height:1.25;
     cursor:pointer; padding:3px 16px; position:relative; border-radius:6px; }
   #grafoEnf .ge-col.at .ge-t{ text-align:right; } #grafoEnf .ge-col.nt .ge-t{ text-align:left; }
   #grafoEnf .ge-col.nt.par .ge-t{ position:absolute; left:0; right:0; }
@@ -625,7 +664,7 @@
   #grafoEnf .ge-red.canon path.ge-h:not(.on){ display:none; }
   #grafoEnf path.ge-h.tenue{ opacity:.06; }
   #grafoEnf path.ge-h.on{ opacity:1; stroke-width:3.2; } #grafoEnf path.ge-h.curada.on{ stroke:var(--gold-bright); }
-  #grafoEnf .ge-pie{ position:sticky; bottom:0; z-index:2; margin:16px -5.5556% 0; padding:10px 5.5556% 12px; min-height:50px;
+  #grafoEnf .ge-pie{ position:sticky; bottom:0; z-index:2; margin:16px -20px 0; padding:10px 20px 12px; min-height:50px;
     background:var(--select-bg); border-top:1px solid var(--line-dim); font-size:var(--t-4); line-height:1.4; color:var(--parchment); }
   #grafoEnf .ge-pie b{ color:var(--gold-bright); font-weight:600; }
   #grafoEnf .ge-pie .ge-nota{ color:var(--parchment-dim); font-size:var(--t-5); }
@@ -633,11 +672,12 @@
     text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }
   #grafoEnf .ge-pie button.ge-ir{ font-weight:600; }
   @media (max-width:719px){
-    #grafoEnf{ padding:8px 12px 0; --ge-gutter:44px; }
-    #grafoEnf .ge-t{ font-size:var(--t-5); padding:3px 14px; }
+    #grafoEnf{ padding:8px 8px 0; --ge-gutter:44px; --ge-margen:12px; }
+    #grafoEnf .ge-t{ font-size:13px; padding:3px 14px; }
+    #grafoEnf .ge-ctl-et{ display:none; }
     #grafoEnf .ge-libro{ font-size:var(--t-4); padding:10px 14px 2px; }
     #grafoEnf .ge-cab .medio{ visibility:hidden; }
-    #grafoEnf .ge-pie{ margin:16px -12px 0; padding:10px 12px 12px; }
+    #grafoEnf .ge-pie{ margin:16px -8px 0; padding:10px 8px 12px; }
   }
   .cx-head{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
   .cx-title-big{ font-family:'Cormorant Garamond', serif; font-size:var(--t-1); font-style:italic; color:var(--gold-bright); }
@@ -1020,9 +1060,17 @@ body.light{ --accent-blue-ink:#34608B; }
   }
   /* ---- radios consistentes ---- */
   .cad-card, #advPanel, .mark-field{ border-radius:var(--r-card); }
+  /* ronda 15: «reducir movimiento» (prefers-reduced-motion) en todo el muro: sin transiciones, animaciones ni
+     desplazamientos suaves; las de d3 y las redes de fuerzas, en el script (menosMovimiento) */
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:.01ms !important; transition-delay:0s !important; scroll-behavior:auto !important; }
+  }
   #hint{ position:absolute; bottom:16px; right:24px; z-index:5; font-size:var(--t-6);
     color:var(--parchment-dim); opacity:0.75; max-width:190px; text-align:right; line-height:1.4; }
   #hint.off{ display:none; }
+  /* ronda 15 (B17): en el tema claro, las líneas de ayuda sin transparencia y con --ink-2 (4,5:1 o más; barrido_temas las mide) */
+  body.light #tiempoHint, body.light #hint, body.light #conexHint, body.light #refsCruzCount, body.light #lexicaCount, body.light .cand-legend{ opacity:1 !important; color:var(--ink-2) !important; }
   /* ---- 3a: header compacto / móvil ---- */
   #hdrMore, #optsToggle, #hintInline{ display:none; }
   .hdr-extra{ display:contents; }
@@ -1392,7 +1440,7 @@ body.light{ --accent-blue-ink:#34608B; }
 </div></div>
 <div id="curacionLayer" style="display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:10px 5% 80px;"></div>
   <div id="panel" class="sur-papel"><button class="close" onclick="fichaCerrar()" aria-label="Cerrar la ficha">✕</button><div id="panel-body"></div></div>
-  <div id="reviewOverlay" class="overlay">
+  <div id="reviewOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Modo repaso">
     <div class="overlay-card" style="max-width:560px; width:100%; text-align:center; padding:34px 36px;">
       <div id="reviewCat" style="font-size:var(--t-5); letter-spacing:0.3px; color:var(--gold-bright); margin-bottom:16px;"></div>
       <div id="reviewClue" style="font-family:'Cormorant Garamond', serif; font-size:var(--t-2); line-height:1.4; margin-bottom:34px;"></div>
@@ -1411,7 +1459,7 @@ body.light{ --accent-blue-ink:#34608B; }
       </div>
     </div>
   </div>
-  <div id="lectioOverlay" class="overlay">
+  <div id="lectioOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Modo lectura">
     <div class="overlay-card" style="max-width:680px; width:100%; text-align:center; padding:34px 40px;">
       <div id="lectioPos" style="font-size:var(--t-6); letter-spacing:0.5px; color:var(--parchment-dim); opacity:0.6; margin-bottom:8px;"></div>
       <div id="lectioTitle" style="font-family:'Cormorant Garamond', serif; font-size:var(--t-1); line-height:1.25; margin-bottom:6px;"></div>
@@ -1425,8 +1473,8 @@ body.light{ --accent-blue-ink:#34608B; }
       <div id="lectioRVR"></div>
       <div id="lectioNotas" style="display:none; text-align:left; margin-bottom:24px;"></div>
       <div style="display:flex; gap:14px; justify-content:center; align-items:center; margin-top:6px;">
-        <button id="lectioPrev" style="background:rgba(201,162,39,0.15); border:1px solid var(--gold); border-radius:100px; padding:8px 20px; color:var(--gold-bright); cursor:pointer; font-size:var(--t-3);">←</button>
-        <button id="lectioNext" style="background:rgba(201,162,39,0.15); border:1px solid var(--gold); border-radius:100px; padding:8px 20px; color:var(--gold-bright); cursor:pointer; font-size:var(--t-3);">→</button>
+        <button id="lectioPrev" aria-label="Título anterior" style="background:rgba(201,162,39,0.15); border:1px solid var(--gold); border-radius:100px; padding:8px 20px; color:var(--gold-bright); cursor:pointer; font-size:var(--t-3);">←</button>
+        <button id="lectioNext" aria-label="Título siguiente" style="background:rgba(201,162,39,0.15); border:1px solid var(--gold); border-radius:100px; padding:8px 20px; color:var(--gold-bright); cursor:pointer; font-size:var(--t-3);">→</button>
       </div>
       <div style="margin-top:22px;">
         <button id="lectioClose" class="obtn">Cerrar</button>
@@ -1455,6 +1503,34 @@ window.addEventListener("error", (e) => {
   banner.textContent = "Error de JS: " + e.message + " (línea " + e.lineno + ")";
 });
 
+// ronda 15: «reducir movimiento». Si la persona lo pidió (prefers-reduced-motion: reduce), las transiciones de d3
+// duran 0 y las redes de fuerzas (el mapa, la red léxica, la red de un título) se acomodan de una vez y se dibujan
+// quietas: al crearse y al recalentarse. Arrastrar un punto (alphaTarget > 0) sigue igual: lo mueve la persona.
+(function movimientoReducido(){
+  if (typeof d3 === "undefined") return;
+  if (d3.transition && d3.transition.prototype){
+    const dur = d3.transition.prototype.duration;
+    d3.transition.prototype.duration = function(v){ return arguments.length && menosMovimiento() ? dur.call(this, 0) : dur.apply(this, arguments); };
+  }
+  if (d3.forceSimulation){
+    const quieta = s => {
+      if (!menosMovimiento() || s.alphaTarget() > 0) return false;
+      s.stop();
+      let n = 0; while (s.alpha() >= s.alphaMin() && n++ < 600) s.tick();
+      const t = s.on("tick"), f = s.on("end");
+      if (t) t.call(s); if (f) f.call(s);
+      return true;
+    };
+    const crear = d3.forceSimulation;
+    d3.forceSimulation = function(){
+      const s = crear.apply(this, arguments), arrancar = s.restart;
+      // al crearse: después de que se le pongan las fuerzas y los oyentes (en la misma cadena), antes del primer cuadro
+      queueMicrotask(() => quieta(s));
+      s.restart = function(){ return quieta(s) ? s : arrancar.call(s); };
+      return s;
+    };
+  }
+})();
 (function initTheme(){
   const saved = localStorage.getItem('jeb-theme');
   const btn = document.getElementById('themeToggle');
@@ -2053,7 +2129,7 @@ function curScrollTo(key){
   if (layoutMode !== "curacion"){ document.getElementById("modeSelect").value = "curacion"; setMode("curacion"); syncHeader(); saveViewState(); }
   else renderCuracionQueue();
   const el = document.getElementById("cur-sec-" + key);
-  if (el){ el.open = true; el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  if (el){ el.open = true; el.scrollIntoView({ behavior: movSuave(), block: "start" }); }
 }
 function curExportMd(){
   const sections = buildCuracionQueue().filter(sec => sec.items.length).sort((a, b) => a.priority - b.priority);
@@ -3485,15 +3561,11 @@ function renderGrafo(){
     grafoElegirMostrar({ aislado: true, titulo: t, otros });
     return;
   }
+  // ronda 15b (decisión de Ezequiel): sin un título elegido y sin pedir el mapa, la vista entra en AT ← → NT, las dos
+  // listas enfrentadas (antes, desde la ronda 4, «Elegí un título»)
   if (!grafoFocusId && !grafoVerTodo){
-    grafoEnfOcultar();
-    grafoLayer.select(".grafo-links").selectAll("line").remove();
-    grafoLayer.select(".grafo-nodes").selectAll("g").remove();
-    grafoNodeSel = null; grafoLinkSel = null;
-    document.getElementById("grafoHint").innerHTML = "";
-    document.getElementById("grafoBackBtn").style.display = "none";
-    document.getElementById("grafoOverviewBtn").style.display = "none";
-    grafoElegirMostrar();
+    grafoElegirOcultar();
+    grafoEnfRender();
     return;
   }
   grafoElegirOcultar();
@@ -3912,24 +3984,36 @@ function grafoEnfRender(){
   const item = (n, ref) => `<button class="ge-t${isVisible(n) ? "" : " fuera"}" data-id="${n.id}" style="--c:${catColors[n.cat] || catColors["Sin categoría"]}">${escHtml(n.title)}<span class="ge-r">${escHtml(ref)}</span></button>`;
   const verso = n => n.ref.replace(/^.*?(\d+:\d+.*)$/, "$1");
   const lista = (ns, libros) => { let out = "", lib = null;
-    ns.forEach(n => { if (libros && n.book !== lib){ lib = n.book; out += `<div class="ge-libro">${escHtml(lib)}</div>`; } out += item(n, libros ? verso(n) : n.ref); });
+    ns.forEach(n => { if (libros && n.book !== lib){ lib = n.book; out += `<div class="ge-libro" data-book="${escHtml(lib)}">${escHtml(lib)}</div>`; } out += item(n, libros ? verso(n) : n.ref); });
     return out; };
   const AT = N.filter(n => n.testamento === "AT"), NT = N.filter(n => n.testamento === "NT");
   const linea = (dash, color) => `<svg width="30" height="10" aria-hidden="true"><path d="M0 5 H30" stroke="${color}" stroke-width="1.6" fill="none"${dash ? ' stroke-dasharray="4 3"' : ""}/></svg>`;
+  // ronda 15: el navegador de libros (abreviados como en el buscador: «Gn», «1S», «Mt») y el encabezado en una línea
+  const corto = b => { const k = Object.keys(ABREV_LIBRO).find(x => ABREV_LIBRO[x] === b); return k ? k.replace(/^(\d?)(.)/, (m, d, c) => d + c.toUpperCase()) : b.slice(0, 3); };
+  const libros = t => [...new Set(N.filter(n => n.testamento === t).map(n => n.book))];
+  const nav = `<nav class="ge-libros" aria-label="Ir a un libro">${["AT", "NT"].map(t => `<span class="ge-lib-g" role="group" aria-label="${t === "AT" ? "Antiguo" : "Nuevo"} Testamento" style="display:contents">${libros(t)
+      .map(b => `<button type="button" data-book="${escHtml(b)}" data-t="${t}" title="${escHtml(b)}">${escHtml(corto(b))}</button>`).join("")}</span>`).join('<span class="ge-lib-sep" aria-hidden="true"></span>')}</nav>`;
   grafoEnf.innerHTML = `
-    <p class="ge-res">${tel
+    <div class="ge-ctl"><span class="ge-ctl-et">El Nuevo Testamento:</span>
+      <span class="ge-seg" role="group" aria-label="Orden del Nuevo Testamento"><button data-v="par" class="${grafoEnfOrden === "par" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "par"}">a la altura de su par</button><button data-v="canon" class="${grafoEnfOrden === "canon" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "canon"}">en orden bíblico</button></span>
+      <button type="button" class="ge-info-btn" aria-expanded="${grafoEnfInfo}" aria-controls="geInfo" title="Qué muestra esta vista: las cifras y la leyenda" aria-label="Qué muestra esta vista: las cifras y la leyenda">ⓘ</button></div>
+    <div class="ge-info" id="geInfo"${grafoEnfInfo ? "" : " hidden"}><p class="ge-res">${tel
       ? `${grafoPlural(h.nodos, "título", "títulos")} · ${grafoPlural(h.vinculos, "vínculo", "vínculos")}.`
       : `Vista general: ${h.nodos} títulos con al menos un vínculo · ${grafoPlural(h.vinculos, "vínculo", "vínculos")} (${grafoDesglose(h)}) · ${h.iso} títulos sin vínculos no se muestran.`}
-      A la izquierda el Antiguo Testamento, en orden bíblico; a la derecha el Nuevo. Tocá un título para ver sus vínculos.${grafoUseRefs() ? " Las referencias marginales no se dibujan acá: se ven desde un título." : ""}</p>
-    <div class="ge-ctl"><span>El Nuevo Testamento:</span>
-      <span class="ge-seg" role="group" aria-label="Orden del Nuevo Testamento"><button data-v="par" class="${grafoEnfOrden === "par" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "par"}">a la altura de su par</button><button data-v="canon" class="${grafoEnfOrden === "canon" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "canon"}">en orden bíblico</button></span>
-      <span class="ge-ley"><span>${linea(false, "var(--gold)")}revisado a mano</span>${nLxx ? `<span>${linea(false, "var(--accent-violet)")}la misma palabra en la traducción griega</span>` : ""}<span>${linea(true, "var(--parchment-dim)")}dentro del mismo Testamento</span></span></div>
-    <div class="ge-cab"><div class="at">Antiguo Testamento</div><div class="medio">vínculos</div><div class="nt">Nuevo Testamento</div></div>
+      A la izquierda el Antiguo Testamento, en orden bíblico; a la derecha el Nuevo. Tocá un título para ver sus vínculos, y un hilo para ver la conexión.${grafoUseRefs() ? " Las referencias marginales no se dibujan acá: se ven desde un título." : ""}</p>
+      <span class="ge-ley"><span>${linea(false, "var(--gold)")}revisado a mano</span>${nLxx ? `<span>${linea(false, "var(--accent-violet)")}la misma palabra en la traducción griega</span>` : ""}<span>${linea(true, "var(--parchment-dim)")}dentro del mismo Testamento, por el margen</span></span></div>
+    <div class="ge-cab">${nav}<div class="at">Antiguo Testamento</div><div class="medio">vínculos</div><div class="nt">Nuevo Testamento</div></div>
     <div class="ge-red${grafoEnfOrden === "canon" ? " canon" : ""}"><div class="ge-col at">${lista(AT, true)}</div><div class="ge-hilos"><svg aria-hidden="true"></svg></div>
-      <div class="ge-col nt${grafoEnfOrden === "par" ? " par" : ""}">${grafoEnfOrden === "par" ? NT.map(n => item(n, n.ref)).join("") : lista(NT, true)}</div></div>
+      <div class="ge-col nt${grafoEnfOrden === "par" ? " par" : ""}">${grafoEnfOrden === "par" ? NT.map(n => item(n, n.ref)).join("") : lista(NT, true)}</div>
+      <svg class="ge-toque" aria-hidden="true"></svg></div>
     <div class="ge-pie" aria-live="polite"></div>`;
   grafoEnf.style.display = "block";
   grafoEnf.querySelectorAll(".ge-seg button").forEach(b => b.addEventListener("click", () => { grafoEnfOrden = b.dataset.v; grafoEnfRender(); saveViewState(); }));
+  // ronda 15: ⓘ, los libros, los hilos que se tocan
+  grafoEnf.querySelector(".ge-info-btn").addEventListener("click", e => { grafoEnfInfo = !grafoEnfInfo;
+    e.currentTarget.setAttribute("aria-expanded", String(grafoEnfInfo)); grafoEnf.querySelector(".ge-info").hidden = !grafoEnfInfo; });
+  grafoEnf.querySelectorAll(".ge-libros button").forEach(b => b.addEventListener("click", () => grafoEnfIrLibro(b.dataset.book, b.dataset.t)));
+  grafoEnf.querySelector(".ge-toque").addEventListener("click", e => { const p = e.target.closest("path"); if (p) grafoEnfHilo(p.dataset.a, p.dataset.b); });
   const hover = matchMedia("(hover: hover)").matches;
   grafoEnf.querySelectorAll(".ge-t").forEach(b => {
     b.addEventListener("click", () => { const id = b.dataset.id;
@@ -3941,6 +4025,9 @@ function grafoEnfRender(){
   grafoEnfElegir(grafoEnfSel);
 }
 // el centro del primer renglón de cada título, relativo a .ge-red
+// ronda 15: «reducir movimiento» (prefers-reduced-motion): los desplazamientos van directo, sin animación
+function menosMovimiento(){ try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
+function movSuave(){ return menosMovimiento() ? "auto" : "smooth"; }
 function grafoEnfY(el){ return el.offsetTop + el.offsetParent.offsetTop + 3 + parseFloat(getComputedStyle(el).fontSize) * 0.625; }
 function grafoEnfUbicar(){
   if (!grafoEnfDatos || grafoEnf.style.display !== "block") return;
@@ -3961,17 +4048,28 @@ function grafoEnfUbicar(){
     colNT.style.height = fondo + "px";
   } else colNT.style.height = "";
   colNT.querySelectorAll(".ge-t").forEach(b => { y[b.dataset.id] = grafoEnfY(b); byId[b.dataset.id] = b; });
-  const s = grafoEnf.querySelector(".ge-hilos svg"), w = grafoEnf.querySelector(".ge-hilos").offsetWidth;
-  s.setAttribute("viewBox", `0 0 ${w} ${red.offsetHeight}`);
+  const hil = grafoEnf.querySelector(".ge-hilos"), s = hil.querySelector("svg"), w = hil.offsetWidth, H = red.offsetHeight;
+  // ronda 15: los del mismo Testamento salen hacia afuera, por el margen de su columna (el SVG del centro se
+  // extiende con overflow visible: x negativa a la izquierda, mayor que w a la derecha)
+  const colAT = grafoEnf.querySelector(".ge-col.at");
+  const xAT = colAT.offsetLeft - hil.offsetLeft, xNT = colNT.offsetLeft + colNT.offsetWidth - hil.offsetLeft, carril = Math.max(6, colAT.offsetLeft - 2);
+  const camino = e => {
+    const A = nodeById[e.a], B = nodeById[e.b];
+    if (A.testamento !== B.testamento){ const [ya, yb] = A.testamento === "AT" ? [y[e.a], y[e.b]] : [y[e.b], y[e.a]]; return `M0 ${ya} C${w*0.5} ${ya} ${w*0.5} ${yb} ${w} ${yb}`; }
+    const at = A.testamento === "AT", x = at ? xAT : xNT, k = at ? -1 : 1, c = Math.min(carril, 5 + Math.abs(y[e.a] - y[e.b]) * 0.08);
+    return `M${x} ${y[e.a]} C${x + k*c} ${y[e.a]} ${x + k*c} ${y[e.b]} ${x} ${y[e.b]}`;
+  };
+  s.setAttribute("viewBox", `0 0 ${w} ${H}`);
   s.innerHTML = ev.map(e => {
-    const A = nodeById[e.a], B = nodeById[e.b], mismo = A.testamento === B.testamento, tipo = grafoEdgeType(e);
-    let d;
-    if (!mismo){ const [ya, yb] = A.testamento === "AT" ? [y[e.a], y[e.b]] : [y[e.b], y[e.a]]; d = `M0 ${ya} C${w*0.5} ${ya} ${w*0.5} ${yb} ${w} ${yb}`; }
-    else { const x = A.testamento === "AT" ? 0 : w, k = A.testamento === "AT" ? 1 : -1, c = Math.min(w * 0.45, 14 + Math.abs(y[e.a] - y[e.b]) * 0.25);
-      d = `M${x} ${y[e.a]} C${x + k*c} ${y[e.a]} ${x + k*c} ${y[e.b]} ${x} ${y[e.b]}`; }
-    return `<path class="ge-h ${tipo}${mismo ? " mismo" : ""}" data-a="${e.a}" data-b="${e.b}" d="${d}"><title>${escHtml(grafoEdgeTooltip(e))}</title></path>`;
+    const mismo = nodeById[e.a].testamento === nodeById[e.b].testamento;
+    return `<path class="ge-h ${grafoEdgeType(e)}${mismo ? " mismo" : ""}" data-a="${e.a}" data-b="${e.b}" d="${camino(e)}"><title>${escHtml(grafoEdgeTooltip(e))}</title></path>`;
   }).join("");
+  const t = grafoEnf.querySelector(".ge-toque");
+  t.style.left = hil.offsetLeft + "px"; t.style.width = w + "px"; t.style.height = H + "px";
+  t.innerHTML = ev.map(e => `<path data-a="${e.a}" data-b="${e.b}" d="${camino(e)}"/>`).join("");
+  grafoEnfDatos.y = y;
   grafoEnfMarcar(grafoEnfSel);
+  if (grafoEnfHiloSel){ const [a, b] = grafoEnfHiloSel.split("|"); grafoEnfHilo(a, b, true); }
 }
 function grafoEnfMarcar(id){
   if (!grafoEnfDatos) return;
@@ -3982,22 +4080,79 @@ function grafoEnfMarcar(id){
   const s = grafoEnf.querySelector(".ge-hilos svg"); if (!s) return;
   s.querySelectorAll("path").forEach(p => { const on = !!id && (p.dataset.a === id || p.dataset.b === id);
     p.classList.toggle("on", on); p.classList.toggle("tenue", !!id && !on); if (on) s.appendChild(p); });
+  // ronda 15: los de tocar siguen a los que se ven (en orden bíblico, sin elegido no hay qué tocar)
+  const t = grafoEnf.querySelector(".ge-toque");
+  if (t) t.querySelectorAll("path").forEach(p => { const on = !!id && (p.dataset.a === id || p.dataset.b === id); p.classList.toggle("on", on); if (on) t.appendChild(p); });
 }
+// ronda 15: ir a un libro desde el navegador de arriba (al separador del libro o, con el NT a la altura de su
+// par, a su primer título en la columna)
+function grafoEnfIrLibro(libro, t){
+  const col = grafoEnf.querySelector(".ge-col." + (t === "NT" ? "nt" : "at")); if (!col) return;
+  const dest = [...col.querySelectorAll(".ge-libro")].find(x => x.dataset.book === libro)
+    || [...col.querySelectorAll(".ge-t")].filter(b => nodeById[b.dataset.id].book === libro).sort((a, b) => a.offsetTop - b.offsetTop)[0];
+  if (!dest) return;
+  const cab = grafoEnf.querySelector(".ge-cab");
+  grafoEnf.scrollTo({ top: dest.getBoundingClientRect().top - grafoEnf.getBoundingClientRect().top + grafoEnf.scrollTop - (cab ? cab.offsetHeight : 0) - 8, behavior: movSuave() });
+}
+// ronda 15: la tarjeta de una conexión, junto a su hilo: el tipo y su definición, la nota, la palabra griega si la
+// hay, y las dos fichas. Se abre tocando el hilo o su tipo en el pie; se cierra con ✕, Escape o eligiendo otro título.
+let grafoEnfInfo = false, grafoEnfHiloSel = null;
+function grafoEnfHilo(a, b, reubicar){
+  const red = grafoEnf.querySelector(".ge-red"); if (!red || !grafoEnfDatos) return;
+  const vieja = red.querySelector(".ge-tarjeta"), teniaFoco = vieja && vieja.contains(document.activeElement);
+  if (vieja) vieja.remove();
+  grafoEnf.querySelectorAll(".ge-hilos path.elegido").forEach(p => p.classList.remove("elegido"));
+  const key = a && b ? (a < b ? a + "|" + b : b + "|" + a) : null, e = key && grafoEnfDatos.ev.find(x => x.key === key);
+  grafoEnfHiloSel = e ? key : null;
+  if (!e) return;
+  const [o, d] = e.dir ? e.dir.split(">") : (nodeById[e.a].canonIdx <= nodeById[e.b].canonIdx ? [e.a, e.b] : [e.b, e.a]);
+  const p = grafoEnf.querySelector(`.ge-hilos path[data-a="${e.a}"][data-b="${e.b}"]`); if (p){ p.classList.add("elegido"); p.parentNode.appendChild(p); }
+  const info = e.rel.curada ? conexInfoDe(o, d) : null;
+  const tj = document.createElement("div");
+  tj.className = "ge-tarjeta"; tj.setAttribute("role", "dialog"); tj.setAttribute("aria-label", "La conexión entre " + nodeById[o].title + " y " + nodeById[d].title);
+  tj.innerHTML = `<button type="button" class="ge-tj-x" aria-label="Cerrar la tarjeta">✕</button>
+    <div class="ge-tj-tipo">${info ? conexChip(info) + (info.tipo && TIPOS_CONEXION[info.tipo] ? `<span class="ge-tj-def">${escHtml(TIPOS_CONEXION[info.tipo])}</span>` : "") : ""}${e.rel.lxx.length
+      ? `<div class="ge-tj-lxx">α la misma palabra en la traducción griega: ${escHtml(e.rel.lxx.map(parLXXTexto).join(", "))}</div>` : ""}</div>
+    ${info && info.nota ? `<p class="ge-tj-nota">${escHtml(info.nota)}</p>` : ""}
+    <div class="ge-tj-lados">${[o, d].map(i => `<button type="button" class="ge-tj-ficha" data-id="${i}"><b>${escHtml(nodeById[i].title)}</b><span>${escHtml(nodeById[i].ref)} · abrir la ficha</span></button>`).join('<span class="ge-tj-fl" aria-hidden="true">→</span>')}</div>`;
+  red.appendChild(tj);
+  tj.querySelector(".ge-tj-x").addEventListener("click", () => grafoEnfHilo(null));
+  tj.querySelectorAll(".ge-tj-ficha").forEach(bt => bt.addEventListener("click", () => openPanel(nodeById[bt.dataset.id])));
+  // junto al hilo, sin tapar los dos títulos que une: debajo de su punta de abajo (o arriba de la de arriba, si no
+  // entra); los que cruzan, sobre el centro; los del mismo Testamento, sobre su columna
+  const R = red.getBoundingClientRect(), caja = i => { const t = grafoEnf.querySelector(`.ge-t[data-id="${i}"]`).getBoundingClientRect(); return [t.top - R.top, t.bottom - R.top]; };
+  const [o1, o2] = caja(o), [d1, d2] = caja(d), ya = Math.min(o1, d1), yb = Math.max(o2, d2);
+  const hil = grafoEnf.querySelector(".ge-hilos"), col = grafoEnf.querySelector(".ge-col." + (nodeById[o].testamento === "AT" ? "at" : "nt"));
+  const mismo = nodeById[o].testamento === nodeById[d].testamento, W = tj.offsetWidth;
+  const x = mismo ? (nodeById[o].testamento === "AT" ? col.offsetLeft + 4 : col.offsetLeft + col.offsetWidth - W - 4) : hil.offsetLeft + hil.offsetWidth / 2 - W / 2;
+  tj.style.left = Math.max(4, Math.min(red.offsetWidth - W - 4, x)) + "px";
+  const hT = tj.offsetHeight, abajo = yb + 8, arriba = ya - 8 - hT;
+  tj.style.top = (abajo + hT <= red.offsetHeight || arriba < 0 ? Math.max(0, Math.min(red.offsetHeight - hT, abajo)) : arriba) + "px";
+  if (!reubicar || teniaFoco) tj.querySelector(".ge-tj-x").focus({ preventScroll: true });
+  if (!reubicar){ const r = tj.getBoundingClientRect(), v = grafoEnf.getBoundingClientRect(), pie = grafoEnf.querySelector(".ge-pie");
+    const abajo = v.bottom - (pie ? pie.offsetHeight : 0);
+    if (r.top < v.top + 60 || r.bottom > abajo) grafoEnf.scrollBy({ top: r.top < v.top + 60 ? r.top - v.top - 80 : r.bottom - abajo + 16, behavior: movSuave() }); }
+}
+grafoEnf.addEventListener("keydown", e => { if (e.key === "Escape" && grafoEnfHiloSel){ e.stopPropagation(); grafoEnfHilo(null); } });
 function grafoEnfElegir(id){
+  if (grafoEnfHiloSel) grafoEnfHilo(null);
   grafoEnfSel = id && grafoEnfDatos && grafoEnfDatos.vec[id] ? id : null;
   grafoEnfMarcar(grafoEnfSel);
   const pie = grafoEnf.querySelector(".ge-pie"); if (!pie) return;
   if (!grafoEnfSel){ pie.innerHTML = `<span class="ge-nota">Tocá un título para ver con cuáles se conecta; el segundo toque abre su ficha.</span>`; return; }
   const n = nodeById[grafoEnfSel], P = [...grafoEnfDatos.vec[grafoEnfSel]].map(i => nodeById[i]).sort((a, b) => a.canonIdx - b.canonIdx);
   pie.innerHTML = `<b>${escHtml(n.title)}</b> · ${escHtml(n.ref)} — se conecta con ` +
-    P.map(p => { const i = conexInfoDe(grafoEnfSel, p.id); return `<button class="ge-ir" data-id="${p.id}">${escHtml(p.title)}</button> (${escHtml(p.ref)}${i ? " · " + escHtml(conexTipoTexto(i)) : ""})`; }).join(", ") +
+    P.map(p => { const i = conexInfoDe(grafoEnfSel, p.id);
+      // ronda 15: el tipo abre la tarjeta de la conexión (sin tipo: la palabra griega que comparten)
+      return `<button class="ge-ir" data-id="${p.id}">${escHtml(p.title)}</button> (${escHtml(p.ref)} · <button class="ge-cx" data-id="${p.id}" title="Ver la conexión">${escHtml(i ? conexTipoTexto(i) : "la misma palabra en griego")}</button>)`; }).join(", ") +
     `. <button class="ge-ficha">abrir la ficha</button> · <button class="ge-red-btn">ver su red</button>`;
   pie.querySelectorAll(".ge-ir").forEach(b => b.addEventListener("click", () => {
     const t = grafoEnf.querySelector(`.ge-t[data-id="${b.dataset.id}"]`);
     grafoEnfElegir(b.dataset.id);
-    grafoEnf.scrollTo({ top: t.getBoundingClientRect().top - grafoEnf.getBoundingClientRect().top + grafoEnf.scrollTop - grafoEnf.clientHeight * 0.35, behavior: "smooth" });
+    grafoEnf.scrollTo({ top: t.getBoundingClientRect().top - grafoEnf.getBoundingClientRect().top + grafoEnf.scrollTop - grafoEnf.clientHeight * 0.35, behavior: movSuave() });
   }));
   pie.querySelector(".ge-ficha").addEventListener("click", () => openPanel(nodeById[grafoEnfSel]));
+  pie.querySelectorAll(".ge-cx").forEach(b => b.addEventListener("click", () => grafoEnfHilo(grafoEnfSel, b.dataset.id)));
   pie.querySelector(".ge-red-btn").addEventListener("click", () => grafoFocus(grafoEnfSel));
 }
 // ronda 14: solo cuenta el ancho (la altura la cambia grafoEnfUbicar) y la ubicación corre en el cuadro
@@ -5406,8 +5561,9 @@ function acercaFalta(){
   return `Todavía no hay títulos en ${lista}. Aparecen igual en el índice, con cero títulos: lo que falta está a la vista.`;
 }
 // ronda 13: «Cómo citar». La versión y la fecha las pone el migrate en matrix-data (del nombre del
-// CSV y del CHANGELOG de Datos); el nombre del autor es AUTOR, vacío hasta que se decida.
-const AUTOR = "";
+// CSV y del CHANGELOG de Datos). ronda 15b: AUTOR es el nombre del proyecto, no el de una persona: autor corporativo,
+// tal cual, sin invertir nombre y apellido (decisión de Ezequiel, 2026-10-09).
+const AUTOR = "Jesús en la Biblia";
 const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 function acercaCita(){
   const v = matrixData.version || "", f = /^(\d{4})-(\d{2})-(\d{2})$/.exec(matrixData.fecha || "");
@@ -6457,7 +6613,7 @@ function fichaOriginal(d){
     return `<div class="og-dicc-e">
       ${v.lema ? `<div class="og-pal"><span${vocAttr(c)}>${escHtml(v.lema)}</span>${v.pron ? ` <span class="og-pron">${escHtml(v.pron)}</span>` : ""}</div>` : ""}
       ${texto ? `<div class="og-glosa">${texto}${corta ? "…" : ""}${completa}</div>` : ""}
-      <div class="og-pie"><span>${freq ? `${freq} apariciones del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
+      <div class="og-pie"><span>${freq ? `${freq} ${freq == 1 ? "aparición" : "apariciones"} del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
         <span class="og-strong">${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${c} ↗</a>` : c}</span></div>
     </div>`;
   }).join("");
@@ -6505,7 +6661,7 @@ function fichaOriginalCodigos(d){
       ${pal.map(p => `<div class="og-pal">${p}</div>`).join("")}
       ${g.simple ? `<div class="og-simple">${escHtml(g.simple)}</div>` : ""}
       ${texto ? `<div class="og-glosa">${texto}${corta ? "…" : ""}${completa}</div>` : ""}
-      <div class="og-pie"><span>${freq ? `${freq} apariciones del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
+      <div class="og-pie"><span>${freq ? `${freq} ${freq == 1 ? "aparición" : "apariciones"} del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
         <span class="og-strong">${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${g.code} ↗</a>` : g.code}</span></div>
     </div>`;
   }).join("");
@@ -6520,7 +6676,7 @@ function fichaOriginalAbrir(){
   const el = document.querySelector('#panel details[data-plegable="original"]');
   if (!el) return;
   el.open = true;
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  el.scrollIntoView({ behavior: movSuave(), block: "start" });
 }
 // otro título idéntico en otra referencia
 function fichaGemelos(d){
@@ -6890,6 +7046,36 @@ document.getElementById("lectioPrev").addEventListener("click", lectioPrev);
 document.getElementById("lectioClose").addEventListener("click", () => {
   document.getElementById("lectioOverlay").style.display = "none";
 });
+// ronda 15: Lectura y Repaso, diálogos accesibles (role="dialog" y aria-modal en el HTML). Los abren y cierran
+// varios caminos (botones, Escape, la ficha), todos cambiando el display: se mira eso. Al abrirse, el foco entra
+// (al botón que sigue: «→» en Lectura, «Revelar» en Repaso) y Tab no se sale; al cerrarse, vuelve a donde estaba.
+(function dialogosAccesibles(){
+  const enfocables = ov => [...ov.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+    .filter(e => !e.disabled && e.offsetParent !== null && getComputedStyle(e).visibility !== "hidden");   // «←» en el primero está oculto
+  [["reviewOverlay", "reviewReveal"], ["lectioOverlay", "lectioNext"]].forEach(([id, primero]) => {
+    const ov = document.getElementById(id); let antes = null, abierto = false;
+    new MutationObserver(() => {
+      const ahora = ov.style.display === "flex";
+      if (ahora === abierto) return;
+      abierto = ahora;
+      if (ahora){
+        antes = document.activeElement;
+        const p = document.getElementById(primero);
+        (p && p.offsetParent !== null ? p : (enfocables(ov)[0] || ov)).focus();
+      } else {
+        if (antes && antes !== document.body && document.contains(antes) && antes.offsetParent !== null) antes.focus();
+        antes = null;
+      }
+    }).observe(ov, { attributes: true, attributeFilter: ["style"] });
+    ov.addEventListener("keydown", e => {
+      if (e.key !== "Tab") return;
+      const f = enfocables(ov); if (!f.length) return;
+      const i = f.indexOf(document.activeElement);
+      if (e.shiftKey && i <= 0){ e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && (i === -1 || i === f.length - 1)){ e.preventDefault(); f[0].focus(); }
+    });
+  });
+})();
 document.addEventListener("keydown", (e) => {
   if (document.getElementById("lectioOverlay").style.display !== "flex") return;
   if (e.key === "j" || e.key === "J" || e.key === "ArrowRight" || e.key === "ArrowDown") lectioNext();
