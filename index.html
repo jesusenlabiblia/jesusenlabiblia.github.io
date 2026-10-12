@@ -1003,6 +1003,18 @@ body.light{ --accent-blue-ink:#34608B; }
   .ficha-nav .fn-pasos{ display:flex; align-items:center; gap:10px; margin-left:auto; }
   .ficha-nav button[disabled]{ opacity:.35; cursor:default; text-decoration:none; }
   .ficha-nav .ficha-link{ min-height:32px; }
+  /* ronda 19 */
+  .ficha-nav .fn-pausa{ flex-basis:100%; text-align:right; color:var(--ink-2); }
+  .fc-pausa .fc-restaurar{ font:inherit; background:none; border:none; padding:0 2px; color:inherit; text-decoration:underline; cursor:pointer; }
+  button.cx-tipo{ cursor:pointer; margin:0; }
+  .cx-tipo-def{ display:block; font-family:'Source Sans 3', sans-serif; font-size:var(--t-6); line-height:1.4; color:var(--ink-2);
+    margin:4px 0 2px; font-style:normal; text-align:left; }
+  .cx-puente{ flex-wrap:wrap; } .cx-puente .cx-tipo-def{ flex-basis:100%; }
+  .cx-tipo-def-par{ grid-column:1 / -1; padding:8px 16px 10px; margin:0; border-top:1px solid var(--papel-linea); background:var(--papel-alto); }
+  .cx-tipo-def-filtro{ color:var(--parchment-dim); margin:-6px 0 12px; font-size:var(--t-6); }
+  .cx-filtro-cuenta{ font-size:var(--t-5); color:var(--parchment-dim); margin:-4px 0 14px; }
+  .cx-filtro-cuenta .cx-mostrar{ font:inherit; background:none; border:none; color:var(--gold-bright); text-decoration:underline; cursor:pointer; padding:4px 2px; }
+  .idx-donde{ flex-shrink:0; font-family:'Source Sans 3', sans-serif; font-size:var(--t-6); font-style:italic; color:var(--parchment-dim); }
   details.fl-mas > summary{ cursor:pointer; font-size:var(--t-6); color:var(--ink-3); margin:2px 0 6px; }
   .cx-tabs{ display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 14px; }
   .cx-tab{ font:inherit; font-size:var(--t-6); padding:5px 12px; min-height:32px; border-radius:var(--r-btn);
@@ -1150,7 +1162,13 @@ body.light{ --accent-blue-ink:#34608B; }
     #hint, #lexicaCount, #conexHint, #refsCruzCount{ display:none !important; }
     #zoomControls{ bottom:16px; right:12px; }
     #panel{ width:100%; padding:52px 18px 40px; }
-    #panel .close{ top:10px; right:12px; width:40px; height:40px; font-size:var(--t-2); }
+    /* ronda 19: la barra de la ficha y la ✕ quedan fijas arriba al bajar, en una sola franja (top negativo: el sticky se
+       mide desde dentro del relleno del panel, 52 px) */
+    #panel .close{ position:sticky; top:-52px; right:auto; display:block; width:44px; height:52px; margin:-52px -18px 0 auto;
+      font-size:var(--t-2); background:var(--panel-bg); z-index:4; border-bottom:1px solid var(--papel-linea); }
+    #panel .ficha-nav{ position:sticky; top:-52px; z-index:3; background:var(--panel-bg); min-height:52px; box-sizing:border-box;
+      margin:-52px 27px 12px -18px; padding:8px 0 8px 18px; border-bottom:1px solid var(--papel-linea); }
+    .idx-row .idx-donde{ grid-row:3; grid-column:2 / 4; }
     #advPanel{ left:0; right:0; width:auto; top:var(--header-h); max-height:calc(100% - var(--header-h)); border-radius:0; }
     #tiempoHint, #grafoHint{ left:12px; right:12px; max-width:none; font-size:var(--t-6); }
     #promotionsIndicator{ width:calc(100% - 24px); text-align:center; }
@@ -1285,7 +1303,7 @@ body.light{ --accent-blue-ink:#34608B; }
   <header>
     <div class="header-row">
       <div class="brand">Jesús en la <em>Biblia</em></div>
-      <span id="searchWrap"><input id="search" type="text" placeholder='Buscar…  o  book: cat: lectura: sujeto:' title='Texto libre (también la palabra hebrea o griega y su pronunciación), un código Strong (H2233) o una referencia (Is 9:6, Juan 3), o filtros con prefijo:&#10;  book:isaías · cat:realeza · testamento:AT&#10;  lectura:lexico | profecia | tipologia&#10;  sujeto:cristo | yhwh | otro&#10;  conexion:cita | alusion | cumplimiento | figura | yhwh | continuidad&#10;Se combinan entre sí; sin valor (lectura:) trae las que no tienen dato.'><button id="searchClear" type="button" aria-label="Borrar la búsqueda" title="Borrar la búsqueda">✕</button></span>
+      <span id="searchWrap"><input id="search" type="text" placeholder='Buscar…  o  book: cat: lectura: sujeto:' title='Texto libre (también la palabra hebrea o griega y su pronunciación), un código Strong (H2233) o una referencia (Is 9:6, Juan 3), o filtros con prefijo:&#10;  libro:isaías (o book:) · categoría:realeza (o cat:) · testamento:AT&#10;  lectura:lexico | profecia | tipologia&#10;  sujeto:cristo | yhwh | otro&#10;  conexion:cita | alusion | cumplimiento | figura | yhwh | continuidad&#10;Se combinan entre sí; sin valor (lectura:) trae las que no tienen dato.'><button id="searchClear" type="button" aria-label="Borrar la búsqueda" title="Borrar la búsqueda">✕</button></span>
       <button id="advToggleBtn" class="hbtn" title="Filtros combinables: categoría, libro, testamento, verificación, tipología, texto">Filtros</button>
       <select id="modeSelect" class="hbtn">
         <optgroup label="Estudiar">
@@ -1425,7 +1443,7 @@ body.light{ --accent-blue-ink:#34608B; }
   <div id="grafoEnf" role="region" aria-label="Antiguo y Nuevo Testamento enfrentados"></div>
   <div id="grafoLibros" role="region" aria-label="La red por libros"></div>
   <div id="grafoHint" style="display:none; position:absolute; top:calc(var(--header-h) + 4px); left:24px; z-index:5; font-size:var(--t-5); color:var(--parchment-dim); max-width:520px; line-height:1.45;"></div>
-  <div id="conexHint" style="display:none; position:absolute; bottom:16px; left:24px; z-index:5; font-size:var(--t-5); color:var(--parchment-dim); opacity:0.7; max-width:380px;">Anillo <span style="color:var(--amber);">ámbar</span> = [TIPOLOGIA] todavía sin ConectaCon.</div>
+  <div id="conexHint" style="display:none; position:absolute; bottom:16px; left:24px; z-index:5; font-size:var(--t-5); color:var(--parchment-dim); opacity:0.7; max-width:380px;">Anillo <span style="color:var(--amber);">ámbar</span> = tipología todavía sin conexión anotada.</div>
   <div id="promotionsIndicator" onclick="downloadPromotions()" style="display:none; position:absolute; top:var(--header-h); left:50%; transform:translateX(-50%); z-index:6; background:rgba(110,155,107,0.18); border:1px solid var(--ok); border-radius:100px; padding:7px 16px; font-size:var(--t-5); color:var(--ok); cursor:pointer;"></div>
   <div id="indexLayer" tabindex="-1" style="display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:10px 5% 80px;"></div>
   <div id="conexLayer"></div>
@@ -1717,10 +1735,28 @@ function conexInfoDe(a, b){
 }
 function conexTipoEt(tipo){ return tipo === "YHWH→Cristo" ? "YHWH → Cristo" : tipo; }
 function conexTipoTexto(i){ return i.provisional ? CONEX_PROVISIONAL : conexTipoEt(i.tipo); }
-function conexChip(info){
-  if (info && info.provisional) return `<span class="cx-tipo cx-provisional" title="Promovida en el taller: todavía sin tipo ni nota en Jesus_Conexiones">${CONEX_PROVISIONAL}</span>`;
-  return info && info.tipo ? `<span class="cx-tipo" title="${escHtml(TIPOS_CONEXION[info.tipo] || "")}">${escHtml(conexTipoEt(info.tipo))}</span>` : "";
+// ronda 19: el chip es un botón; tocarlo muestra debajo su definición (sin mouse). conDef = false: un chip quieto, para
+// donde la definición ya está a la vista (la tarjeta de AT ← → NT)
+const CONEX_PROVISIONAL_DEF = "Promovida en el taller: todavía sin tipo ni nota en Jesus_Conexiones.";
+function conexChip(info, conDef = true){
+  if (!info || (!info.provisional && !info.tipo)) return "";
+  const txt = info.provisional ? CONEX_PROVISIONAL : escHtml(conexTipoEt(info.tipo)), def = info.provisional ? CONEX_PROVISIONAL_DEF : (TIPOS_CONEXION[info.tipo] || "");
+  const cl = "cx-tipo" + (info.provisional ? " cx-provisional" : "");
+  return conDef && def
+    ? `<button type="button" class="${cl}" data-def="${escHtml(def)}" aria-expanded="false" title="${escHtml(def)}">${txt}</button>`
+    : `<span class="${cl}" title="${escHtml(def)}">${txt}</span>`;
 }
+// la definición se abre debajo del chip; en una fila de Conexiones de la compu, a lo ancho de la fila (como la nota)
+document.addEventListener("click", (e) => {
+  const b = e.target.closest && e.target.closest(".cx-tipo[data-def]");
+  if (!b) return;
+  if (b.__def && b.__def.isConnected){ b.__def.remove(); b.__def = null; b.setAttribute("aria-expanded", "false"); return; }
+  const d = document.createElement("span");
+  d.className = "cx-tipo-def"; d.setAttribute("role", "note"); d.textContent = b.dataset.def;
+  const par = b.closest(".cx-par");
+  if (par && innerWidth >= 861){ d.classList.add("cx-tipo-def-par"); par.appendChild(d); } else b.after(d);
+  b.__def = d; b.setAttribute("aria-expanded", "true");
+});
 // para el buscador: qué tipos tiene cada título, saliendo o llegando (normalizados: «alusion», «yhwhcristo»)
 let conexTiposNodo = null;
 function conexTiposDe(id){
@@ -1976,6 +2012,33 @@ const idxLibrosVacios = new Set();
   indexLayer.appendChild(empty);
 })();
 
+// ronda 19: en el índice, si lo buscado no está en el título, una marca dice dónde coincidió
+function buscaDonde(d, q){
+  const nq = buscaNorm(q); if (!nq) return null;
+  const en = s => !!s && buscaNorm(s).includes(nq);
+  if (en(d.title)) return null;
+  if (en(d.ref) || en(d.book)) return "en la referencia";
+  if (en(d.term)) return "en el término";
+  if (en(d.translit)) return "en la transliteración";
+  if (en(d.descripcion)) return "en la descripción";
+  if (en(d.texto)) return "en el versículo";
+  const pal = d.palabras || [];
+  const idioma = p => /^G/.test(p.c[0] || "") ? "en el griego" : /^H/.test(p.c[0] || "") ? "en el hebreo" : (d.testamento === "NT" ? "en el griego" : "en el hebreo");
+  for (const p of pal) if (en(p.f) || p.c.some(c => VOC[c] && en(VOC[c].lema))) return idioma(p);
+  for (const p of pal) if (en(p.p) || p.c.some(c => VOC[c] && en(VOC[c].pron))) return "en la pronunciación";
+  if (en(d.notas)) return "en la nota";
+  return null;
+}
+function idxDonde(d){
+  const out = [];
+  currentFilterState.tokens.forEach(t => {
+    const w = t.phrase !== undefined ? buscaDonde(d, t.phrase)
+      : t.word && /^[hg]0*\d+[a-z]?$/.test(t.word) ? "por el código Strong"
+      : t.word && !t.word.includes(":") ? buscaDonde(d, t.word) : null;
+    if (w && !out.includes(w)) out.push(w);
+  });
+  return out;
+}
 // aplica el mismo filtro que ya usa el resto de la app (isVisible) — se
 // llama desde applyFilters() y al entrar a la vista índice. Si un libro
 // se queda sin ninguna fila visible, se oculta también su encabezado
@@ -1988,6 +2051,12 @@ function renderIndexFilter(){
     if (!row) return;
     const visible = isVisible(n);
     row.classList.toggle("dim", !visible);
+    const donde = visible ? idxDonde(n) : [];
+    let marca = row.querySelector(".idx-donde");
+    if (donde.length){
+      if (!marca){ marca = document.createElement("span"); marca.className = "idx-donde"; row.querySelector(".idx-title").after(marca); }
+      marca.textContent = donde.join(" · ");
+    } else if (marca) marca.remove();
     if (visible) { anyVisible = true; bookHasVisible[n.book] = true; }
   });
   const filtrado = isFiltered();
@@ -2053,7 +2122,7 @@ function buildCuracionQueue(){
     {
       key: "tipologia", priority: 2,
       title: "Tipológicos sin ConectaCon",
-      desc: "Marcados [TIPOLOGIA] en las notas, pero sin ninguna conexión anotada todavía.",
+      desc: "Clasificados como tipología (TipoLectura), pero sin ninguna conexión anotada todavía.",
       fix: "Buscar el cumplimiento en el NT entre los candidatos y aprobarlo, o empezar una cadena.",
       items: rawNodes.filter(n => n.tipologia && !estaConectado(n)),
       actions: ["candidatos", "cadena"],
@@ -4168,7 +4237,7 @@ function grafoEnfHilo(a, b, reubicar){
   const tj = document.createElement("div");
   tj.className = "ge-tarjeta"; tj.setAttribute("role", "dialog"); tj.setAttribute("aria-label", "La conexión entre " + nodeById[o].title + " y " + nodeById[d].title);
   tj.innerHTML = `<button type="button" class="ge-tj-x" aria-label="Cerrar la tarjeta">✕</button>
-    <div class="ge-tj-tipo">${info ? conexChip(info) + (info.tipo && TIPOS_CONEXION[info.tipo] ? `<span class="ge-tj-def">${escHtml(TIPOS_CONEXION[info.tipo])}</span>` : "") : ""}${e.rel.lxx.length
+    <div class="ge-tj-tipo">${info ? conexChip(info, false) + (info.tipo && TIPOS_CONEXION[info.tipo] ? `<span class="ge-tj-def">${escHtml(TIPOS_CONEXION[info.tipo])}</span>` : "") : ""}${e.rel.lxx.length
       ? `<div class="ge-tj-lxx">α la misma palabra en la traducción griega: ${escHtml(e.rel.lxx.map(parLXXTexto).join(", "))}</div>` : ""}</div>
     ${info && info.nota ? `<p class="ge-tj-nota">${escHtml(info.nota)}</p>` : ""}
     <div class="ge-tj-lados">${[o, d].map(i => `<button type="button" class="ge-tj-ficha" data-id="${i}"><b>${escHtml(nodeById[i].title)}</b><span>${escHtml(nodeById[i].ref)} · abrir la ficha</span></button>`).join('<span class="ge-tj-fl" aria-hidden="true">→</span>')}</div>`;
@@ -4843,6 +4912,7 @@ let conexTipo = "todas";
 function conexTipoDe(r){ return r.src.testamento + " → " + r.dst.testamento; }
 function conexElegir(t){ conexTipo = t; renderConex(); }
 let conexClase = "todos";   // ronda 13: filtro por tipo de conexión (no se guarda)
+let conexMostrarTodas = false;   // ronda 19 (F5): con un filtro, las que no coinciden no se dibujan, salvo que se pidan
 function conexClaseElegir(k){ conexClase = k; renderConex(); }
 function renderConex(){
   const todas = conexRows();
@@ -4863,7 +4933,7 @@ function renderConex(){
   let html = `<div class="cx-head">
     <div>
       <div class="cx-title-big">Conexiones anotadas <span>origen → destino</span></div>
-      <div class="cx-meta">${rows.length} conexiones · ${srcs.size} orígenes · ${dsts.size} destinos · ${new Set([...srcs, ...dsts]).size} títulos enlazados${tipSin ? ` · <span class="cx-warn">${tipSin} tipológicos todavía sin conexión</span>` : ""}${isFiltered() ? ` · ${visRows.length} coinciden con el filtro` : ""}</div>
+      <div class="cx-meta">${rows.length} conexiones · ${srcs.size} orígenes · ${dsts.size} destinos · ${new Set([...srcs, ...dsts]).size} títulos enlazados${tipSin ? ` · <span class="cx-warn">${tipSin} tipológicos todavía sin conexión</span>` : ""}</div>
     </div>
     <div class="cx-actions">
       <button class="hbtn ghost" onclick="conexExportMd()">exportar .md</button>
@@ -4872,9 +4942,13 @@ function renderConex(){
   </div>
   ${tabs}
   ${filtroTipos}
+  ${conexClase !== "todos" && (TIPOS_CONEXION[conexClase] || conexClase === "provisional") ? `<p class="cx-tipo-def cx-tipo-def-filtro" role="note"><b>${escHtml(conexClase === "provisional" ? "provisional" : conexTipoEt(conexClase))}:</b> ${escHtml(TIPOS_CONEXION[conexClase] || CONEX_PROVISIONAL_DEF)}</p>` : ""}
+  ${isFiltered() ? `<div class="cx-filtro-cuenta"><b>${visRows.length} de ${rows.length}</b> coinciden con el filtro${visRows.length < rows.length ? ` · <button type="button" class="cx-mostrar" onclick="conexMostrarTodas = !conexMostrarTodas; renderConex()">${conexMostrarTodas ? "ocultar las demás" : `mostrar las demás (${rows.length - visRows.length})`}</button>` : ""}</div>` : ""}
 `;
+  if (isFiltered() && !visRows.length && rows.length && !conexMostrarTodas) html += `<div class="cur-empty">Ninguna conexión coincide con el filtro.</div>`;
   rows.forEach(r => {
     const off = !isVisible(r.src) && !isVisible(r.dst);
+    if (off && isFiltered() && !conexMostrarTodas) return;
     const cruza = r.src.testamento !== r.dst.testamento;
     const rotA = cruza ? (r.src.testamento === "AT" ? "Antiguo Testamento" : "Nuevo Testamento") : "Origen";
     const rotB = cruza ? (r.dst.testamento === "AT" ? "Antiguo Testamento" : "Nuevo Testamento") : "Destino";
@@ -4893,8 +4967,12 @@ function renderConex(){
 }
 function conexExportMd(){
   const rows = conexRows();
-  const L = ["# Conexiones anotadas (ConectaCon)", "", `${rows.length} conexiones · orden canónico del origen`, "", "| Origen | | Destino |", "|---|---|---|"];
-  rows.forEach(r => L.push(`| ${r.src.ref} · ${expLink(r.src)} | → | ${r.dst.ref} · ${expLink(r.dst)} |`));
+  // ronda 19 (F2): con el tipo y la nota de cada una (la fuente no: el sitio no la muestra)
+  const L = ["# Conexiones anotadas (ConectaCon)", "", `${rows.length} conexiones · orden canónico del origen · con su tipo y su nota`, "",
+             "| Origen | | Destino | Tipo | Nota |", "|---|---|---|---|---|"];
+  const celda = s => String(s || "").replace(/\|/g, "\\|").replace(/\s*\n\s*/g, " ");
+  rows.forEach(r => { const i = conexInfoDe(r.src.id, r.dst.id);
+    L.push(`| ${r.src.ref} · ${expLink(r.src)} | → | ${r.dst.ref} · ${expLink(r.dst)} | ${i ? celda(conexTipoTexto(i)) : ""} | ${i ? celda(i.nota) : ""} |`); });
   expDownload(new Blob([L.join("\n") + "\n"], { type: "text/markdown;charset=utf-8" }), "conexiones anotadas.md");
 }
 
@@ -5071,7 +5149,7 @@ function candRender(){
     ${rows.map(c => `<div class="cx-row cand-row${candDiscarded[c.key] ? " disc" : ""}">
       <div class="cand-score s${Math.max(0, Math.min(6, c.score))}" title="${c.reasons.map(r => `${r.t} ${r.w > 0 ? "+" : ""}${r.w}`).join(" · ")}">${c.score}</div>
       ${candCell(c.src)}
-      <div class="cx-arrow" title="cita">→</div>
+      <div class="cx-arrow" title="posible relación, sin clasificar">→</div>
       ${candCell(c.dst)}
       <div class="cand-side">
         <div class="cand-reasons">${c.reasons.map(r => `<span class="cand-chip ${r.w < 0 ? "neg" : ""}" title="${r.tip || ""}">${r.t}</span>`).join("")}</div>
@@ -5190,7 +5268,7 @@ function renderDash(){
       ${dashCard({ value: nt, label: "Nuevo Testamento", pct: nt / N, go: "dashFilter('testamento:NT', 'indice')" })}
       ${dashCard({ value: books.length, label: "libros con títulos", of: 66, go: "dashFilter('', 'tiempo')" })}
       ${dashCard({ value: multi, label: "con más de una categoría", pct: multi / N, go: "dashFilter('', 'categorias')" })}
-      ${esTaller() ? dashCard({ value: tip, label: "tipológicos [TIPOLOGIA]", pct: tip / N, go: "dashFilter('tipo:tipologia', 'indice')" }) : ""}
+      ${esTaller() ? dashCard({ value: tip, label: "tipológicos (por figura)", pct: tip / N, go: "dashFilter('tipo:tipologia', 'indice')" }) : ""}
       ${esTaller() ? dashCard({ value: marked, label: "marcados ★ por vos", go: "dashMarked()", tip: notas ? `${notas} con nota` : "" }) : ""}
     </div>
 
@@ -5206,8 +5284,9 @@ function renderDash(){
       ${dashCard({ value: conNodes, label: "títulos con alguna conexión", pct: conNodes / N, go: "dashFilter('conexion:*', 'indice')" })}
       ${dashCard({ value: roots, label: "cadenas (raíces con ConectaCon)", go: "dashFilter('', 'cadenas')" })}
       ${!esTaller() ? "" : dashCard({ value: tipCon, of: tip, label: "tipológicos ya conectados", pct: tip ? tipCon / tip : 0, tone: tip && tipCon < tip ? "warn" : "", go: "curScrollTo('tipologia')" })}
-      ${dashCard({ value: lxx.size, label: "puentes LXX (hebreo ↔ griego)", go: "dashFilter('', 'grafo')" })}
-      ${dashCard({ value: mismo.size, label: "pares en el mismo pasaje", go: "dashFilter('', 'grafo')" })}
+      ${/* ronda 19 (F4): sin salto; no hay un filtro que arme esas listas (llevaban a las bandas de la red) */ ""}
+      ${dashCard({ value: lxx.size, label: "puentes LXX (hebreo ↔ griego)" })}
+      ${dashCard({ value: mismo.size, label: "pares en el mismo pasaje" })}
       ${esTaller() ? dashCard({ value: cand.length, label: "candidatos por referencias cruzadas", tip: `${candStrong} con puntaje 5+`, go: "dashFilter('', 'candidatos')" }) : ""}
     </div>
 
@@ -5527,7 +5606,7 @@ let statsBBox;
     { label: "Antiguo Testamento", value: atCount, query: "testamento:AT", mode: "indice" },
     { label: "Nuevo Testamento", value: ntCount, query: "testamento:NT", mode: "indice" },
     { label: "Categorías", value: CATS_ORDER.length, query: null, mode: null },
-    { label: "Marcados [TIPOLOGIA]", value: tipCount, query: "tipo:tipologia", mode: "indice" },
+    { label: "Tipológicos (por figura)", value: tipCount, query: "tipo:tipologia", mode: "indice" },
     { label: "Con código Strong", value: strongCount, query: "strong:*", mode: "indice" },
     { label: "Con conexión anotada", value: conexCount, query: "conexion:*", mode: "conexiones" },
     { label: "Pendientes [REVISAR]", value: revCount, query: "revisar:true", mode: "indice" }
@@ -6192,10 +6271,12 @@ function tokenizeQuery(raw){
   let m;
   while ((m = re.exec(raw)) !== null){
     if (m[1] !== undefined) tokens.push({ phrase: m[1].toLowerCase() });
-    else tokens.push({ word: m[2].toLowerCase() });
+    else tokens.push({ word: prefijoES(m[2].toLowerCase()) });
   }
   return tokens;
 }
+// ronda 19: los prefijos también en castellano (libro:, categoría: o categoria:), sin sacar book: ni cat:
+function prefijoES(w){ return w.replace(/^libro:/, "book:").replace(/^categor[ií]a:/, "cat:"); }
 // ronda 8: busca también en la descripción, y sin importar los acentos (ni mayúsculas).
 // El texto donde buscar se arma una vez por título (los datos no cambian en la sesión).
 // ronda 13: también las palabras del versículo, su pronunciación y su lema; el hebreo sin puntos
@@ -6301,6 +6382,7 @@ function isFiltered(){
 }
 
 function applyFilters(){
+  if (filtroPausa && filtroHayGuardado()) filtroPausa = null;   // ronda 19: tocó un filtro durante la pausa: gana lo elegido
   const raw = document.getElementById("search").value.trim();
   const onlyTip = document.getElementById("onlyTipologia").checked;
   const onlyRev = document.getElementById("onlyRevisar").checked;
@@ -6376,14 +6458,45 @@ const jebSavedLXX = (function(){
     return (typeof s.grafoLXX === "boolean") ? s.grafoLXX : null;
   } catch (e) { return null; }   // localStorage no disponible: primera visita
 })();
+// ronda 19 (F12): un enlace con id no trae los filtros de otra visita. Si al llegar había filtros guardados, quedan en
+// pausa mientras la ficha esté abierta (un chip lo dice: «filtro en pausa · restaurar»); al cerrarla o con «restaurar»,
+// vuelven. Si la persona toca un filtro mientras tanto, gana lo que eligió y la pausa se olvida. Mientras dura, lo que
+// se guarda en jeb-viewstate es el filtro en pausa, no el vacío.
+let filtroPausa = null;
+function filtroHayGuardado(){
+  return !!(document.getElementById("search").value.trim() || document.getElementById("onlyTipologia").checked ||
+    document.getElementById("onlyRevisar").checked || advIsActive() || activeCats.size < CATS_ORDER.length);
+}
+function filtroPausar(){
+  if (!filtroHayGuardado()) return;
+  filtroPausa = { search: document.getElementById("search").value, onlyTip: document.getElementById("onlyTipologia").checked,
+                  onlyRev: document.getElementById("onlyRevisar").checked, adv: advSerialize() };
+  advFilter = { text: "", fields: new Set(ADV_TEXT_FIELDS.filter(f => !f.off).map(f => f.key)), books: new Set(), testamento: "", verif: new Set(), noTip: false, conexion: false, marked: false, lectura: "", sujeto: "" };
+  CATS_ORDER.forEach(c => activeCats.add(c));
+  document.getElementById("onlyTipologia").checked = false;
+  document.getElementById("onlyRevisar").checked = false;
+  document.getElementById("search").value = "";
+}
+function filtroReanudar(){
+  const p = filtroPausa; if (!p) return;
+  filtroPausa = null;
+  document.getElementById("search").value = p.search || "";
+  document.getElementById("onlyTipologia").checked = !!p.onlyTip;
+  document.getElementById("onlyRevisar").checked = !!p.onlyRev;
+  advRestore(p.adv); advSyncUI(); applyFilters(); saveViewState();
+  const nav = document.querySelector("#panel-body .ficha-nav");
+  if (nav && lastPanelId && nodeById[lastPanelId]) nav.outerHTML = fichaNav(nodeById[lastPanelId]);
+}
+const FILTRO_PAUSA_CHIP = `<span class="fc fc-pausa">filtro en pausa · <button type="button" class="fc-restaurar" onclick="filtroReanudar()">restaurar</button></span>`;
 function saveViewState(){
+  const p = filtroPausa;
   try {
     localStorage.setItem('jeb-viewstate', JSON.stringify({
       mode: layoutMode,
-      search: document.getElementById("search").value,
-      onlyTipologia: document.getElementById("onlyTipologia").checked,
-      onlyRevisar: document.getElementById("onlyRevisar").checked,
-      adv: (typeof advSerialize === "function") ? advSerialize() : null,
+      search: p ? p.search : document.getElementById("search").value,
+      onlyTipologia: p ? p.onlyTip : document.getElementById("onlyTipologia").checked,
+      onlyRevisar: p ? p.onlyRev : document.getElementById("onlyRevisar").checked,
+      adv: p ? p.adv : (typeof advSerialize === "function") ? advSerialize() : null,
       cadPath: cadPath.map(s => ({ id: s.id, rel: s.rel, cycle: !!s.cycle })),
       grafoFocus: grafoFocusId,
       grafoRefs: document.getElementById("grafoRefs").checked,
@@ -6980,6 +7093,7 @@ function fichaNav(d){
   return `<nav class="ficha-nav" data-nav aria-label="Pasar de ficha">
     ${volver ? `<button type="button" class="ficha-link fn-volver" onclick="fichaVolver()">← Volver a «${escHtml(fichaTitulo(volver).t)}»</button>` : ""}
     <span class="fn-pasos">${btn(prev, "‹ Anterior")}<span class="fn-pos">${i + 1} de ${pool.length}${isFiltered() ? " (filtro)" : ""}</span>${btn(next, "Siguiente ›")}</span>
+    ${filtroPausa ? `<span class="fn-pausa">filtro en pausa · <button type="button" class="ficha-link" onclick="filtroReanudar()">restaurar</button></span>` : ""}
   </nav>`;
 }
 function openPanel(d){
@@ -7076,6 +7190,7 @@ function fichaCerrar(){
   else closePanel();
 }
 function closePanel(){ fichaPila = []; const abierta = document.getElementById("panel").classList.contains("open"); document.getElementById("panel").classList.remove("open");
+  if (abierta && filtroPausa) filtroReanudar();   // ronda 19 (F12): al cerrar la ficha, el filtro en pausa vuelve
   document.title = TITULO_SITIO; if (abierta) urlSync(); { const ls = document.getElementById("lexSide"); if (ls) ls.style.right = ""; } if (typeof tiempoHighlight === "function") tiempoHighlight(null); nodeSel.classed("selected", false); linkSel.classed("highlight", false); lexicaFocusId = null; applyLexicaFocus(null); }
 
 function openCellPanel(book, cat, titles){
@@ -7373,7 +7488,7 @@ function buildAdvPanel(){
     </div>
     <div class="adv-group">
       <div class="adv-label">Texto libre</div>
-      <div class="adv-mini" style="margin-bottom:6px; opacity:0.75;">En el buscador de arriba también valen prefijos: <b>book:</b> <b>cat:</b> <b>testamento:</b> <b>lectura:</b> (lexico · profecia · tipologia) <b>sujeto:</b> (cristo · yhwh · otro). Se combinan; sin valor traen las que no tienen dato.</div>
+      <div class="adv-mini" style="margin-bottom:6px; opacity:0.75;">En el buscador de arriba también valen prefijos: <b>libro:</b> (o book:) <b>categoría:</b> (o cat:) <b>testamento:</b> <b>lectura:</b> (lexico · profecia · tipologia) <b>sujeto:</b> (cristo · yhwh · otro). Se combinan; sin valor traen las que no tienen dato.</div>
       <input id="advText" type="text" placeholder="ej. pastor, ποιμήν, poimen…">
       <div class="adv-fields">${fieldRows}</div>
     </div>
@@ -7540,6 +7655,7 @@ function renderFilterChips(){
   if (f.marked) chips.push(fcChip("solo marcados", "marked"));
   if (f.lectura) chips.push(fcChip(f.lectura === "(sin dato)" ? "sin clasificar" : (LECTURA_LABELS[f.lectura] || f.lectura), "lectura"));
   if (f.sujeto) chips.push(fcChip(f.sujeto === "(sin dato)" ? "sujeto sin clasificar" : "habla de " + (SUJETO_LABELS[f.sujeto] || f.sujeto), "sujeto"));
+  if (filtroPausa && !chips.length){ cont.classList.add("on"); cont.innerHTML = FILTRO_PAUSA_CHIP; return; }   // ronda 19
   cont.classList.toggle("on", chips.length > 0);
   if (!chips.length){ cont.innerHTML = ""; return; }
   const visibles = rawNodes.filter(isVisible).length;
@@ -7936,7 +8052,14 @@ try { Object.assign(expOpts, JSON.parse(localStorage.getItem("jeb-export") || "{
 function expSaveOpts(){ try { localStorage.setItem("jeb-export", JSON.stringify(expOpts)); } catch (e) {} }
 
 function expSafe(s){ return String(s).replace(/[\\/:*?"<>|#^\[\]]/g, "").replace(/\s+/g, " ").trim(); }
-function expNoteName(n){ return expOpts.naming === "numero" ? `${String(n.id).padStart(3, "0")} - ${expSafe(n.title)}` : expSafe(n.title); }
+// ronda 19 (F1): un título repetido (el mismo nombre de archivo, sin importar mayúsculas) lleva siempre el número, en
+// el nombre y en los [[enlaces]]: si no, el .zip trae dos archivos con el mismo nombre y el enlace no sabe a cuál va
+let expRepetidos = null;
+function expRepetido(n){
+  if (!expRepetidos){ expRepetidos = {}; rawNodes.forEach(x => { const k = expSafe(x.title).toLowerCase(); expRepetidos[k] = (expRepetidos[k] || 0) + 1; }); }
+  return expRepetidos[expSafe(n.title).toLowerCase()] > 1;
+}
+function expNoteName(n){ return expOpts.naming === "numero" || expRepetido(n) ? `${String(n.id).padStart(3, "0")} - ${expSafe(n.title)}` : expSafe(n.title); }
 function expLink(n){ return `[[${expNoteName(n)}]]`; }
 function expYaml(v){
   if (Array.isArray(v)) return `[${v.map(x => expYaml(x)).join(", ")}]`;
@@ -8100,6 +8223,8 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document
     advRestore(state.adv);
     if (Array.isArray(state.cadPath) && state.cadPath.every(s => nodeById[s.id])) cadPath = state.cadPath;
   }
+  // ronda 19 (F12): llegó con un enlace a una ficha: el filtro de otra visita queda en pausa mientras esté abierta
+  if (fromUrl.id && nodeById[fromUrl.id]) filtroPausar();
   try { if (localStorage.getItem("jeb-advopen") === "1") advToggle(true); } catch (e) {}
   ensureModeOption(mode);
   document.getElementById("modeSelect").value = mode;
