@@ -185,6 +185,9 @@
     border-bottom:1px solid rgba(255,255,255,0.05); transition:opacity 0.15s; }
   .idx-row:hover{ background:rgba(201,162,39,0.09); }
   .idx-row.dim{ display:none; }
+  /* ronda de carga (D): las filas fuera de la pantalla no se diseñan; reservan el alto del contenido de una fila (49 px menos el
+     relleno de 8 + 8 y el borde de 1, que se suman encima; auto: el real, una vez dibujada) */
+  .idx-row{ content-visibility:auto; contain-intrinsic-size:auto 32px; }
   .idx-ref{ width:150px; flex-shrink:0; font-size:var(--t-5); color:var(--parchment-dim);
     font-family:'Source Sans 3', sans-serif; }
   .idx-icon{ width:14px; flex-shrink:0; text-align:center; font-size:var(--t-6); }
@@ -1512,6 +1515,7 @@ body.light{ --accent-blue-ink:#34608B; }
     .idx-row .idx-icon{ grid-row:2; grid-column:1; }
     .idx-row .idx-title{ grid-row:2; grid-column:2 / 4; white-space:normal; line-height:1.25; }
     .idx-row{ grid-template-columns:auto 1fr auto auto; }   /* ronda 25: la estrella, al final */
+    .idx-row{ contain-intrinsic-size:auto 46px; }   /* ronda de carga (D): el contenido de una fila de 63 px en el teléfono */
     .idx-row .idx-cats{ grid-column:3 / 5; }
     .idx-row .idx-title{ grid-column:2 / 4; }
     .idx-row .idx-sel{ grid-row:2; grid-column:4; align-self:center; }
@@ -5101,7 +5105,8 @@ new ResizeObserver(entradas => {
   if (w === grafoEnfAncho || grafoEnfCuadro) return;
   grafoEnfCuadro = requestAnimationFrame(() => { grafoEnfCuadro = 0; grafoEnfAncho = w; grafoEnfUbicar(); });
 }).observe(grafoEnf);
-if (document.fonts) document.fonts.ready.then(() => grafoEnfUbicar());
+// ronda de carga (A): leer document.fonts.ready obliga a diseñar la página entera; loadingdone avisa lo mismo sin forzar nada
+if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener("loadingdone", () => grafoEnfUbicar());
 
 function fitGrafoView(){ redEncuadrar(); }
 // abre el grafo centrado en un título (usado desde la ficha del panel)
@@ -6607,6 +6612,9 @@ function hdrBuscar(){
   if (on){ const s = document.getElementById("search"); s.focus(); s.select(); }
 }
 function headerH(){ return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 100; }
+// ronda de carga (B): durante el arranque, syncHeader no mide el encabezado (medirlo obliga a diseñar la página a medio
+// armar, otra vez en cada llamada); mide una sola vez al final del arranque
+let arrancando = true;
 function syncHeader(){
   const row2 = document.querySelector(".header-row2");
   const ctrls = [...row2.children].filter(el => el.id !== "optsToggle" && el.id !== "hintInline");
@@ -6621,6 +6629,7 @@ function syncHeader(){
   // índice (.idx-bar), que ahí sigue visible con los atajos de teclado.
   if (typeof renderVistaHead === "function") renderVistaHead();
   const menu = document.getElementById("hdrMenu"); if (menu) menu.classList.toggle("con-fold", layoutMode === "indice");   // ronda 27
+  if (arrancando) return;
   const hh = Math.round(document.querySelector("header").getBoundingClientRect().height);
   const hhAntes = headerH();
   document.documentElement.style.setProperty("--header-h", hh + "px");
@@ -6663,6 +6672,9 @@ function setMode(mode){
   const isCand = mode === "candidatos";
   const isSel = mode === "seleccion";   // ronda 25
   const isCanvas = !isMatrix && !isCinetica && !isRadar && !isLexica && !isStats && !isIndice && !isCuracion && !isNube && !isGrafo && !isTiempo && !isCadenas && !isConex && !isCatred && !isCand && !isEntre && !isSel;
+  // ronda de carga (E): las vistas HTML tapan el SVG del lienzo entero, y sus capas ocultas igual cuestan estilos y diseño
+  // (en SVG, display:none no los ahorra): se esconde entero; antes que nada, para que las vistas del lienzo lo midan visible
+  document.getElementById("canvas").style.display = (isCanvas || isMatrix || isCinetica || isRadar || isLexica || isNube || isGrafo) ? "" : "none";
   zoomBehavior.scaleExtent([0.05, 8]);
   zoomBehavior.translateExtent([[-Infinity, -Infinity], [Infinity, Infinity]]);
 
@@ -9574,7 +9586,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document
 // Ronda 1: es un default de primera visita, no una orden. Si el estado guardado
 // ya trae una elección para "puentes LXX", esa gana — a cualquier ancho — y la
 // reducción no se aplica ni se guarda (ver patch_vs1).
-if (innerWidth < 720){
+if (esTelefono()){   // ronda de carga (C): matchMedia, no innerWidth (que obliga a diseñar la página)
   // ronda 14: «puentes LXX» empieza apagada en todos los anchos (el HTML ya la trae así); lo guardado gana
   matrixOpts.group = "period"; matrixOpts.value = "pct";          // matriz: 10 columnas en vez de 60
 }
@@ -9588,6 +9600,10 @@ aplicarModo();
   if (!vista) bienvenidaAbrir();
 })();
 updatePromotionsIndicator(); // por si había promociones guardadas de una sesión anterior
+arrancando = false; syncHeader();   // ronda de carga (B): la primera medida, una sola vez y con la página ya armada (el primer
+// diseño completo, que igual hay que hacer); antes de pintar, así el índice no se corre de lugar. Si se llegó a un título
+// (#vista=indice&id=…), su fila se acomodó con el alto de reserva del encabezado: se vuelve a acomodar con el real
+if (layoutMode === "indice" && idxCursorId && indexRowByNodeId[idxCursorId]) indexRowByNodeId[idxCursorId].scrollIntoView({ block: "nearest" });
 </script>
 </body>
 </html>
