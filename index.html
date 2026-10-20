@@ -219,6 +219,31 @@
   #mapaLayer .mp-ir select{ font:inherit; font-size:var(--t-5); color:var(--parchment); background:var(--night-deep); border:1px solid var(--line-dim); border-radius:8px; padding:4px 8px; min-height:36px; max-width:60vw; }
   body.light #mapaLayer .mp-ir select{ background:#FFFDF8; }
   #mapaLayer .mp-ley-t{ margin:0 0 6px; color:var(--parchment-dim); font-size:var(--t-6); }
+  .verso-fuera{ font-style:normal !important; font-size:var(--t-5) !important; color:var(--parchment-dim); }   /* D-80, opción B */
+  body:not(.modo-taller) #advExport{ display:none; }   /* ronda 28a (D-80): exportar las fichas filtradas, solo en el taller */
+  /* ronda 28a (D-70): las dos maneras de ver el mapa, y la tabla de temas por parte */
+  #mapaLayer .mp-maneras{ display:inline-flex; border:1px solid var(--line-dim); border-radius:100px; padding:2px; gap:2px; }
+  #mapaLayer .mp-maneras button{ font:inherit; font-size:var(--t-5); color:var(--parchment); background:none; border:0; border-radius:100px; padding:5px 12px; min-height:32px; cursor:pointer; }
+  #mapaLayer .mp-maneras button.on{ background:var(--gold); color:var(--night); font-weight:600; }
+  body.light #mapaLayer .mp-maneras button.on{ color:var(--ink-1); }   /* sobre el dorado, el texto oscuro (en el claro, --night es el papel) */
+  #mapaLayer .mp-maneras button:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:1px; }
+  #mapaLayer .mp-tabla-w{ overflow-x:auto; margin:6px 0 0; }
+  #mapaLayer .mp-tabla{ border-collapse:separate; border-spacing:3px; font-size:var(--t-5); color:var(--parchment); }
+  #mapaLayer .mp-tabla thead th{ font-size:var(--t-6); font-weight:600; color:var(--parchment-dim); text-align:center; padding:4px 3px; vertical-align:bottom; max-width:92px; }
+  #mapaLayer .mp-tabla th[scope=row]{ text-align:left; font-weight:500; white-space:nowrap; padding:0 10px 0 2px; position:sticky; left:0; background:var(--night); z-index:1; }
+  #mapaLayer .mp-tabla th[scope=row] i{ display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:7px; vertical-align:-1px; }
+  #mapaLayer .mp-tabla .mp-tt0{ text-align:left; }
+  #mapaLayer .mp-tc{ padding:0; min-width:44px; height:34px; }
+  #mapaLayer .mp-tc.vacia{ background:rgba(255,255,255,0.025); border-radius:6px; }
+  body.light #mapaLayer .mp-tc.vacia{ background:rgba(0,0,0,0.03); }
+  #mapaLayer .mp-celda{ width:100%; height:100%; min-height:34px; font:inherit; font-weight:600; color:var(--parchment); border:1px solid transparent; border-radius:6px; cursor:pointer;
+    background:color-mix(in srgb, var(--c) calc(var(--a) * 100%), transparent); }
+  body.light #mapaLayer .mp-celda{ color:var(--ink-1); background:color-mix(in srgb, var(--c) calc(var(--a) * 70%), transparent); }
+  #mapaLayer .mp-celda:hover, #mapaLayer .mp-celda:focus-visible{ border-color:var(--gold-bright); outline:none; }
+  #mapaLayer .mp-tabla tfoot th, #mapaLayer .mp-tabla tfoot td{ font-size:var(--t-6); color:var(--parchment-dim); text-align:center; padding-top:4px; }
+  #mapaLayer .mp-tabla tfoot th{ text-align:left; }
+  #mapaLayer .mp-filtro .conj-acc{ margin-left:6px; }
+  @media (max-width:719px){ #mapaLayer .mp-tc{ min-width:36px; } #mapaLayer .mp-tabla{ border-spacing:2px; } #mapaLayer .mp-maneras button{ padding:5px 9px; } }
   #mapaLayer .mp-ley{ margin:0 0 12px; }
   #mapaLayer .mp-filtro{ display:flex; flex-wrap:wrap; gap:4px 8px; align-items:center; margin:0 0 6px; font-size:var(--t-6); color:var(--parchment); }
   #mapaLayer .mp-chips{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
@@ -387,6 +412,9 @@
   .row-label.dim, .col-label.dim{ opacity:0.15; }
   .cell.dim{ opacity:0.08; }
   select{ color-scheme: dark; }
+  /* ronda 28a: las barras de desplazamiento (y los controles sin estilo propio), oscuras en el modo oscuro y claras en el claro */
+  :root{ color-scheme: dark; }
+  body.light, html:has(> body.light){ color-scheme: light; }
   select option{ background:var(--select-bg); color:var(--parchment); }
   .cell.clickable:hover{ stroke:var(--gold-bright); stroke-width:1px; }
   .node.linked circle{ stroke:var(--gold-bright); stroke-width:1.5px; }
@@ -814,7 +842,7 @@
   /* la capa para tocar un hilo: trazos anchos e invisibles encima de los que se ven */
   #grafoEnf .ge-toque{ position:absolute; top:0; overflow:visible; pointer-events:none; z-index:1; }
   #grafoEnf .ge-toque path{ fill:none; stroke:transparent; stroke-width:14; pointer-events:stroke; cursor:pointer; }
-  #grafoEnf .ge-red.canon .ge-toque path:not(.on){ display:none; }
+  #grafoEnf .ge-red.canon .ge-toque path:not(.on):not(.mismo){ display:none; }   /* ronda 28a (D-74): los arcos del mismo Testamento, también */
   #grafoEnf path.ge-h.elegido{ opacity:1; stroke-width:4.2; }
   /* la tarjeta de la conexión, junto al hilo */
   #grafoEnf .ge-tarjeta{ position:absolute; z-index:3; width:min(320px, calc(100% - 16px)); background:var(--select-bg); color:var(--parchment);
@@ -864,7 +892,9 @@
   #grafoEnf path.ge-h.capa-comun{ opacity:.26; } #grafoEnf path.ge-h.capa-ref{ opacity:.5; }
 
   /* ronda 14: en orden bíblico los hilos cruzarían toda la página: sin un título elegido no se dibujan */
-  #grafoEnf .ge-red.canon path.ge-h:not(.on){ display:none; }
+  #grafoEnf .ge-red.canon path.ge-h:not(.on):not(.mismo){ display:none; }   /* ronda 28a (D-74): los arcos del mismo Testamento no cruzan nada: quedan */
+  #grafoEnf .ge-medio-v{ display:none; } #grafoEnf.ge-con-sel .ge-medio-nota{ display:none; } #grafoEnf.ge-con-sel .ge-medio-v{ display:inline; }
+  #grafoEnf .ge-medio-nota{ display:block; font-style:italic; line-height:1.3; color:var(--parchment); padding:0 6px; }
   #grafoEnf path.ge-h.tenue{ opacity:.06; }
   #grafoEnf path.ge-h.on{ opacity:1; } #grafoEnf path.ge-h.capa-anotada.on{ stroke-width:3.4; }
   #grafoEnf path.ge-h.capa-palabra.on, #grafoEnf path.ge-h.capa-comun.on{ stroke-width:2.2; } #grafoEnf path.ge-h.capa-ref.on{ stroke-width:2.8; }
@@ -1217,6 +1247,34 @@ body.light{ --accent-blue-ink:#34608B; }
   #panel.pantalla{ width:100%; z-index:40; padding:34px max(28px, calc((100% - 760px) / 2)); }
   #panel.pantalla .ficha-desc, #panel.pantalla .passage{ font-size:var(--t-3); }
   .catred-cats{ padding:10px 12px 4px; }
+  /* ronda 28a (D-70): Por tema, de arriba abajo: el mapa, la lista de lo elegido y las listas de los temas y los cruces */
+  #catredLayer{ overflow-y:auto; padding:0 4% 90px; }
+  #catredLayer .ct-mapa{ position:relative; max-width:1180px; margin:0 auto; }
+  #catredLayer .ct-ayuda{ margin:12px 0 0; color:var(--parchment-dim); font-size:var(--t-6); }
+  #catredLayer .ct-mapa svg{ position:relative; display:block; width:100%; height:min(560px, 66vh); }
+  #catredLayer .catred-side{ position:static; width:auto; max-width:1180px; margin:0 auto 10px; overflow:visible; padding:14px 0 6px; border-left:0; border-top:1px solid var(--line-dim); }
+  #catredLayer .catred-side[hidden]{ display:none; }
+  #catredLayer .catred-side .catred-book{ margin-top:12px; }
+  #catredLayer .ct-listas{ max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:10px 36px; }
+  #catredLayer .ct-sec{ min-width:0; }
+  #catredLayer .ct-h{ font-family:'Cormorant Garamond', serif; font-size:var(--t-3); font-style:italic; font-weight:500; color:var(--gold-bright); margin:16px 0 6px; }
+  #catredLayer .ct-h span{ font-family:'Source Sans 3', sans-serif; font-style:normal; font-size:var(--t-6); color:var(--parchment-dim); margin-left:6px; }
+  #catredLayer .catred-fila{ align-items:flex-start; }
+  #catredLayer .catred-side-actions{ flex-wrap:wrap; }
+  #catredLayer .ct-tema{ border-bottom:1px solid var(--line-dim); } #catredLayer .ct-tema .catred-fila{ border-bottom:0; }
+  #catredLayer .ct-pills{ display:none; flex-wrap:wrap; gap:6px; align-items:center; padding:0 8px 10px 28px; font-size:var(--t-6); color:var(--parchment-dim); }
+  #catredLayer .ct-pills .ct-pill{ display:inline-flex; width:auto; min-height:32px; border:1px solid var(--line-dim); border-radius:100px; padding:3px 11px; gap:6px; align-items:center; font-size:var(--t-6); }
+  #catredLayer .ct-pills .ct-pill.on{ border-color:var(--gold); }
+  #catredLayer .ct-pill b{ color:var(--gold-bright); } body.light #catredLayer .ct-pill b{ color:var(--ink-1); }
+  #catredLayer .ct-cruce{ display:flex; gap:10px; align-items:baseline; width:100%; text-align:left; font:inherit; font-size:var(--t-5); color:var(--parchment);
+    background:none; border:0; border-bottom:1px solid var(--line-dim); padding:7px 8px; min-height:38px; cursor:pointer; }
+  #catredLayer .ct-cruce em{ color:var(--parchment-dim); font-style:normal; }
+  #catredLayer .ct-cruce:hover, #catredLayer .catred-fila:hover{ background:rgba(201,162,39,0.08); }
+  #catredLayer .ct-cruce.on{ background:rgba(201,162,39,0.12); color:var(--gold-bright); }
+  body.light #catredLayer .ct-cruce.on, body.light #catredLayer .catred-fila.on{ color:var(--ink-1); }
+  @media (max-width:719px){ #catredLayer{ padding:0 0 90px; } #catredLayer .ct-ayuda, #catredLayer .ct-listas, #catredLayer .catred-side{ padding-left:12px; padding-right:12px; }
+    #catredLayer .ct-listas{ grid-template-columns:1fr; } #catredLayer .ct-mapa svg{ height:100vw; max-height:62vh; }
+    #catredLayer .ct-pills{ display:flex; } }
   /* ronda 24: «Por tema» en la compu: la lista a la izquierda (el mapa, a pedido), los títulos de la elegida a la derecha */
   @media (min-width:720px){
     #catredLayer .catred-cats{ position:absolute; left:0; top:0; bottom:0; width:58%; overflow-y:auto; padding:14px 24px 80px; }
@@ -1264,6 +1322,13 @@ body.light{ --accent-blue-ink:#34608B; }
   .idx-donde{ flex-shrink:0; font-family:'Source Sans 3', sans-serif; font-size:var(--t-6); font-style:italic; color:var(--parchment-dim); }
   details.fl-mas > summary{ cursor:pointer; font-size:var(--t-6); color:var(--ink-3); margin:2px 0 6px; }
   .cx-tabs{ display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 14px; }
+  /* ronda 28a: el libro y la búsqueda de Conexiones anotadas */
+  .cx-busca{ display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin:0 0 12px; font-size:var(--t-6); color:var(--parchment-dim); }
+  .cx-busca label{ display:flex; align-items:center; gap:6px; }
+  .cx-busca select, .cx-busca input{ font:inherit; font-size:var(--t-5); min-height:34px; border-radius:var(--r-btn); border:1px solid var(--line-dim);
+    background:var(--select-bg); color:var(--parchment); padding:4px 10px; }
+  .cx-busca-q{ flex:1; min-width:220px; } .cx-busca-q input{ width:100%; }
+  .cx-busca input:focus, .cx-busca select:focus{ outline:none; border-color:var(--gold); }
   .cx-tab{ font:inherit; font-size:var(--t-6); padding:5px 12px; min-height:32px; border-radius:var(--r-btn);
     background:transparent; border:1px solid var(--line-dim); color:var(--parchment-dim); cursor:pointer; }
   .cx-tab.on{ border-color:var(--gold); color:var(--gold-bright); }
@@ -1386,6 +1451,7 @@ body.light{ --accent-blue-ink:#34608B; }
   header #advToggleBtn:hover, header #advToggleBtn:focus-visible{ border-color:var(--gold); }
   #searchWrap #search{ border-top-right-radius:0; border-bottom-right-radius:0; }
   #modeSelect{ field-sizing:content; min-width:0; }
+  @media (max-width: 370px){ header .brand{ font-size:calc(var(--t-3) - 1.5px); } header .header-row{ gap:6px; } }   /* ronda 28a: en 360 px, más lugar para el selector */
   .hdr-extra #stats[hidden]{ display:none; }
   #filterChips .fc-tel{ display:none; }
   /* la línea de la vista */
@@ -1451,6 +1517,7 @@ body.light{ --accent-blue-ink:#34608B; }
     .hdr-menu .hm-tel{ display:block; }
     .hdr-menu:not(.con-fold) .hm-fold{ display:none; }
     #modeSelect{ field-sizing:fixed; }
+    #modeSelect.hbtn{ padding-left:9px; padding-right:22px; background-position:right 8px center; }   /* ronda 28a: más lugar para el nombre */
     #filterChips.on > :not(.fc-tel){ display:none; }
     #filterChips .fc-tel{ display:inline; font-size:var(--t-6); color:var(--parchment); }
     #filterChips .fc-tel button{ font:inherit; color:var(--gold-bright); background:none; border:0; text-decoration:underline; padding:6px 4px; cursor:pointer; }
@@ -1879,10 +1946,13 @@ body.light{ --accent-blue-ink:#34608B; }
           <option value="categorias">Por tema</option>
           <option value="seleccion">Mi selección</option>
         </optgroup>
-        <optgroup label="Relacionar">
+        <optgroup label="Relacionar" id="grupoRelacionar">
           <option value="entre">Entre Testamentos</option>
           <option value="conexiones">Conexiones anotadas</option>
-          <option value="grafo">La red de un título</option>
+        </optgroup>
+        <optgroup label="Explorar">
+          <option value="tiempo">Mapa de la Biblia</option>
+          <option value="lexica">Palabras originales</option>
         </optgroup>
         <optgroup label="Taller" id="grupoTaller">
           <option value="curacion">Cola de curación</option>
@@ -1890,11 +1960,6 @@ body.light{ --accent-blue-ink:#34608B; }
           <option value="cadenas">Recorridos</option>
           <option value="stats">Cifras</option>
           <option value="nube">Nube de títulos</option>
-        </optgroup>
-        <optgroup label="Más">
-          <option value="lexica">Palabras originales</option>
-          <option value="tiempo">Mapa de la Biblia</option>
-          <option value="matriz">Libros y temas</option>
         </optgroup>
         <optgroup label="Lienzos y experimentos" id="hiddenModesGroup" style="display:none;"></optgroup>
       </select>
@@ -1952,7 +2017,7 @@ body.light{ --accent-blue-ink:#34608B; }
       <select id="matrixOrder" class="hsel" aria-label="Orden de las filas" style="display:none;" onchange="matrixSetOpt('order', this.value)">
         <option value="canon">orden: canónico</option>
         <option value="total">orden: más títulos</option>
-        <option value="cat">orden: por categoría (click en la fila)</option>
+        <option value="cat">orden: por la categoría elegida</option>
       </select>
       <select id="candMin" class="hsel" style="display:none;" title="Puntaje mínimo">
         <option value="0" selected>todos los puntajes</option>
@@ -1977,7 +2042,7 @@ body.light{ --accent-blue-ink:#34608B; }
   </header>
   <svg id="canvas"></svg>
   <div id="legend"></div>
-  <div id="hint">757 títulos reales. Zoom para leer etiquetas.<br>Click en un nodo para el detalle completo.</div>
+  <div id="hint">757 títulos reales. Zoom para leer etiquetas.</div>
   <div id="zoomControls" style="position:absolute; bottom:var(--zoom-bottom,100px); right:24px; z-index:5; display:flex; flex-direction:var(--zoom-dir,column); gap:6px;">
     <button id="zoomIn" title="Acercar" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-3); cursor:pointer;">+</button>
     <button id="zoomOut" title="Alejar" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-3); cursor:pointer;">−</button>
@@ -2004,7 +2069,7 @@ body.light{ --accent-blue-ink:#34608B; }
   <div id="promotionsIndicator" onclick="downloadPromotions()" style="display:none; position:absolute; top:var(--header-h); left:50%; transform:translateX(-50%); z-index:6; background:rgba(110,155,107,0.18); border:1px solid var(--ok); border-radius:100px; padding:7px 16px; font-size:var(--t-5); color:var(--ok); cursor:pointer;"></div>
   <div id="indexLayer" tabindex="-1" style="display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:10px 5% 80px;"></div>
   <div id="conexLayer"></div>
-  <div id="catredLayer"><svg></svg><div class="catred-side"></div></div>
+  <div id="catredLayer"><div class="ct-mapa"><p class="ct-ayuda"></p><svg role="img" aria-label="Mapa de los temas: qué temas comparten títulos"></svg></div><div class="catred-side" aria-live="polite"></div><div class="ct-listas"></div></div>
   <div id="selLayer" tabindex="-1"></div>
   <div id="mapaLayer" tabindex="-1" aria-label="Mapa de la Biblia"></div>
   <div id="candLayer"></div>
@@ -2025,7 +2090,7 @@ body.light{ --accent-blue-ink:#34608B; }
   <ul class="ac-lista">
     <li><b>Está en el texto:</b> el versículo le da ese nombre.</li>
     <li><b>Es un anuncio:</b> el pasaje anuncia algo por venir, y la lectura cristiana lo ve cumplido en él.</li>
-    <li><b>Es una figura:</b> el pasaje no lo nombra; es la lectura cristiana la que lo ve en él.</li>
+    <li><b>Es una figura:</b> el pasaje no habla de él; una persona, un objeto o un rito se lee como imagen de él.</li>
   </ul>
   <p>También hay títulos que el Antiguo Testamento le da a Dios. Están porque el Nuevo Testamento aplica a Jesús lo que el Antiguo dice del Señor, y cada una de esas fichas lo aclara.</p>
   <p>Donde una lectura se discute, la nota debería mostrar la postura y la objeción. Si aparece una sola de las dos, o falta una nota que debería estar, es un hueco, no una decisión, y se puede avisar por el correo del final.</p>
@@ -2259,7 +2324,7 @@ const CAT_VAR_NAMES = Object.values(catColors).map(v => v.slice(4, -1));
 // renuevo de Is 4:2, la piedra de Dn 2, el santuario de Dn 9:24), y "promesa" se
 // confunde con "pacto". Van acá arriba porque qualityIcon() las usa y el índice
 // lo llama durante la carga.
-const LECTURA_LABELS = { lexico: "en el texto", tipologia: "figura", profecia: "anuncio", "": "sin clasificar" };
+const LECTURA_LABELS = { lexico: "en el texto", tipologia: "figura", profecia: "anuncio", "": "sin marca anotada" };   // ronda 28a: la jerga
 // ronda 13 (B25): los tipos de conexión, con la definición de decision-tipolectura-sujetopasaje.md.
 // El dato viene del migrate (Jesus_Conexiones_vNN.csv): n.conexInfo[destino] = [tipo, fuente, nota].
 const TIPOS_CONEXION = {
@@ -2343,24 +2408,29 @@ function conexTiposDe(id){
 const LECTURA_AYUDA = {
   lexico: "El término del título está en este mismo versículo.",
   profecia: "El pasaje anuncia algo por venir, y la lectura cristiana lo ve cumplido en Jesús.",   // ronda 27 (D-67)
-  tipologia: "Lectura por figura: el pasaje no lo nombra, la tradición cristiana lo lee así.",
+  tipologia: "El pasaje no habla de Jesús: una persona, un objeto o un rito se lee como imagen de él.",   // ronda 28a (D-78)
   "": "Todavía no se clasificó la naturaleza de esta lectura.",
 };
-const SUJETO_LABELS = { yhwh: "Dios", cristo: "Cristo", otro: "otro, en su contexto", "": "sin clasificar" };
+const SUJETO_LABELS = { yhwh: "Dios", cristo: "Cristo", otro: "otro, en su contexto", "": "sin sujeto anotado" };   // ronda 28a
 // Ronda 3 · el renglón 1 del bloque de evidencia, dicho en oraciones. Los tres
 // sujetos se dicen, "cristo" incluido: 57 de esas 147 filas son profecia y ahí
 // el sujeto es lo que informa, y la línea fija le enseña al lector las clases.
 const LECTURA_FRASE = {
   lexico:    "<b>Está en el texto.</b> El título sale de una palabra de este mismo versículo.",
   profecia:  "<b>Es un anuncio.</b> El pasaje anuncia algo por venir, y la lectura cristiana lo ve cumplido en Jesús.",   // ronda 27 (D-67)
-  tipologia: "<b>Es una figura.</b> El pasaje no nombra a Jesús; la tradición cristiana lo lee así.",
+  tipologia: "<b>Es una figura.</b> El pasaje no habla de Jesús: una persona, un objeto o un rito se lee como imagen de él.",   // ronda 28a (D-78)
   "":        "<i>Todavía no clasificamos qué clase de lectura es esta.</i>",
 };
 // Aviso de derechos del texto bíblico. Texto exacto para medio electrónico.
 // El «Utilizado con permiso» se suma recién cuando Sociedades Bíblicas responda
 // el pedido de permiso escrito; hasta entonces afirmarlo sería falso.
-const AVISO_RVR = "Texto bíblico: Reina-Valera 1960\u2122 \u00A9 Sociedades Bíblicas en América Latina, 1960. Derechos renovados 1988, Sociedades Bíblicas Unidas.";
+const AVISO_RVR = "Texto bíblico: Reina-Valera 1960\u00AE \u00A9 Sociedades Bíblicas en América Latina, 1960. Derechos renovados 1988, Sociedades Bíblicas Unidas. Reina-Valera 1960\u00AE es una marca registrada de Sociedades Bíblicas Unidas, y se puede usar solamente bajo licencia.";   // ronda 28a (D-80)
 // ronda 6: el enlace a un pasaje de la RVR1960, con el mismo formato que la columna PasajeURL
+// ronda 28a (D-80, opción B): con matrix-data.sinVersiculos, el sitio no muestra el texto: la referencia lleva a BibleGateway
+function versoFuera(n){
+  if (typeof matrixData === "undefined" || !matrixData.sinVersiculos) return "";
+  return `<div class="passage verso-fuera">El texto no se muestra en este sitio: <a href="${escHtml(pasajeURL(n.ref))}" target="_blank" rel="noopener">leé ${escHtml(n.ref)} en BibleGateway ↗</a></div>`;
+}
 function pasajeURL(ref){ return "https://www.biblegateway.com/passage/?search=" + encodeURIComponent(ref) + "&version=RVR1960"; }
 // ronda 6: por qué un título de Dios está en el catálogo. Una sola vez, en el renglón 1 de
 // toda fila lexico/yhwh (no en tipologia/yhwh: esas lo explican en su descripción).
@@ -2374,6 +2444,7 @@ const FRASE_YHWH_AT = "Es un título que la Escritura da a Dios. El catálogo lo
   + "se aplique a Jesús en un pasaje: cuando pasa, la ficha lo dice.";   // ronda 27 (D-67)
 function avisoRVR(d, clase){
   if (!d || d.version !== "RVR1960") return "";
+  if (!d.texto && typeof matrixData !== "undefined" && matrixData.sinVersiculos) return "";   // ronda 28a (D-80, opción B): sin texto, sin aviso
   return '<div class="' + (clase || "rvr-pie") + '">' + AVISO_RVR + "</div>";
 }
 const SUJETO_FRASE = { cristo: "Habla de Cristo.", yhwh: "Habla de Dios.",
@@ -2606,10 +2677,7 @@ function guardarIds(ids){
       const row = document.createElement("div");
       row.className = "idx-row";
       row.dataset.book = n.book;
-      const dotsHtml = catChipDot(n);
-      // ronda 20: la clase en palabras junto al signo (en el teléfono, junto a la referencia), con la frase de la ficha
-      const k = n.tipoLectura || "", clase = LECTURA_LABELS[k] || LECTURA_LABELS[""], frase = glosa({ lexico: "en-el-texto", profecia: "anuncio", tipologia: "figura-marca" }[k], (LECTURA_FRASE[k] || LECTURA_FRASE[""]).replace(/<[^>]+>/g, ""));
-      row.innerHTML = `<span class="idx-ref">${n.ref}<span class="idx-clase-tel"> · ${clase}</span></span><span class="idx-icon">${qualityIcon(n)}</span><span class="idx-clase" title="${escHtml(frase)}">${clase}</span><span class="idx-title">${n.title}</span><span class="idx-cats">${dotsHtml}</span><button type="button" class="idx-sel${selTiene(n.id) ? " on" : ""}" tabindex="-1" aria-pressed="${selTiene(n.id)}" title="Guardar en Mi selección" aria-label="Guardar en Mi selección">${selTiene(n.id) ? "★" : "☆"}</button>`;
+      row.innerHTML = idxFilaHtml(n);   // ronda 28a: la misma fila en las listas de Por tema
       row.addEventListener("click", e => { if (e.target.closest(".idx-sel")){ selToggle(n.id); return; } openPanel(n); });   // ronda 25
       indexLayer.appendChild(row);
       indexRowByNodeId[n.id] = row;
@@ -2621,6 +2689,13 @@ function guardarIds(ids){
   indexLayer.appendChild(empty);
 })();
 
+// ronda 28a: la fila de Por libro (la referencia, la marca en palabras, el título, sus categorías y la estrella de Mi selección)
+function idxFilaHtml(n){
+  const dotsHtml = catChipDot(n);
+  // ronda 20: la clase en palabras junto al signo (en el teléfono, junto a la referencia), con la frase de la ficha
+  const k = n.tipoLectura || "", clase = LECTURA_LABELS[k] || LECTURA_LABELS[""], frase = glosa({ lexico: "en-el-texto", profecia: "anuncio", tipologia: "figura-marca" }[k], (LECTURA_FRASE[k] || LECTURA_FRASE[""]).replace(/<[^>]+>/g, ""));
+  return `<span class="idx-ref">${n.ref}<span class="idx-clase-tel"> · ${clase}</span></span><span class="idx-icon">${qualityIcon(n)}</span><span class="idx-clase" title="${escHtml(frase)}">${clase}</span><span class="idx-title">${n.title}</span><span class="idx-cats">${dotsHtml}</span><button type="button" class="idx-sel${selTiene(n.id) ? " on" : ""}" tabindex="-1" aria-pressed="${selTiene(n.id)}" title="Guardar en Mi selección" aria-label="Guardar en Mi selección">${selTiene(n.id) ? "★" : "☆"}</button>`;
+}
 // ronda 19: en el índice, si lo buscado no está en el título, una marca dice dónde coincidió
 function buscaDonde(d, q){
   const nq = buscaNorm(q); if (!nq) return null;
@@ -3490,7 +3565,7 @@ function buildMatrix(){
     .attr("fill", c => matrixOpts.order === "cat" && matrixOpts.orderCat === c ? "var(--gold-bright)" : "var(--parchment-dim)")
     .text(d => short(d))
     .on("click", (e, c) => { e.stopPropagation(); matrixOpts.order = (matrixOpts.order === "cat" && matrixOpts.orderCat === c) ? "canon" : "cat"; matrixOpts.orderCat = c; document.getElementById("matrixOrder").value = matrixOpts.order === "cat" ? "cat" : "canon"; buildMatrix(); })
-    .on("mousemove", (e, c) => tipShow(e, `${c}\nClick: ordenar columnas por ${isPct ? "concentración" : "cantidad"} en esta categoría`)).on("mouseleave", tipHide);
+    .on("mousemove", (e, c) => tipShow(e, `${c}\n${toca(true)} la categoría para ordenar las columnas por ${isPct ? "concentración" : "cantidad"}`)).on("mouseleave", tipHide);
 
   matrixColLabelSel = matrixLayer.selectAll(".col-label").data(M.cols).join("text")
     .attr("class", "col-label")
@@ -3636,7 +3711,7 @@ let cineticaBinDataPrimary, cineticaBinDataTotal, cineticaX, cineticaArea;
   cineticaLayer.append("text").attr("x", cineticaLeft).attr("y", cineticaTop - 20)
     .attr("fill", "var(--parchment-dim)").attr("font-family", "'Source Sans 3', sans-serif")
     .attr("font-size", 12.5)
-    .text("Densidad de títulos por tramo del canon, coloreada por categoría primaria — click en un tramo para ver los títulos");
+    .text(`Densidad de títulos por tramo del canon, coloreada por categoría primaria — ${toca()} un tramo para ver los títulos`);
 
   // franjas de período (detrás del área apilada)
   const periodBandGroup = cineticaLayer.append("g");
@@ -3812,7 +3887,7 @@ function applyLexicaViewFilter(){
     return langOk && (d.strong||"").split("+").map(s=>s.trim()).filter(Boolean).some(code => rootVisible["root:"+code]);
   }).length;
   document.getElementById("lexicaCount").textContent =
-    `${visTitles} de ${rawNodes.length} títulos · ${visRoots} palabras visibles (umbral ${minShared}+)`;
+    `${visTitles} de ${rawNodes.length} títulos · ${visRoots} palabras que aparecen en ${minShared} títulos o más`;   // ronda 28a
   if (typeof renderLexSide === "function") renderLexSide(rootVisible);
 }
 
@@ -4912,7 +4987,7 @@ function grafoEnfRender(){
     <div class="ge-ctl"><span class="ge-ctl-et">El Nuevo Testamento:</span>
       <span class="ge-seg en-orden" role="group" aria-label="Orden del Nuevo Testamento"><button data-v="par" class="${grafoEnfOrden === "par" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "par"}">a la altura de su par</button><button data-v="canon" class="${grafoEnfOrden === "canon" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "canon"}">en orden bíblico</button></span>
       <span class="ge-ctl-et en-cifras">${entreCifrasHtml(N, ev, capaE)}</span></div><div class="ge-ctl en-ctl2">${entreContBoton()}</div>
-    <div class="ge-cab">${nav}<p class="en-tira-nota" hidden></p><div class="at">Antiguo Testamento</div><div class="medio">vínculos</div><div class="nt">Nuevo Testamento</div></div>
+    <div class="ge-cab">${nav}<p class="en-tira-nota" hidden></p><div class="at">Antiguo Testamento</div><div class="medio">${grafoEnfOrden === "canon" ? `<span class="ge-medio-nota">En orden bíblico, las líneas aparecen al tocar un título</span><span class="ge-medio-v">vínculos</span>` : "vínculos"}</div><div class="nt">Nuevo Testamento</div></div>
     <div class="ge-red${grafoEnfOrden === "canon" ? " canon" : ""}"><div class="ge-col at">${lista(AT, true)}</div><div class="ge-hilos"><svg aria-hidden="true"></svg></div>
       <div class="ge-col nt${grafoEnfOrden === "par" ? " par" : ""}">${grafoEnfOrden === "par" ? NT.map(n => item(n, n.ref)).join("") : lista(NT, true)}</div>
       <svg class="ge-toque" aria-hidden="true"></svg></div>
@@ -4968,13 +5043,31 @@ function grafoEnfUbicar(){
   const hil = grafoEnf.querySelector(".ge-hilos"), s = hil.querySelector("svg"), w = hil.offsetWidth, H = red.offsetHeight;
   // ronda 15: los del mismo Testamento salen hacia afuera, por el margen de su columna (el SVG del centro se
   // extiende con overflow visible: x negativa a la izquierda, mayor que w a la derecha)
-  const colAT = grafoEnf.querySelector(".ge-col.at");
-  const xAT = colAT.offsetLeft - hil.offsetLeft, xNT = colNT.offsetLeft + colNT.offsetWidth - hil.offsetLeft, carril = Math.max(6, colAT.offsetLeft - 2);
+  // ronda 28a (D-74): los del mismo Testamento salen pegados a su título —donde empieza el texto, del lado de afuera— y se
+  // curvan hacia el costado con el espacio libre que hay (más curva cuanto más lejos están; compactos si hay poco lugar)
+  const hr = hil.getBoundingClientRect(), rr = red.getBoundingClientRect(), xt = {};
+  const bordeTexto = id => { if (xt[id] != null) return xt[id];
+    const b = byId[id], rg = document.createRange(), t = b && b.firstChild; if (!t) return xt[id] = 0;
+    rg.selectNodeContents(t); const q = rg.getClientRects()[0] || b.getBoundingClientRect();
+    return xt[id] = nodeById[id].testamento === "AT" ? q.left - hr.left - 5 : q.right - hr.left + 5; };
+  const limAT = rr.left - hr.left + 4, limNT = rr.right - hr.left - 4;
+  // el borde del texto de cada título de la columna, de arriba abajo: el arco pasa por afuera del que más se extiende entre sus puntas
+  const bordes = { AT: [], NT: [] };
+  if (ev.some(e => nodeById[e.a].testamento === nodeById[e.b].testamento))
+    Object.keys(byId).forEach(id => bordes[nodeById[id].testamento].push([y[id], bordeTexto(id)]));
+  const borde = (t, y0, y1) => { let m = null; bordes[t].forEach(([yy, x]) => { if (yy >= y0 - 2 && yy <= y1 + 2) m = m == null ? x : (t === "AT" ? Math.min(m, x) : Math.max(m, x)); }); return m; };
   const camino = e => {
     const A = nodeById[e.a], B = nodeById[e.b];
     if (A.testamento !== B.testamento){ const [ya, yb] = A.testamento === "AT" ? [y[e.a], y[e.b]] : [y[e.b], y[e.a]]; return `M0 ${ya} C${w*0.22} ${ya} ${w*0.78} ${yb} ${w} ${yb}`; }
-    const at = A.testamento === "AT", x = at ? xAT : xNT, k = at ? -1 : 1, c = Math.min(carril, 5 + Math.abs(y[e.a] - y[e.b]) * 0.08);
-    return `M${x} ${y[e.a]} C${x + k*c} ${y[e.a]} ${x + k*c} ${y[e.b]} ${x} ${y[e.b]}`;
+    const at = A.testamento === "AT", xa = bordeTexto(e.a), xb = bordeTexto(e.b), dy = Math.abs(y[e.a] - y[e.b]);
+    const ext = borde(A.testamento, Math.min(y[e.a], y[e.b]), Math.max(y[e.a], y[e.b]));
+    // un corchete redondeado: sale horizontal (por el renglón de su título, donde no hay otro texto) hasta pasar el texto más
+    // largo que hay entre las dos puntas, baja curvándose por afuera y vuelve horizontal; más lejos, más afuera (se anidan)
+    const xo = at ? Math.min(xa, xb, ext == null ? xa : ext) - 3 : Math.max(xa, xb, ext == null ? xa : ext) + 3;
+    const libre = Math.max(0, at ? xo - limAT : limNT - xo);   // hasta el borde de la vista
+    const c = Math.max(Math.min(8, libre), Math.min(libre, 10 + dy * 0.06));
+    const cx = at ? xo - c / 0.75 : xo + c / 0.75;   // la curva llega a 0,75 del camino hasta sus puntos de control
+    return `M${xa} ${y[e.a]} H${xo} C${cx} ${y[e.a]} ${cx} ${y[e.b]} ${xo} ${y[e.b]} H${xb}`;
   };
   s.setAttribute("viewBox", `0 0 ${w} ${H}`);
   const capaE = grafoEnfDatos.capaE || {};
@@ -4985,7 +5078,7 @@ function grafoEnfUbicar(){
   grafoEnfDatos.camino = camino;
   const t = grafoEnf.querySelector(".ge-toque");
   t.style.left = hil.offsetLeft + "px"; t.style.width = w + "px"; t.style.height = H + "px";
-  t.innerHTML = ev.map(e => `<path data-a="${e.a}" data-b="${e.b}" d="${camino(e)}"/>`).join("");
+  t.innerHTML = ev.map(e => `<path data-a="${e.a}" data-b="${e.b}"${nodeById[e.a].testamento === nodeById[e.b].testamento ? ' class="mismo"' : ""} d="${camino(e)}"/>`).join("");
   grafoEnfDatos.y = y;
   entreExtras();   // ronda 23
   grafoEnfMarcar(grafoEnfSel);
@@ -4994,6 +5087,7 @@ function grafoEnfUbicar(){
 }
 function grafoEnfMarcar(id){
   if (!grafoEnfDatos) return;
+  grafoEnf.classList.toggle("ge-con-sel", !!id);   // ronda 28a (D-74): con un título elegido (o señalado), el medio dice «vínculos»
   const P = id ? grafoEnfDatos.vec[id] : null;
   grafoEnf.querySelectorAll(".ge-t").forEach(b => { const i = b.dataset.id;
     b.classList.toggle("on", i === id); b.classList.toggle("par", !!P && P.has(i)); b.classList.toggle("tenue", !!id && i !== id && !P.has(i));
@@ -5135,6 +5229,9 @@ const CAPITULOS_LIBRO = [50, 40, 27, 36, 34, 24, 21, 4, 31, 24, 22, 25, 29, 36, 
 const MAPA_GRUPO = { "Profetas Mayores": "Profetas mayores", "Profetas Menores": "Profetas menores", "Cartas Paulinas": "Cartas de Pablo",
   "Cartas Generales": "Cartas generales" };
 let mapaLibro = null, mapaCat = null, mapaUltimo = null;
+// ronda 28a (D-70): dos maneras de ver el mapa: «Libro por libro» (los 66 libros) y «Temas por parte de la Biblia» (la tabla de
+// Libros y temas); una celda de la tabla marca en el mapa los títulos de ese tema en esa parte (mapaParte, con mapaCat)
+let mapaManera = "libros", mapaParte = null;
 const mapaScroll = {};
 const mapaLayer = document.getElementById("mapaLayer");
 function mapaCapitulo(n){ const m = /^\s*(\d+):/.exec(n.ref.slice(n.book.length)); return m ? +m[1] : 1; }
@@ -5147,17 +5244,19 @@ function mapaDatos(){
 }
 function mapaConTitulos(){ return CANON_ALL.filter(b => mapaDatos()[b].titulos.length); }
 function mapaCats(n){ return n.cats && n.cats.length ? n.cats : [n.cat]; }
-function mapaEnCat(n){ return !mapaCat || mapaCats(n).includes(mapaCat); }
+function mapaEnCat(n){ return (!mapaCat || mapaCats(n).includes(mapaCat)) && (!mapaParte || periodByBook[n.book].name === mapaParte); }   // ronda 28a: y la parte
 // D-57: pasa lo que pasa los Filtros y la búsqueda de la barra (isVisible) y la categoría de la leyenda
 function mapaPasa(n){ return isVisible(n) && mapaEnCat(n); }
-function mapaFiltrando(){ return !!mapaCat || isFiltered(); }
+function mapaFiltrando(){ return !!mapaCat || !!mapaParte || isFiltered(); }
 function mapaColor(c){ return catColors[c] || catColors["Sin categoría"]; }
 function mapaCapNombre(L, c){ return L.book === "Salmos" ? `Salmo ${c}` : `Capítulo ${c}`; }
 // la leyenda: las categorías (en el libro, las que tiene), con su color; tocar una la resalta
 function mapaLeyendaHtml(scope){
   const cats = CATS_ORDER.filter(c => c === mapaCat || scope.some(n => mapaCats(n).includes(c)));
-  const con = mapaCat ? `con «${escHtml(mapaCat)}»${isFiltered() ? " y el filtro" : ""}` : "con el filtro";
-  return `<div class="mp-ley">${mapaFiltrando() ? `<div class="mp-filtro"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}</div>` : ""}<div class="mp-chips" role="group" aria-label="Resaltar una categoría">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></div>`;
+  const parte = mapaParte ? ` en ${escHtml(MAPA_GRUPO[mapaParte] || mapaParte)}` : "";   // ronda 28a: la celda de la tabla
+  const con = mapaCat ? `con «${escHtml(mapaCat)}»${parte}${isFiltered() ? " y el filtro" : ""}` : "con el filtro";
+  const marcados = mapaParte ? scope.filter(mapaPasa) : [];
+  return `<div class="mp-ley">${mapaFiltrando() ? `<div class="mp-filtro"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}${marcados.length ? accionesConjunto(marcados.map(n => n.id), `${mapaCat}${parte.replace(/<[^>]+>/g, "")}`, true) : ""}</div>` : ""}<div class="mp-chips" role="group" aria-label="Resaltar una categoría">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></div>`;
 }
 function mapaGridHtml(){
   const D = mapaDatos();
@@ -5169,7 +5268,7 @@ function mapaGridHtml(){
   };
   return ["AT", "NT"].map(test => { const nombre = test === "AT" ? "Antiguo Testamento" : "Nuevo Testamento";
     return `<section class="mp-test" aria-label="${nombre}"><h2 class="mp-test-t">${nombre}</h2>${PERIOD_DEFS.filter(p => D[p.books[0]].test === test).map(p =>
-      `<h3 class="mp-grupo">${escHtml(MAPA_GRUPO[p.name] || p.name)}</h3><div class="mp-grid">${p.books.map(b => tarjeta(D[b])).join("")}</div>`).join("")}</section>`; }).join("");
+      `<h3 class="mp-grupo" data-parte="${escHtml(p.name)}">${escHtml(MAPA_GRUPO[p.name] || p.name)}</h3><div class="mp-grid">${p.books.map(b => tarjeta(D[b])).join("")}</div>`).join("")}</section>`; }).join("");
 }
 function mapaLibroHtml(L){
   const lista = mapaConTitulos(), k = lista.indexOf(L.book), ant = lista[k - 1], sig = lista[k + 1];
@@ -5201,6 +5300,31 @@ function mapaLibroHtml(L){
     <div class="mp-caps" role="group" aria-label="Capítulos de ${escHtml(L.book)}">${celdas.join("")}</div>
     <div class="mp-lista">${cuerpo}</div>`;
 }
+// ronda 28a (D-70): «Temas por parte de la Biblia»: cuántos títulos de cada tema hay en cada parte (un título con varias
+// categorías cuenta en cada una), con el filtro de la barra; tocar una celda marca esos títulos en «Libro por libro»
+const MAPA_PARTE_CORTA = { "Pentateuco": "Pent.", "Históricos": "Hist.", "Poéticos": "Poét.", "Profetas Mayores": "Prof. may.", "Profetas Menores": "Prof. men.",
+  "Evangelios": "Evang.", "Hechos": "Hech.", "Cartas Paulinas": "Pablo", "Cartas Generales": "Cartas gen.", "Apocalipsis": "Apoc." };
+function mapaTablaHtml(){
+  const tel = esTelefono(), vis = canonSorted.filter(isVisible), partes = PERIOD_DEFS.map(p => p.name), cuenta = {}, porParte = {};
+  CATS_ORDER.forEach(c => { cuenta[c] = {}; partes.forEach(p => cuenta[c][p] = 0); });
+  vis.forEach(n => { const p = periodByBook[n.book].name; porParte[p] = (porParte[p] || 0) + 1; mapaCats(n).forEach(c => { if (cuenta[c]) cuenta[c][p]++; }); });
+  const filas = CATS_ORDER.filter(c => partes.some(p => cuenta[c][p]) || activeCats.has(c));
+  const max = Math.max(1, ...filas.flatMap(c => partes.map(p => cuenta[c][p])));
+  const corto = c => tel ? c.split(" ")[0].replace(",", "") : c;
+  const celda = (c, p) => { const k = cuenta[c][p]; if (!k) return `<td class="mp-tc vacia"></td>`;
+    const a = (0.14 + 0.6 * Math.sqrt(k / max)).toFixed(2);
+    return `<td class="mp-tc"><button type="button" class="mp-celda" data-tcat="${escHtml(c)}" data-tparte="${escHtml(p)}" style="--c:${mapaColor(c)};--a:${a}" aria-label="${escHtml(c)} en ${escHtml(MAPA_GRUPO[p] || p)}: ${grafoPlural(k, "título", "títulos")}">${k}</button></td>`; };
+  return `<p class="mp-ley-t">Cuántos títulos de cada tema hay en cada parte de la Biblia (un título con varias categorías cuenta en cada una)${isFiltered() ? ", con el filtro" : ""}. ${toca(true)} una celda para marcar esos títulos en el mapa.</p>
+    <div class="mp-tabla-w"><table class="mp-tabla"><thead><tr><th scope="col" class="mp-tt0">Tema</th>${partes.map(p => `<th scope="col" title="${escHtml(MAPA_GRUPO[p] || p)}">${escHtml(tel ? MAPA_PARTE_CORTA[p] : (MAPA_GRUPO[p] || p))}</th>`).join("")}</tr></thead>
+    <tbody>${filas.map(c => `<tr><th scope="row" title="${escHtml(c)}"><i style="background:${mapaColor(c)}"></i>${escHtml(corto(c))}</th>${partes.map(p => celda(c, p)).join("")}</tr>`).join("")}</tbody>
+    <tfoot><tr><th scope="row">Títulos</th>${partes.map(p => `<td>${porParte[p] || 0}</td>`).join("")}</tr></tfoot></table></div>`;
+}
+function mapaManeraElegir(m){ mapaManera = m; mapaLibro = null; mapaRender(); saveViewState(); if (typeof renderVistaHead === "function") renderVistaHead(); }
+function mapaMarcar(cat, parte){
+  mapaCat = cat; mapaParte = parte; mapaManera = "libros"; mapaLibro = null; mapaScroll[""] = 0; mapaRender(); saveViewState();
+  if (typeof renderVistaHead === "function") renderVistaHead();
+  const h = mapaLayer.querySelector(`.mp-grupo[data-parte="${CSS.escape(parte)}"]`); if (h) h.scrollIntoView({ block: "start" });
+}
 function mapaRender(){
   const D = mapaDatos();
   if (mapaLibro && !(D[mapaLibro] && D[mapaLibro].titulos.length)) mapaLibro = null;
@@ -5208,10 +5332,13 @@ function mapaRender(){
     return `<option value="${escHtml(b)}"${b === mapaLibro ? " selected" : ""}${n ? "" : " disabled"}>${escHtml(b)}${n ? "" : " (sin títulos)"}</option>`; };
   const ir = `<label class="mp-ir"><span>Ir a un libro</span><select aria-label="Ir a un libro"><option value="">Elegí un libro…</option>
     <optgroup label="Antiguo Testamento">${CANON_ALL.slice(0, 39).map(opt).join("")}</optgroup><optgroup label="Nuevo Testamento">${CANON_ALL.slice(39).map(opt).join("")}</optgroup></select></label>`;
-  mapaLayer.innerHTML = `<div class="mp-barra">${mapaLibro ? `<button type="button" class="mp-volver">← Volver al mapa</button>` : `<p class="mp-ayuda">Elegí un libro para ver en qué capítulos están sus títulos.</p>`}${ir}</div>`
-    + (mapaLibro ? mapaLibroHtml(D[mapaLibro])
-       : `<p class="mp-ley-t">Cada cuadradito es un título, con el color de su categoría principal. Tocá una categoría para resaltar sus títulos.</p>${mapaLeyendaHtml(canonSorted)}${mapaGridHtml()}`);
-  mapaLayer.scrollTop = mapaScroll[mapaLibro || ""] || 0;
+  const maneras = `<div class="mp-maneras" role="group" aria-label="Cómo ver el mapa">${[["libros", "Libro por libro"], ["temas", "Temas por parte de la Biblia"]].map(([k, t]) =>
+    `<button type="button" data-manera="${k}" class="${mapaManera === k ? "on" : ""}" aria-pressed="${mapaManera === k}">${t}</button>`).join("")}</div>`;   // ronda 28a (D-70)
+  const temas = !mapaLibro && mapaManera === "temas";
+  mapaLayer.innerHTML = `<div class="mp-barra">${mapaLibro ? `<button type="button" class="mp-volver">← Volver al mapa</button>` : maneras}${temas ? "" : ir}</div>`
+    + (mapaLibro ? mapaLibroHtml(D[mapaLibro]) : temas ? mapaTablaHtml()
+       : `<p class="mp-ley-t">Cada cuadradito es un título, con el color de su categoría principal. Elegí un libro para ver en qué capítulos están sus títulos; ${toca()} una categoría para resaltarlos.</p>${mapaLeyendaHtml(canonSorted)}${mapaGridHtml()}`);
+  mapaLayer.scrollTop = mapaScroll[mapaLibro || (temas ? "temas" : "")] || 0;
   if (lastPanelId && document.getElementById("panel").classList.contains("open")) tiempoHighlight(lastPanelId);
 }
 function mapaIr(book){
@@ -5234,11 +5361,13 @@ mapaLayer.addEventListener("click", e => {
   else if (x.classList.contains("mp-volver")) mapaVolver();
   else if (x.dataset.cap){ const s = document.getElementById("mpCap-" + x.dataset.cap); if (s){ s.scrollIntoView({ block: "start", behavior: movSuave() }); const b = s.querySelector(".mp-t"); if (b) b.focus({ preventScroll: true }); } }
   else if (x.dataset.id){ const n = nodeById[x.dataset.id]; if (n){ tiempoHighlight(n.id); openPanel(n); } }
-  else if (x.dataset.cat) mapaFiltrar(x.dataset.cat === mapaCat ? null : x.dataset.cat);
-  else if (x.classList.contains("mp-todas")) mapaFiltrar(null);
+  else if (x.dataset.cat){ mapaParte = null; mapaFiltrar(x.dataset.cat === mapaCat ? null : x.dataset.cat); }
+  else if (x.classList.contains("mp-todas")){ mapaParte = null; mapaFiltrar(null); }
+  else if (x.dataset.manera) mapaManeraElegir(x.dataset.manera);   // ronda 28a
+  else if (x.dataset.tcat) mapaMarcar(x.dataset.tcat, x.dataset.tparte);
 });
 mapaLayer.addEventListener("change", e => { if (e.target.closest(".mp-ir") && e.target.value) mapaIr(e.target.value); });
-mapaLayer.addEventListener("scroll", () => { mapaScroll[mapaLibro || ""] = mapaLayer.scrollTop; }, { passive: true });
+mapaLayer.addEventListener("scroll", () => { mapaScroll[mapaLibro || (mapaManera === "temas" ? "temas" : "")] = mapaLayer.scrollTop; }, { passive: true });
 // el título abierto, resaltado; al cerrar la ficha queda marcado el último (para ubicarse)
 function tiempoHighlight(id){
   if (id) mapaUltimo = id;
@@ -5493,7 +5622,7 @@ function conexLado(n, rotulo){
     <div class="cx-et">${rotulo}</div>
     <div class="cx-ti">${tit.t}</div>
     <div class="cx-rf">${tit.sub ? tit.sub + " · " : ""}${n.ref}</div>
-    ${n.texto ? `<div class="cx-tx">“${n.texto}”</div>` : `<div class="cx-mas"><i>sin texto registrado</i></div>`}
+    ${n.texto ? `<div class="cx-tx">“${n.texto}”</div>` : (versoFuera(n) || `<div class="cx-mas"><i>sin texto registrado</i></div>`)}
   </div>`;
 }
 function conexCell(n){
@@ -5523,11 +5652,33 @@ function conexModosHtml(){
   return `<div class="cx-modos" role="group" aria-label="Cómo ver las conexiones"><span class="cx-modo on" aria-current="true">Lista</span><button type="button" class="cx-modo" onclick="entreAbrir({ nivel: 'libros', soloAnotadas: true })">Por libros, en Entre Testamentos ⇢</button></div>`;
 }
 function conexClaseElegir(k){ conexClase = k; renderConex(); }
+// ronda 28a: un libro (de cualquiera de los dos lados) y una búsqueda (títulos, referencias, libros, el tipo y la nota); no se guardan
+let conexLibro = "", conexBusca = "", conexBuscaT = null;
+function conexEnLibro(r){ return !conexLibro || r.src.book === conexLibro || r.dst.book === conexLibro; }
+function conexEnBusca(r){
+  const q = buscaNorm(conexBusca.trim()); if (!q) return true;
+  const i = conexInfoDe(r.src.id, r.dst.id);
+  return [r.src.title, r.src.ref, r.src.book, r.dst.title, r.dst.ref, r.dst.book, i && i.nota, i && conexTipoTexto(i)].some(t => t && buscaNorm(String(t)).includes(q));
+}
+function conexLibroElegir(b){ conexLibro = b; renderConex(); }
+function conexBuscar(v){
+  conexBusca = v; clearTimeout(conexBuscaT);
+  conexBuscaT = setTimeout(() => { renderConex(); const e = document.getElementById("cxBusca"); if (e){ e.focus(); e.setSelectionRange(e.value.length, e.value.length); } }, 160);
+}
+function conexBuscaHtml(base){
+  const libros = {}; base.forEach(r => { libros[r.src.book] = (libros[r.src.book] || 0) + 1; if (r.dst.book !== r.src.book) libros[r.dst.book] = (libros[r.dst.book] || 0) + 1; });
+  const orden = Object.keys(libros).sort((a, b) => CANON_ALL.indexOf(a) - CANON_ALL.indexOf(b));
+  if (conexLibro && !libros[conexLibro]) orden.push(conexLibro);
+  return `<div class="cx-busca" role="search"><label><span>Libro</span><select id="cxLibro" onchange="conexLibroElegir(this.value)"><option value="">todos los libros</option>${orden.map(b => `<option value="${escHtml(b)}"${b === conexLibro ? " selected" : ""}>${escHtml(b)} (${libros[b] || 0})</option>`).join("")}</select></label>
+    <label class="cx-busca-q"><input id="cxBusca" type="search" aria-label="Buscar en las conexiones" placeholder="Buscar en las conexiones: un título, una referencia, una palabra de la nota" value="${escHtml(conexBusca)}" oninput="conexBuscar(this.value)" autocomplete="off"></label>
+    ${conexLibro || conexBusca.trim() ? `<button type="button" class="hbtn ghost" onclick="conexLibro = ''; conexBusca = ''; renderConex()">quitar</button>` : ""}</div>`;
+}
 function renderConex(){
   // ronda 20 (F6): en «Por libros», las bandas; en «Lista», la lista (filtrada al par de libros elegido, si hay)
   if (layoutMode === "conexiones") conexLayer.style.display = "block";
-  const todas = conexRows().filter(conexEnPar);
-  const tipos = ["AT → NT", "AT → AT", "NT → NT"].concat(todas.some(r => conexTipoDe(r) === "NT → AT") ? ["NT → AT"] : []);
+  const base = conexRows().filter(conexEnPar), todas = base.filter(r => conexEnLibro(r) && conexEnBusca(r));   // ronda 28a
+  const tipos = ["AT → NT", "AT → AT", "NT → NT"].concat(todas.some(r => conexTipoDe(r) === "NT → AT") ? ["NT → AT"] : [])
+    .filter(t => t === conexTipo || todas.some(r => conexTipoDe(r) === t));   // ronda 28a: con el libro o la búsqueda, sin pestañas vacías
   if (conexTipo !== "todas" && !tipos.includes(conexTipo)) conexTipo = "todas";
   const rowsTab = conexTipo === "todas" ? todas : todas.filter(r => conexTipoDe(r) === conexTipo);
   const tipoDe = r => { const i = conexInfoDe(r.src.id, r.dst.id); return i ? (i.provisional ? "provisional" : i.tipo) : ""; };
@@ -5540,11 +5691,10 @@ function renderConex(){
     .map(([k, txt]) => `<button type="button" role="tab" class="cx-tab${conexTipo === k ? " on" : ""}" aria-selected="${conexTipo === k}" onclick='conexElegir(${JSON.stringify(k)})'>${txt}</button>`).join("")}</div>`;
   const visRows = rows.filter(r => isVisible(r.src) || isVisible(r.dst));
   const srcs = new Set(rows.map(r => r.src.id)), dsts = new Set(rows.map(r => r.dst.id));
-  const tipSin = rawNodes.filter(n => n.tipologia && !estaConectado(n)).length;
   let html = `${conexModosHtml()}<div class="cx-head">
     <div>
       <div class="cx-title-big">Conexiones anotadas <span>origen → destino</span></div>
-      <div class="cx-meta">${rows.length} conexiones · ${srcs.size} orígenes · ${dsts.size} destinos · ${new Set([...srcs, ...dsts]).size} títulos enlazados${tipSin ? ` · <span class="cx-warn">${tipSin} tipológicos todavía sin conexión</span>` : ""}</div>
+      <div class="cx-meta">${rows.length}${conexLibro || conexBusca.trim() ? ` de ${base.length}` : ""} conexiones · ${srcs.size} orígenes · ${dsts.size} destinos · ${new Set([...srcs, ...dsts]).size} títulos enlazados</div>
     </div>
     <div class="cx-actions">
       <button class="hbtn ghost" onclick="conexExportMd()" title="Un archivo de texto (.md), que se abre con cualquier editor">exportar como texto</button>
@@ -5552,6 +5702,7 @@ function renderConex(){
     </div>
   </div>
   ${conexPar ? `<div class="cx-par-filtro"><span class="fc">${escHtml(conexPar.nombre)}<button class="fc-x" title="Quitar este filtro" aria-label="Quitar el filtro ${escHtml(conexPar.nombre)}" onclick="conexQuitarPar()">✕</button></span>${conexPar.par ? "" : `<button type="button" class="cx-a-libros" onclick="entreAbrir({ nivel: 'libros', soloAnotadas: true })">← Por libros</button>`}</div>` : ""}
+  ${conexBuscaHtml(base)}
   ${tabs}
   ${filtroTipos}
   ${conexClase !== "todos" && (TIPOS_CONEXION[conexClase] || conexClase === "provisional") ? `<p class="cx-tipo-def cx-tipo-def-filtro" role="note"><b>${escHtml(conexClase === "provisional" ? "provisional" : conexTipoEt(conexClase))}:</b> ${escHtml(TIPOS_CONEXION[conexClase] || CONEX_PROVISIONAL_DEF)}</p>` : ""}
@@ -5572,7 +5723,7 @@ function renderConex(){
       ${info && (info.nota || conexFuente(info)) ? `<div class="cx-nota-par">${info.nota ? escHtml(info.nota) : ""}${conexFuenteHtml(info)}</div>` : ""}
     </div>`;
   });
-  if (!rows.length) html += `<div class="cur-empty">No hay conexiones anotadas en este CSV.</div>`;
+  if (!rows.length) html += `<div class="cur-empty">${conexLibro || conexBusca.trim() ? `Ninguna conexión${conexLibro ? ` de ${escHtml(conexLibro)}` : ""}${conexBusca.trim() ? ` con «${escHtml(conexBusca.trim())}»` : ""}.` : "No hay conexiones anotadas en este CSV."}</div>`;
   else if (rows.some(r => (r.src.texto && r.src.version === "RVR1960") || (r.dst.texto && r.dst.version === "RVR1960")))
     html += `<div class="rvr-pie-osc" style="margin:22px auto 0;">${AVISO_RVR}</div>`;
   conexLayer.innerHTML = html;
@@ -5610,23 +5761,28 @@ function catredData(){
 }
 // ronda 20 (F8): en el teléfono, arriba las categorías con nombre completo, cuenta y color; el diagrama, a un toque
 let catredDiagrama = false;
-function catredLista(vis, count){
-  const tel = innerWidth < 720, svgEl = catredLayer.querySelector("svg");
-  let lista = catredLayer.querySelector(".catred-cats");
-  if (!lista){ lista = document.createElement("div"); lista.className = "catred-cats"; catredLayer.insertBefore(lista, svgEl); }
-  const mapa = catredDiagrama && !tel;
-  lista.classList.toggle("con-mapa", mapa);
+// ronda 28a (D-70): debajo del mapa, todos los temas (con su frase y cuántos títulos tiene) y todos los cruces (dos temas que
+// comparten títulos, del más fuerte al más débil); tocar uno hace lo mismo que en el mapa
+function catredListas(vis, count, pair){
   const cats = CATS_ORDER.filter(c => count[c] > 0 || activeCats.has(c));
   const frase = c => catTexto(c) || CAT_AYUDA[c] || "";
-  lista.innerHTML = (mapa ? "" : `<div class="catred-cats-head">Las ${cats.length} categorías <span>${vis.length} títulos${isFiltered() ? " (filtrados)" : ""}</span></div>` +
-    cats.map(c => `<button type="button" class="catred-fila${catredSel && catredSel.type === "cat" && catredSel.cat === c ? " on" : ""}" data-cat="${escHtml(c)}">
-      <i class="idx-cat-dot" style="background:${catColors[c] || "#888"}"></i><span class="catred-fila-n">${escHtml(c)}${frase(c) ? `<span class="catred-ayuda">${escHtml(frase(c))}</span>` : ""}</span><span class="catred-fila-c">${grafoPlural(count[c], "título", "títulos")}</span></button>`).join("")) +
-    `<button type="button" class="catred-diagrama" aria-expanded="${catredDiagrama}">${catredDiagrama ? (tel ? "Ocultar el mapa" : "← Volver a la lista") : "Ver el mapa: qué temas comparten títulos"}</button>`;
-  lista.querySelectorAll(".catred-fila").forEach(b => b.addEventListener("click", () => {
-    const c = b.dataset.cat; catredSel = catredSel && catredSel.type === "cat" && catredSel.cat === c ? null : { type: "cat", cat: c }; renderCatred();
-    if (catredSel && tel) catredLayer.querySelector(".catred-side").scrollIntoView({ block: "start", behavior: movSuave() }); }));
-  lista.querySelector(".catred-diagrama").addEventListener("click", () => { catredDiagrama = !catredDiagrama; renderCatred(); });
-  svgEl.style.display = catredDiagrama ? "" : "none";
+  const cruces = Object.entries(pair).filter(([k, w]) => w >= catredMinShared).sort((a, b) => b[1] - a[1]);
+  const onCat = c => !!catredSel && catredSel.type === "cat" && catredSel.cat === c;
+  const onPar = (a, b) => !!catredSel && catredSel.type === "pair" && ((catredSel.a === a && catredSel.b === b) || (catredSel.a === b && catredSel.b === a));
+  return `<section class="ct-sec"><h2 class="ct-h">Los ${cats.length} temas <span>${vis.length} títulos${isFiltered() ? " (filtrados)" : ""}</span></h2>
+    <div class="ct-temas">${cats.map(c => { const fuertes = cruces.filter(([k]) => k.split("|").includes(c)).slice(0, 3);
+      return `<div class="ct-tema"><button type="button" class="catred-fila${onCat(c) ? " on" : ""}" data-cat="${escHtml(c)}" aria-pressed="${onCat(c)}"><i class="idx-cat-dot" style="background:${catColors[c] || "#888"}"></i><span class="catred-fila-n">${escHtml(c)}${frase(c) ? `<span class="catred-ayuda">${escHtml(frase(c))}</span>` : ""}</span><span class="catred-fila-c">${grafoPlural(count[c], "título", "títulos")}</span></button>${fuertes.length ? `<div class="ct-pills"><span>Comparte con</span>${fuertes.map(([k, w]) => { const [a, b] = k.split("|"), o = a === c ? b : a;
+        return `<button type="button" class="ct-cruce ct-pill${onPar(a, b) ? " on" : ""}" data-a="${escHtml(a)}" data-b="${escHtml(b)}" aria-pressed="${onPar(a, b)}"><i class="idx-cat-dot" style="background:${catColors[o]}"></i>${escHtml(o.split(" ")[0].replace(",", ""))} <b>${w}</b></button>`; }).join("")}</div>` : ""}</div>`; }).join("")}</div></section>
+  <section class="ct-sec"><h2 class="ct-h">Los cruces <span>dos temas con ${catredMinShared} títulos o más en común: ${cruces.length}</span></h2>
+    <div class="ct-cruces">${cruces.map(([k, w]) => { const [a, b] = k.split("|"); return `<button type="button" class="ct-cruce${onPar(a, b) ? " on" : ""}" data-a="${escHtml(a)}" data-b="${escHtml(b)}" aria-pressed="${onPar(a, b)}"><span class="catred-w">${w}</span><span><i class="idx-cat-dot" style="background:${catColors[a]}"></i> ${escHtml(a)} <em>↔</em> <i class="idx-cat-dot" style="background:${catColors[b]}"></i> ${escHtml(b)}</span></button>`; }).join("")}</div></section>`;
+}
+function catredElegir(s, desdeMapa){
+  const igual = catredSel && s && catredSel.type === s.type && (s.type === "cat" ? catredSel.cat === s.cat : (catredSel.a === s.a && catredSel.b === s.b) || (catredSel.a === s.b && catredSel.b === s.a));
+  catredSel = igual ? null : s; renderCatred();
+  if (!catredSel) return;
+  const side = catredLayer.querySelector(".catred-side"), q = side.getBoundingClientRect();
+  if (desdeMapa){ if (q.top > innerHeight - 150) catredLayer.scrollBy({ top: q.top - (innerHeight - 230), behavior: movSuave() }); }   // asoma el encabezado de la lista
+  else if (q.top < 0 || q.top > innerHeight * 0.62) side.scrollIntoView({ block: "start", behavior: movSuave() });
 }
 // ronda 22: una línea para las dos categorías que el nombre no explica (coherente con «Acerca de»)
 const CAT_AYUDA = {
@@ -5634,18 +5790,21 @@ const CAT_AYUDA = {
   "Nombres compuestos de YHWH": "Nombres de Dios formados con YHWH, el nombre que la RVR1960 traduce «Jehová». Están porque el Nuevo Testamento aplica a Jesús lo que el Antiguo dice del Señor.",
 };
 function renderCatred(){
+  // ronda 28a (D-70): arriba el mapa de los temas; debajo, la lista de lo elegido (sus títulos por libro, con la fila de Por
+  // libro); al final, todos los temas y todos los cruces. La capa entera se desplaza.
   const { vis, count, pair } = catredData();
-  catredLista(vis, count);
+  catredLayer.querySelector(".ct-ayuda").innerHTML = `Cada círculo es un tema (más grande, más títulos); una línea une dos temas que comparten títulos (más gruesa, más compartidos). ${toca(true)} un tema para ver sus títulos, o una línea para ver los que comparten los dos.`;
   const svgEl = catredLayer.querySelector("svg");
   const W = svgEl.clientWidth || 800, H = svgEl.clientHeight || 600;
   const cx = W / 2, cy = H / 2;
   // elipse: reserva ~200 px a cada lado para las etiquetas largas ("Nombres compuestos de YHWH")
-  const RX = Math.max(110, W / 2 - 205), RY = Math.max(110, H / 2 - 75);
+  const angosto = W < 520;   // ronda 28a: en el teléfono, la primera palabra de cada tema y círculos más chicos (no se pisan)
+  const RX = angosto ? W / 2 - 74 : Math.max(110, W / 2 - 205), RY = angosto ? H / 2 - 34 : Math.max(110, H / 2 - 75);
   const cats = CATS_ORDER.filter(c => count[c] > 0 || activeCats.has(c));
   const pos = {};
   cats.forEach((c, i) => { const a = (i / cats.length) * 2 * Math.PI - Math.PI / 2; pos[c] = { x: cx + RX * Math.cos(a), y: cy + RY * Math.sin(a), a }; });
   const maxCount = Math.max(1, ...cats.map(c => count[c]));
-  const rScale = d3.scaleSqrt().domain([0, maxCount]).range([6, 34]);
+  const rScale = d3.scaleSqrt().domain([0, maxCount]).range(angosto ? [5, 21] : [6, 34]);
   const links = Object.entries(pair).map(([k, w]) => { const [a, b] = k.split("|"); return { a, b, w }; })
     .filter(l => l.w >= catredMinShared && pos[l.a] && pos[l.b]);
   const maxW = Math.max(1, ...links.map(l => l.w));
@@ -5660,13 +5819,13 @@ function renderCatred(){
     .attr("d", l => { const p = pos[l.a], q = pos[l.b]; return `M${p.x},${p.y} Q${cx},${cy} ${q.x},${q.y}`; })
     .attr("stroke-width", l => wScale(l.w))
     .on("mousemove", (e, l) => tipShow(e, `${l.a} ↔ ${l.b}\n${l.w} título${l.w !== 1 ? "s" : ""} en ambas categorías`)).on("mouseleave", tipHide)
-    .on("click", (e, l) => { e.stopPropagation(); catredSel = { type: "pair", a: l.a, b: l.b }; renderCatred(); });
+    .on("click", (e, l) => { e.stopPropagation(); catredElegir({ type: "pair", a: l.a, b: l.b }, true); });
   const gn = s.append("g");
   const node = gn.selectAll("g").data(cats).join("g")
     .attr("class", c => "catred-node" + (catredSel && catredSel.type === "cat" && catredSel.cat === c ? " on" : "") + (activeCats.has(c) ? "" : " off"))
     .attr("transform", c => `translate(${pos[c].x},${pos[c].y})`)
     .on("mousemove", (e, c) => tipShow(e, `${c}\n${count[c]} título${count[c] !== 1 ? "s" : ""}${catredSel && catredSel.type === "cat" && catredSel.cat !== c ? `\n${(pair[[catredSel.cat, c].sort().join("|")] || 0)} compartidos con ${catredSel.cat}` : ""}`)).on("mouseleave", tipHide)
-    .on("click", (e, c) => { e.stopPropagation(); catredSel = (catredSel && catredSel.type === "cat" && catredSel.cat === c) ? null : { type: "cat", cat: c }; renderCatred(); });
+    .on("click", (e, c) => { e.stopPropagation(); catredElegir({ type: "cat", cat: c }, true); });
   node.append("circle").attr("r", c => rScale(count[c])).attr("fill", c => catColors[c] || "#888");
   node.append("text").attr("class", "catred-count").attr("dy", "0.35em").text(c => count[c]);
   node.append("text").attr("class", "catred-label")
@@ -5674,30 +5833,37 @@ function renderCatred(){
     .attr("text-anchor", c => Math.cos(pos[c].a) > 0.2 ? "start" : Math.cos(pos[c].a) < -0.2 ? "end" : "middle")
     .attr("dy", c => Math.sin(pos[c].a) > 0.5 ? "0.9em" : Math.sin(pos[c].a) < -0.5 ? "-0.3em" : "0.35em")
     .text(c => W < 520 ? c.split(" ")[0].replace(",", "") : c); // móvil: primera palabra (el tooltip trae el nombre completo)
-  // ---- panel derecho
+  // ---- la lista de lo elegido: sus títulos por libro, con la fila de Por libro
   const side = catredLayer.querySelector(".catred-side");
   const listBlock = (items, title, sub) => {
-    const byBook = {};
-    items.slice().sort((a, b) => a.canonIdx - b.canonIdx).forEach(n => (byBook[n.book] = byBook[n.book] || []).push(n));
+    const orden = items.slice().sort((a, b) => a.canonIdx - b.canonIdx), byBook = {};
+    orden.forEach(n => (byBook[n.book] = byBook[n.book] || []).push(n));
     return `<div class="catred-side-head"><div class="catred-side-title">${title}</div><div class="catred-side-sub">${sub}</div>
-      <div class="catred-side-actions">${accionesConjunto(items.slice().sort((a, b) => a.canonIdx - b.canonIdx).map(n => n.id), String(title).replace(/<[^>]+>/g, ""), false)}<button class="hbtn ghost sel-guardar" data-ids="${items.map(n => n.id).join(".")}" onclick="guardarIds(this.dataset.ids.split('.'))">Guardar estos ${items.length}</button><button class="hbtn ghost" onclick="catredOnlyThis()">solo esta categoría en los filtros</button><button class="hbtn ghost" onclick="catredSel=null; renderCatred()">cerrar</button></div></div>
-      ${Object.entries(byBook).map(([b, ns]) => `<div class="catred-book">${b} <span>${ns.length}</span></div>${ns.map(n => `<div class="catred-item" onclick='openPanel(nodeById[${JSON.stringify(n.id)}])'><span class="idx-ref">${n.ref}</span><span>${qualityIcon(n)} ${n.title}</span></div>`).join("")}`).join("")}`;
+      <div class="catred-side-actions">${accionesConjunto(orden.map(n => n.id), String(title).replace(/<[^>]+>/g, ""), false)}<button class="hbtn ghost sel-guardar" data-ids="${items.map(n => n.id).join(".")}" onclick="guardarIds(this.dataset.ids.split('.'))">Guardar estos ${items.length}</button><button class="hbtn ghost" onclick="catredOnlyThis()">solo esta categoría en los filtros</button><button class="hbtn ghost" onclick="catredElegir(null)">cerrar</button></div></div>
+      ${Object.entries(byBook).map(([b, ns]) => `<div class="catred-book">${escHtml(b)} <span>${ns.length}</span></div>${ns.map(n => `<div class="idx-row" data-id="${escHtml(n.id)}">${idxFilaHtml(n)}</div>`).join("")}`).join("")}`;
   };
-  if (!catredSel){
-    const top = Object.entries(pair).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    side.innerHTML = `<div class="catred-side-head"><div class="catred-side-title">Relaciones entre categorías</div>
-      <div class="catred-side-sub">${vis.length} títulos${isFiltered() ? " (filtrados)" : ""} · ${vis.filter(n => n.cats.length > 1).length} con más de una categoría · ${links.length} pares con ${catredMinShared}+ compartidos</div></div>
-      <div class="catred-book">Pares más frecuentes</div>
-      ${top.map(([k, w]) => { const [a, b] = k.split("|"); return `<div class="catred-item" onclick='catredSel={type:"pair",a:${JSON.stringify(a)},b:${JSON.stringify(b)}}; renderCatred()'><span class="catred-w">${w}</span><span><i class="idx-cat-dot" style="background:${catColors[a]}"></i> ${a} <em>↔</em> <i class="idx-cat-dot" style="background:${catColors[b]}"></i> ${b}</span></div>`; }).join("")}
-      <div class="catred-side-note">Click en una categoría para listar sus títulos; en un enlace, los que comparten ambas.</div>`;
-  } else if (catredSel.type === "cat"){
+  if (!catredSel){ side.innerHTML = ""; side.hidden = true; }
+  else if (catredSel.type === "cat"){
     const c = catredSel.cat, items = vis.filter(n => n.cats.includes(c));
-    side.innerHTML = listBlock(items, `<i class="idx-cat-dot" style="background:${catColors[c]}"></i> ${c}`, `${(catTexto(c) || CAT_AYUDA[c]) ? escHtml(catTexto(c) || CAT_AYUDA[c]) + "<br>" : ""}${items.length} título${items.length !== 1 ? "s" : ""}${isFiltered() ? " (con el filtro actual)" : ""}`);
+    side.hidden = false;
+    side.innerHTML = listBlock(items, `<i class="idx-cat-dot" style="background:${catColors[c]}"></i> ${escHtml(c)}`, `${(catTexto(c) || CAT_AYUDA[c]) ? escHtml(catTexto(c) || CAT_AYUDA[c]) + "<br>" : ""}${items.length} título${items.length !== 1 ? "s" : ""}${isFiltered() ? " (con el filtro actual)" : ""}`);
   } else {
     const { a, b } = catredSel, items = vis.filter(n => n.cats.includes(a) && n.cats.includes(b));
-    side.innerHTML = listBlock(items, `${a} <em>↔</em> ${b}`, `${items.length} título${items.length !== 1 ? "s" : ""} en las dos categorías`);
+    side.hidden = false;
+    side.innerHTML = listBlock(items, `${escHtml(a)} <em>↔</em> ${escHtml(b)}`, `${items.length} título${items.length !== 1 ? "s" : ""} en los dos temas`);
   }
+  catredLayer.querySelector(".ct-listas").innerHTML = catredListas(vis, count, pair);
 }
+// ronda 28a: los toques de la capa (las filas de títulos, los temas y los cruces de las listas)
+catredLayer.addEventListener("click", e => {
+  const f = e.target.closest(".idx-row[data-id]");
+  if (f){ const id = f.dataset.id;
+    if (e.target.closest(".idx-sel")){ selToggle(id); const b = f.querySelector(".idx-sel"), on = selTiene(id); b.classList.toggle("on", on); b.textContent = on ? "★" : "☆"; b.setAttribute("aria-pressed", on); }
+    else if (nodeById[id]) openPanel(nodeById[id]);
+    return; }
+  const c = e.target.closest(".catred-fila[data-cat]"); if (c){ catredElegir({ type: "cat", cat: c.dataset.cat }); return; }
+  const x = e.target.closest(".ct-cruce"); if (x) catredElegir({ type: "pair", a: x.dataset.a, b: x.dataset.b });
+});
 function catredOnlyThis(){
   if (!catredSel) return;
   activeCats.clear();
@@ -5896,7 +6062,7 @@ function renderDash(){
 
   dashLayer.innerHTML = `
     <div class="cx-head"><div><div class="cx-title-big">Estadísticas <span>${vis.length} de ${rawNodes.length} títulos${f ? " · con el filtro activo" : ""}</span></div>
-      <div class="cx-meta">Qué hay en el corpus y en qué estado está el dato. Click en una tarjeta abre la vista o el criterio que la explica.</div></div>
+      <div class="cx-meta">Qué hay en el corpus y en qué estado está el dato. ${toca(true)} una tarjeta para abrir la vista o el criterio que la explica.</div></div>
       <div class="cx-actions"><button class="hbtn ghost" onclick="dashExportMd()" title="Un archivo de texto (.md), que se abre con cualquier editor">Exportar resumen como texto</button></div></div>
 
     <div class="dash-sec">${esTaller() ? "Corpus" : "Qué hay"}</div>
@@ -6347,22 +6513,22 @@ let statsBBox;
 })();
 
 const MODE_HINTS = {
-  indice: "Click en una fila abre la ficha. ★ = marcado por vos.<br>La búsqueda y los filtros recortan la lista.",
-  categorias: "Tamaño = títulos; grosor = títulos compartidos.<br>Click en una categoría o en un enlace lista sus títulos.",
+  indice: () => `${toca(true)} una fila para abrir la ficha. ★ = marcado por vos.<br>La búsqueda y los filtros recortan la lista.`,   // ronda 28a
+  categorias: () => `Tamaño = títulos; grosor = títulos compartidos.<br>${toca(true)} una categoría o una línea para listar sus títulos.`,
   catlienzo: "Vista oculta del menú (la reemplaza la red de categorías).",
   canonica: "Vista oculta del menú (la reemplaza el Explorador canónico).<br>Zoom para leer etiquetas.",
   conexlienzo: "Vista oculta del menú (la reemplaza la lista AT → NT).",
-  conexiones: "Una fila por conexión anotada, en orden canónico.<br>Click abre la ficha.",
+  conexiones: () => `Una fila por conexión anotada, en orden canónico.<br>${toca(true)} un lado para abrir su ficha.`,
   grafo: "",
   entre: "",
   tiempo: "",
   cadenas: "Dorado = conexión anotada; azul = extensión que elegiste, sin revisar.<br>▸ abre ramas y extensiones; ⟳ marca un ciclo.",
-  lexica: "Palabras hebreas y griegas que usan dos o más títulos.<br>Click en una palabra lista sus títulos.",
+  lexica: () => `Palabras hebreas y griegas que usan dos o más títulos.<br>${toca(true)} una palabra para listar sus títulos.`,
   refscruzadas: "Vista oculta del menú (pasa a Taller como candidatos).<br>Pasá el mouse sobre un título para ver arcos.",
-  matriz: "Se construye con el filtro activo. Click en una celda lista sus títulos;<br>click en una categoría ordena las columnas por ella.",
+  matriz: () => `Se construye con el filtro activo. ${toca(true)} una celda para listar sus títulos;<br>${toca()} una categoría para ordenar las columnas por ella.`,
   cinetica: "Vista oculta del menú. Densidad por categoría a lo largo del canon.",
   radar: "Vista oculta del menú. Compará el perfil temático de dos libros.",
-  stats: "Corpus, relaciones y calidad del dato, con el filtro activo.<br>Click en una tarjeta abre la vista o el criterio que la explica.",
+  stats: () => `Corpus, relaciones y calidad del dato, con el filtro activo.<br>${toca(true)} una tarjeta para abrir la vista o el criterio que la explica.`,
   candidatos: "Referencias cruzadas que caen en otro título, con puntaje.<br>Aprobar = ConectaCon (se descarga para el CSV); descartar = ocultar acá.",
   curacion: "Pendientes objetivos del CSV, por prioridad.<br>✓ resuelto se guarda en este navegador; exportá la lista para editar el CSV.",
   nube: "Arrastrá los bloques; la posición se guarda en este navegador.",
@@ -6390,7 +6556,7 @@ function tipHide(){ tipEl.style.display = "none"; }
 // ronda 8: el verbo según la pantalla («Tocá» en el teléfono, «Hacé click en» en la compu)
 // ronda 27 (F): matchMedia no obliga a rehacer el diseño de la página (innerWidth, justo después de cambiarla, sí)
 function esTelefono(){ return (esTelefono.mq || (esTelefono.mq = matchMedia("(max-width: 719px)"))).matches; }
-function toca(may){ const t = esTelefono(); return may ? (t ? "Tocá" : "Hacé click en") : (t ? "tocá" : "hacé click en"); }
+function toca(may){ const t = esTelefono(); return may ? (t ? "Tocá" : "Hacé clic en") : (t ? "tocá" : "hacé clic en"); }   // ronda 28a: «clic»
 function indiceRecorte(){
   const n = rawNodes.filter(isVisible).length, raw = document.getElementById("search").value.trim(), t = `${n} ${n === 1 ? "título" : "títulos"}`;
   return raw ? `“${escHtml(raw)}”: ${t}` : `Con el filtro: ${n} de ${rawNodes.length} títulos`;
@@ -6403,10 +6569,10 @@ function vistaInfo(modo){
                          c: `${toca(true)} un título para leer su versículo y ver cómo se relaciona con Jesús. Con la búsqueda o los Filtros quedan los que coinciden, con la frase donde aparece lo buscado. En el encabezado de cada libro, «Leer estos» y «Repasar estos» toman ese libro.` }),
     seleccion:  () => ({ t: "Mi selección", f: "Tu lista de títulos, en el orden que elijas y con tus notas.",
                          c: "Para leerla, repasarla o llevártela: copiar, imprimir o descargar como texto. Se guarda en este navegador; para tenerla en otro, el archivo para otro dispositivo." }),
-    tiempo:     () => ({ t: "Mapa de la Biblia", f: "Dónde aparece cada título, libro por libro.",
+    tiempo:     () => ({ t: "Mapa de la Biblia", f: mapaManera === "temas" ? "Cuántos títulos de cada tema hay en cada parte de la Biblia." : "Dónde aparece cada título, libro por libro.",
                          c: "Los 66 libros en orden, cada uno con un cuadradito por título pintado con su categoría; elegí uno para ver en qué capítulos están. La cantidad es la selección de este catálogo, no una medida de cuánto habla un libro de Cristo." }),
     categorias: () => ({ t: "Por tema", f: `Las ${CATS_ORDER.length} categorías del catálogo.`,
-                         c: `Cada una con una frase y cuántos títulos tiene. ${toca(true)} una para ver sus títulos; «Ver el mapa» muestra qué temas comparten títulos.` }),
+                         c: `El mapa une dos temas cuando comparten títulos (la línea, más gruesa cuantos más comparten). ${toca(true)} un tema para ver sus títulos por libro, o una línea para ver los que comparten los dos. Debajo, todos los temas y todos los cruces.` }),
     conexiones: () => { const nPares = rawNodes.reduce((s, n) => s + (n.conectaCon || []).filter(t => nodeById[t]).length, 0);
                         return { t: "Conexiones anotadas", f: "Dos pasajes conectados, lado a lado.",
                          c: `Las ${nPares} conexiones anotadas, cada una con su tipo y su nota, con los dos versículos enfrentados: de origen a destino. Casi todas van del Antiguo al Nuevo; las pestañas separan las que quedan dentro de un mismo Testamento. ${toca(true)} cualquiera de los dos lados para abrir su ficha.` }; },
@@ -6424,7 +6590,7 @@ function vistaInfo(modo){
                          c: `Cuántos títulos, de qué libros, de qué clase. ${toca(true)} una tarjeta y te lleva al índice ya filtrado.` }),
     lexica:     () => ({ t: "Palabras originales", f: "Palabras hebreas y griegas que se repiten.",
                          c: esTelefono() ? "Cada renglón es una palabra hebrea o griega y cuántos títulos la usan. Tocá una para ver cuáles son."
-                                         : "Cada punto grande es una palabra hebrea o griega, y las líneas la unen con los títulos que la usan. Hacé click en una para ver cuáles son." }),
+                                         : `Cada punto grande es una palabra hebrea o griega, y las líneas la unen con los títulos que la usan. ${toca(true)} una para ver cuáles son.` }),
     matriz:     () => ({ t: "Libros y temas", f: "Las categorías y las partes de la Biblia, cruzadas.",
                          c: "Las categorías en filas y las partes de la Biblia en columnas; cada celda cuenta los títulos. Las celdas vacías son libros y categorías sin títulos todavía, no un error." }),
     curacion:   () => ({ t: "Cola de curación", f: "Lo que falta corregir en el CSV.", c: "Criterios objetivos, recalculados contra el dataset cada vez." }),
@@ -6473,6 +6639,7 @@ function aplicarModo(){
         if (![...document.getElementById("modeSelect").options].some(o => o.value === m))
           oc.appendChild(new Option(HIDDEN_MODE_LABELS[m], m));
       });
+      if (![...document.getElementById("modeSelect").options].some(o => o.value === "matriz")) oc.appendChild(new Option(FUERA_DEL_MENU.matriz, "matriz"));   // ronda 28a
       oc.style.display = "";
     } else {
       oc.style.display = "none";
@@ -6482,10 +6649,11 @@ function aplicarModo(){
   if (cinta) cinta.style.display = taller ? "flex" : "none";
   // apagar el taller estando parado en una de sus vistas dejaría la pantalla
   // en una vista que ya no figura en el selector
-  const SOLO_TALLER = VISTAS_TALLER.concat(Object.keys(HIDDEN_MODE_LABELS));   // ronda 25 (D-52)   // ronda 7: léxica y matriz, en estudio
+  const SOLO_TALLER = VISTAS_TALLER.concat(Object.keys(HIDDEN_MODE_LABELS), ["matriz"]);   // ronda 25 (D-52)   // ronda 28a: y la matriz vieja
   if (!taller && SOLO_TALLER.includes(layoutMode)){
-    document.getElementById("modeSelect").value = "indice";
-    setMode("indice");
+    const m = layoutMode === "matriz" ? vistaEnEstudio("matriz") : "indice";   // ronda 28a
+    document.getElementById("modeSelect").value = m;
+    setMode(m);
   }
   // y el filtro [REVISAR] no puede quedar puesto si deja de poder sacarse
   if (!taller){
@@ -6615,6 +6783,19 @@ function headerH(){ return parseFloat(getComputedStyle(document.documentElement)
 // ronda de carga (B): durante el arranque, syncHeader no mide el encabezado (medirlo obliga a diseñar la página a medio
 // armar, otra vez en cada llamada); mide una sola vez al final del arranque
 let arrancando = true;
+// ronda 28a: en el teléfono, si el nombre de la vista no entra en el selector, la letra se achica lo justo (no menos de 11 px)
+// en vez de cortarse a mitad de palabra; se mide junto con el encabezado (nunca durante el arranque)
+function selVistaAjustar(){
+  const s = document.getElementById("modeSelect"); if (!s) return;
+  s.style.fontSize = "";
+  if (!esTelefono() || s.selectedIndex < 0) return;
+  const cs = getComputedStyle(s), cv = selVistaAjustar.cv || (selVistaAjustar.cv = document.createElement("canvas").getContext("2d"));
+  cv.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+  const txt = cv.measureText(s.options[s.selectedIndex].text).width, hay = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+  if (txt > hay && hay > 0) s.style.fontSize = Math.max(11, Math.floor(parseFloat(cs.fontSize) * hay / txt * 10) / 10) + "px";
+}
+// cuando llegan las fuentes (la marca y el selector cambian de ancho), el nombre se vuelve a ajustar
+if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener("loadingdone", () => { if (!arrancando) selVistaAjustar(); });
 function syncHeader(){
   const row2 = document.querySelector(".header-row2");
   const ctrls = [...row2.children].filter(el => el.id !== "optsToggle" && el.id !== "hintInline");
@@ -6630,6 +6811,7 @@ function syncHeader(){
   if (typeof renderVistaHead === "function") renderVistaHead();
   const menu = document.getElementById("hdrMenu"); if (menu) menu.classList.toggle("con-fold", layoutMode === "indice");   // ronda 27
   if (arrancando) return;
+  selVistaAjustar();   // ronda 28a
   const hh = Math.round(document.querySelector("header").getBoundingClientRect().height);
   const hhAntes = headerH();
   document.documentElement.style.setProperty("--header-h", hh + "px");
@@ -6644,9 +6826,20 @@ const LIENZOS_RETIRADOS = ["catlienzo", "canonica", "refscruzadas", "conexlienzo
 // ronda 25 (D-52): las vistas del grupo «Taller» (la cola, los candidatos y, desde D-52, Recorridos, Cifras y la Nube, que
 // Ezequiel conserva para él); con los lienzos ocultos, son las que el estudio no abre
 const VISTAS_TALLER = ["curacion", "candidatos", "cadenas", "stats", "nube"];
+const FUERA_DEL_MENU = { grafo: "La red de un título", matriz: "Libros y temas (la tabla vieja)" };   // ronda 28a
+// ronda 28a: en el estudio, la matriz vieja lleva al Mapa en «Temas por parte de la Biblia»
+function vistaEnEstudio(m){ if (m === "matriz"){ mapaManera = "temas"; mapaLibro = null; return "tiempo"; } return m; }
 function ensureModeOption(mode){
   const sel = document.getElementById("modeSelect");
+  sel.querySelectorAll("option[data-fuera]").forEach(o => { if (o.value !== mode) o.remove(); });   // ronda 28a
   if ([...sel.options].some(o => o.value === mode)) return;
+  if (FUERA_DEL_MENU[mode] && !(mode === "matriz" && !esTaller())){   // ronda 28a: la red, en «Relacionar» mientras se está en ella
+    const o = new Option(FUERA_DEL_MENU[mode], mode); o.dataset.fuera = "1";
+    (mode === "grafo" ? document.getElementById("grupoRelacionar") : document.getElementById("hiddenModesGroup")).appendChild(o);
+    if (mode !== "grafo") document.getElementById("hiddenModesGroup").style.display = null;
+    sel.value = mode;   // quien llama pudo elegirla antes de que existiera (grafoGoTo)
+    return;
+  }
   const grp = document.getElementById("hiddenModesGroup");
   grp.style.display = null; grp.appendChild(new Option(HIDDEN_MODE_LABELS[mode] || mode, mode));
 }
@@ -6654,7 +6847,7 @@ function setMode(mode){
   ensureModeOption(mode);
   if (mode !== layoutMode && document.getElementById("advPanel").style.display === "block") advToggle(false);   // ronda 22
   layoutMode = mode;
-  document.getElementById("hint").innerHTML = MODE_HINTS[mode] || "";
+  { const h = MODE_HINTS[mode]; document.getElementById("hint").innerHTML = (typeof h === "function" ? h() : h) || ""; }   // ronda 28a
   const isMatrix = mode === "matriz";
   const isCinetica = mode === "cinetica";
   const isRadar = mode === "radar";
@@ -7177,7 +7370,7 @@ function saveViewState(){
       cadPath: cadPath.map(s => ({ id: s.id, rel: s.rel, cycle: !!s.cycle })),
       grafoFocus: grafoFocusId,
       redCapas, entreCapas, entreNivel, entreContinuidad,   // ronda 23; ronda 24
-      mapaLibro,   // ronda 26
+      mapaLibro, mapaManera,   // ronda 26; ronda 28a
     }));
   } catch (e) { /* localStorage no disponible: la sesión sigue funcionando igual */ }
 }
@@ -7457,11 +7650,11 @@ function selRender(){
       <span class="sel-acc-g">${b("copiar", "Copiar")}${b("imprimir", "Imprimir")}${b("md", "Descargar como texto", ' title="Un archivo de texto (.md), que se abre con cualquier editor"')}</span>
       <span class="sel-acc-g">${b("exportar", "Archivo para otro dispositivo")}${b("importar", "Traer un archivo")}${b("enlace", "Copiar enlace", grande ? ` disabled title="Con más de ${SEL_ENLACE_MAX} títulos, usá el archivo"` : "")}</span>
       <span class="sel-acc-g">${b("vaciar", "Vaciar")}</span></div>
-      <p class="sel-nota-salidas">Lo que copiás, imprimís o descargás lleva el título, la referencia, el versículo de la Reina-Valera 1960, tu nota y el enlace a la ficha. ${grande ? `El enlace sirve hasta ${SEL_ENLACE_MAX} títulos; para más, el archivo.` : "El enlace lleva los títulos, no tus notas."}</p>
+      <p class="sel-nota-salidas">Lo que copiás, imprimís o descargás lleva el título, la referencia, ${F.length <= SEL_TEXTO_MAX ? "el versículo de la Reina-Valera 1960, " : ""}tu nota y el enlace a la ficha.${F.length > SEL_TEXTO_MAX ? ` ${SEL_SIN_TEXTO}` : ""} ${grande ? `El enlace sirve hasta ${SEL_ENLACE_MAX} títulos; para más, el archivo.` : "El enlace lleva los títulos, no tus notas."}</p>
       <ol class="sel-lista">${F.map((d, i) => selItemHtml(d, i, true, F.length)).join("")}</ol>`
     : `<div class="sel-vacia"><p>Todavía no guardaste ningún título. Se agregan:</p>
-      <ul><li>desde la ficha: «☆ Guardar en Mi selección»;</li><li>desde el índice: la estrella ☆ de cada fila;</li>
-      <li>después de buscar o filtrar: «Guardar estos», junto a la cuenta;</li><li>desde las listas de «Por tema», de «Libros y temas» y de «La red de un título».</li></ul>
+      <ul><li>desde la ficha: «☆ Guardar»;</li><li>desde Por libro: la estrella ☆ de cada fila;</li>
+      <li>después de buscar o filtrar: «Guardar estos», junto a la cuenta;</li><li>desde Por tema: «Guardar estos», en la lista de un tema o del cruce de dos.</li></ul>
       <p>${b("importar", "Traer un archivo")} si ya tenías una lista en otro dispositivo.</p></div>`}
     <input type="file" id="selArchivo" accept=".json,application/json" hidden>
     ${F.length && F.some(d => d.version === "RVR1960") ? `<div class="rvr-pie sel-rvr">${AVISO_RVR}</div>` : ""}</section>`;
@@ -7507,35 +7700,40 @@ function selInput(e){
 }
 // ── las salidas: lo mismo en tres formatos. D-48: el versículo de la RVR1960 y, al pie, la línea de derechos, una vez
 function selSalida(){ return selVivos().map(x => nodeById[x.id]); }
-function selConRVR(F){ return F.some(d => d.texto && d.version === "RVR1960"); }
+const SEL_TEXTO_MAX = 50;   // ronda 28a (D-80): las salidas de Mi selección llevan el versículo hasta 50 fichas
+const SEL_SIN_TEXTO = `Con más de ${SEL_TEXTO_MAX} fichas, la lista va sin el texto bíblico: para el versículo, cada ficha lleva su enlace.`;
+function selConTexto(F){ return F.length <= SEL_TEXTO_MAX; }
+function selConRVR(F){ return selConTexto(F) && F.some(d => d.texto && d.version === "RVR1960"); }
 function selFecha(){ return new Date().toLocaleDateString("es", { day: "numeric", month: "long", year: "numeric" }); }
 function selTextoPlano(){   // WhatsApp: *negrita*; Word recibe el HTML
   const F = selSalida(), L = [`*Mi selección* — Jesús en la Biblia (${selPlural(F.length)})`, ""];
   F.forEach((d, i) => {
     L.push(`*${i + 1}. ${d.title}* — ${d.ref}`);
-    if (d.texto) L.push(`“${d.texto}”${d.version && d.version !== "RVR1960" ? ` (${d.version})` : ""}`);
+    if (d.texto && selConTexto(F)) L.push(`“${d.texto}”${d.version && d.version !== "RVR1960" ? ` (${d.version})` : ""}`);
     const no = selNotaDe(d.id); if (no) L.push(`Mi nota: ${no}`);
     L.push(selFichaUrl(d.id), "");
   });
   if (selConRVR(F)) L.push(AVISO_RVR);
+  if (!selConTexto(F)) L.push(SEL_SIN_TEXTO);
   return L.join("\n");
 }
 function selHtml(){
   const F = selSalida();
   return `<h1>Mi selección</h1><p class="sp-sub">Jesús en la Biblia · ${escHtml(SITIO_URL)} · ${escHtml(selFecha())} · ${selPlural(F.length)}</p>
     <ol>${F.map(d => { const no = selNotaDe(d.id);
-      return `<li><p><b>${escHtml(d.title)}</b> — ${escHtml(d.ref)}</p>${d.texto ? `<blockquote>“${escHtml(d.texto)}”${d.version && d.version !== "RVR1960" ? ` (${escHtml(d.version)})` : ""}</blockquote>` : ""}${no ? `<p class="sp-nota"><i>Mi nota:</i> ${escHtml(no).replace(/\n/g, "<br>")}</p>` : ""}<p class="sp-enl"><a href="${selFichaUrl(d.id)}">${selFichaUrl(d.id)}</a></p></li>`; }).join("")}</ol>
-    ${selConRVR(F) ? `<p class="sp-rvr"><small>${AVISO_RVR}</small></p>` : ""}`;
+      return `<li><p><b>${escHtml(d.title)}</b> — ${escHtml(d.ref)}</p>${d.texto && selConTexto(F) ? `<blockquote>“${escHtml(d.texto)}”${d.version && d.version !== "RVR1960" ? ` (${escHtml(d.version)})` : ""}</blockquote>` : ""}${no ? `<p class="sp-nota"><i>Mi nota:</i> ${escHtml(no).replace(/\n/g, "<br>")}</p>` : ""}<p class="sp-enl"><a href="${selFichaUrl(d.id)}">${selFichaUrl(d.id)}</a></p></li>`; }).join("")}</ol>
+    ${selConRVR(F) ? `<p class="sp-rvr"><small>${AVISO_RVR}</small></p>` : ""}${selConTexto(F) ? "" : `<p class="sp-sub">${escHtml(SEL_SIN_TEXTO)}</p>`}`;
 }
 function selMd(){
   const F = selSalida(), L = ["# Mi selección", "", `Jesús en la Biblia · ${SITIO_URL} · ${selFecha()} · ${selPlural(F.length)}`, ""];
   F.forEach((d, i) => {
     L.push(`## ${i + 1}. ${d.title} — ${d.ref}`, "");
-    if (d.texto) L.push(`> “${d.texto}”${d.version && d.version !== "RVR1960" ? ` (${d.version})` : ""}`, "");
+    if (d.texto && selConTexto(F)) L.push(`> “${d.texto}”${d.version && d.version !== "RVR1960" ? ` (${d.version})` : ""}`, "");
     const no = selNotaDe(d.id); if (no) L.push(`**Mi nota:** ${no.replace(/\n/g, "  \n")}`, "");
     L.push(`[Ver la ficha](${selFichaUrl(d.id)})`, "");
   });
   if (selConRVR(F)) L.push("---", "", AVISO_RVR, "");
+  if (!selConTexto(F)) L.push("---", "", SEL_SIN_TEXTO, "");
   return L.join("\n");
 }
 async function selCopiar(){
@@ -7656,7 +7854,7 @@ function fichaPorQueDios(d){
 // explicación corta, siempre a la vista (cualquier ficha puede ser la primera que alguien abre), «¿qué significa?» (el texto
 // del glosario, ahí mismo) y, si hay palabra original, «ver la palabra ↓». La palabra original pasa a «El texto original»;
 // las conexiones, a su sección.
-const MARCA_NOMBRE = { lexico: "En el texto", profecia: "Anuncio", tipologia: "Figura", "": "Sin clasificar" };
+const MARCA_NOMBRE = { lexico: "En el texto", profecia: "Anuncio", tipologia: "Figura", "": "Sin marca anotada" };   // ronda 28a
 const MARCA_GLOSA = { lexico: "en-el-texto", profecia: "anuncio", tipologia: "figura-marca" };
 const MARCA_ICONO = { lexico: { g: "●", c: "var(--ok)" }, profecia: { g: "◑", c: "var(--accent-blue)" },
                       tipologia: { g: "◐", c: "var(--gold-bright)" }, "": { g: "○", c: "var(--ink-3)" } };
@@ -8266,7 +8464,7 @@ function openPanel(d){
     ${tit.sub ? `<div class="ficha-sub">${escHtml(tit.sub)}</div>` : ""}
     ${origenTexto(d.origen) ? `<div class="ficha-origen">${escHtml(origenTexto(d.origen))}</div>` : ""}
     <div class="ref">${escHtml(d.ref)} · ${d.testamento === "AT" ? "Antiguo Testamento" : "Nuevo Testamento"}</div>
-    ${d.texto ? `<div class="passage">“${escHtml(d.texto)}”</div>` : ""}
+    ${d.texto ? `<div class="passage">“${escHtml(d.texto)}”</div>` : versoFuera(d)}
     ${fichaVersoLinea(d)}
     ${d.descripcion ? `<p class="ficha-desc">${escHtml(d.descripcion)}</p>` : ""}
     ${fichaGemelos(d)}
@@ -8389,7 +8587,7 @@ function lectorCapa(){
   if (layoutMode === "indice") return indexLayer;
   if (layoutMode === "seleccion") return document.getElementById("selLayer");
   if (layoutMode === "tiempo") return document.getElementById("mapaLayer");
-  if (layoutMode === "categorias") return esTelefono() ? catredLayer : catredLayer.querySelector(".catred-side");
+  if (layoutMode === "categorias") return catredLayer;   // ronda 28a: la capa entera se desplaza
   return null;
 }
 function lectorAbrir(nodos, origen, desde){
@@ -8896,8 +9094,8 @@ function renderFilterChips(){
   if (f.noTip) chips.push(fcChip("sin tipológicos", "noTip"));
   if (f.conexion) chips.push(fcChip("con conexión anotada", "conexion"));
   if (f.marked) chips.push(fcChip("solo marcados", "marked"));
-  if (f.lectura) chips.push(fcChip(f.lectura === "(sin dato)" ? "sin clasificar" : (LECTURA_LABELS[f.lectura] || f.lectura), "lectura"));
-  if (f.sujeto) chips.push(fcChip(f.sujeto === "(sin dato)" ? "sujeto sin clasificar" : "habla de " + (SUJETO_LABELS[f.sujeto] || f.sujeto), "sujeto"));
+  if (f.lectura) chips.push(fcChip(f.lectura === "(sin dato)" ? "sin marca anotada" : (LECTURA_LABELS[f.lectura] || f.lectura), "lectura"));   // ronda 28a
+  if (f.sujeto) chips.push(fcChip(f.sujeto === "(sin dato)" ? "sin sujeto anotado" : "habla de " + (SUJETO_LABELS[f.sujeto] || f.sujeto), "sujeto"));
   if (filtroPausa && !chips.length){ cont.classList.add("on"); cont.innerHTML = FILTRO_PAUSA_CHIP; return; }   // ronda 19
   cont.classList.toggle("on", chips.length > 0);
   if (!chips.length){ cont.innerHTML = ""; return; }
@@ -9232,7 +9430,7 @@ function renderLexSide(rootVisible){
   lexSide.innerHTML = `<div class="lexside-head">
       <div class="catred-side-title">Palabras <em>${rows.length}</em></div>
       <input id="lexSideQ" type="search" placeholder="palabra, código o título…" value="${lexSideQuery.replace(/"/g, "&quot;")}">
-      <div class="catred-side-sub">ordenadas por cuántos títulos las usan · ${innerWidth < 720 ? "tocá una para ver sus títulos" : "click enfoca y abre la ficha"}</div>
+      <div class="catred-side-sub">ordenadas por cuántos títulos las usan · ${toca()} una para ${esTelefono() ? "ver sus títulos" : "enfocarla y abrir su ficha"}</div>
     </div>
     ${rows.map(({ r, lex, gl, titles }) => `<div class="lexside-row${lexicaFocusId === r.id ? " on" : ""}" onclick='lexGoTo(${JSON.stringify(r.id)})'>
       <span class="lexside-dot ${r.lang === "Hebreo" ? "heb" : "grk"}"></span>
@@ -9330,7 +9528,7 @@ function openCompare(){
   if (shared.length) summary += `<div class="comp-summary">${shared.map(s => `<span class="comp-group" style="border-color:${groupColor[s.code]}"><b style="color:${groupColor[s.code]}">${s.code}</b> compartido por ${s.idx.map(i => items[i].title).join(" · ")}</span>`).join("")}</div>`;
   if (lxx.length) summary += `<div class="comp-summary">${lxx.map(l => `<span class="comp-group" style="border-color:var(--accent-violet)"><b style="color:var(--accent-violet)">α LXX ${l.pair}</b> une ${items[l.i].title} ↔ ${items[l.j].title}</span>`).join("")}</div>`;
   if (mismo.length) summary += `<div class="comp-summary">${mismo.map(l => `<span class="comp-group"><b>≡ mismo pasaje</b> ${items[l.i].title} · ${items[l.j].title}</span>`).join("")}</div>`;
-  if (!summary) summary = `<div class="comp-summary comp-none">Sin códigos Strong, puentes LXX ni pasajes en común entre estas entradas.</div>`;
+  if (!summary) summary = `<div class="comp-summary comp-none">Estos títulos no comparten palabras originales ni pasajes.</div>`;   // ronda 28a
 
   const body = document.getElementById("compBody");
   body.innerHTML = `
@@ -9483,7 +9681,7 @@ function openExport(ids){
   renderExport();
   document.getElementById("expOverlay").style.display = "flex";
 }
-function openExportFiltered(){ openExport(rawNodes.filter(isVisible).map(n => n.id)); }
+function openExportFiltered(){ if (!esTaller()) return; openExport(rawNodes.filter(isVisible).map(n => n.id)); }   // ronda 28a (D-80): solo en el taller
 function closeExport(){ document.getElementById("expOverlay").style.display = "none"; }
 function expSet(k, v){ expOpts[k] = v; expSaveOpts(); if (expItems.length) renderExport(); }
 function renderExport(){
@@ -9545,7 +9743,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document
   // ronda 13: en el estudio, una vista de laboratorio (los lienzos, la cola, los candidatos) no se
   // abre ni un instante: el enlace cae en el índice y la URL lo dice
   const LAB = VISTAS_TALLER.concat(Object.keys(HIDDEN_MODE_LABELS));   // ronda 25 (D-52)
-  const mode = !esTaller() && LAB.includes(pedido) ? "indice" : pedido;
+  const mode = !esTaller() && pedido === "matriz" ? vistaEnEstudio("matriz") : !esTaller() && LAB.includes(pedido) ? "indice" : pedido;   // ronda 28a
   if (state) {
     document.getElementById("search").value = state.search || "";
     document.getElementById("onlyTipologia").checked = !!state.onlyTipologia;
@@ -9560,10 +9758,12 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document
     advRestore(state.adv);
     if (Array.isArray(state.cadPath) && state.cadPath.every(s => nodeById[s.id])) cadPath = state.cadPath;
     if (typeof state.mapaLibro === "string" && CANON_ALL.includes(state.mapaLibro)) mapaLibro = state.mapaLibro;   // ronda 26
+    if (state.mapaManera === "temas" || state.mapaManera === "libros") mapaManera = state.mapaManera;   // ronda 28a
   }
   // ronda 19 (F12): llegó con un enlace a una ficha: el filtro de otra visita queda en pausa mientras esté abierta
   if (fromUrl.id && nodeById[fromUrl.id]) filtroPausar();
   try { if (localStorage.getItem("jeb-advopen") === "1") advToggle(true); } catch (e) {}
+  if (mode === "tiempo" && pedido === "matriz"){ mapaManera = "temas"; mapaLibro = null; }   // ronda 28a: después de lo guardado
   ensureModeOption(mode);
   document.getElementById("modeSelect").value = mode;
   setMode(mode);
