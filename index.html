@@ -168,10 +168,6 @@
   .node.selected circle{ stroke:var(--gold-bright); stroke-width:2px; filter:url(#goldGlow); }
   .node.selected text{ opacity:1 !important; font-size:var(--t-5); fill:var(--gold-bright); }
   svg.zoomed .node text{ opacity:0.85; }
-  #catFloatLabels{ transition:opacity 0.3s; }
-  svg.zoomed #catFloatLabels{ opacity:0 !important; }
-  .book-tick-label{ opacity:0; transition:opacity 0.2s; }
-  svg.zoomed .book-tick-label{ opacity:0.7; }
   .node.revisar circle{ stroke:var(--danger); stroke-width:1.5px; stroke-dasharray:1.5 1; }
   #indexLayer::-webkit-scrollbar{ width:10px; }
   #indexLayer::-webkit-scrollbar-thumb{ background:var(--line-dim); border-radius:5px; }
@@ -430,8 +426,6 @@
     opacity:0.55; pointer-events:none; transition:opacity 0.2s; }
   .typo-link.dim{ opacity:0.06; }
   .typo-link.highlight{ opacity:0.95; stroke-width:1.6px; }
-  .refs-cruz-link{ fill:none; stroke:var(--accent-blue); stroke-width:0.7px; stroke-dasharray:0.5 3;
-    opacity:0.45; pointer-events:none; }
 
   #panel{ position:absolute; top:0; right:0; height:100%; width:var(--ficha-w);
     background:var(--panel-bg); color:var(--ink-1); transform:translateX(100%);
@@ -584,6 +578,8 @@
     cursor:pointer; text-decoration:underline; text-underline-offset:2px; text-align:left; }
   #panel .passage + .rvr-pie{ margin:0 0 12px; }   /* el aviso va pegado al versículo, antes de las acciones */
   #panel .ficha-lee{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:2px 0 18px; }
+  #panel{ overflow-x:hidden; } #panel-body{ container-type:inline-size; }   /* ronda 30b */
+  @container (max-width:540px){ #panel .ficha-lee{ flex-wrap:wrap !important; } }
   @media (min-width:1280px){ :root{ --ficha-w:600px; } }   /* ronda 29a (D-95): más ancha de entrada (el lector la cambia) */
   @media (min-width:720px){
     #panel .ficha-lee{ flex-wrap:nowrap; } #panel .ficha-lee .fbtn{ white-space:nowrap; }
@@ -1553,7 +1549,7 @@ body.light{ --accent-blue-ink:#34608B; }
     color:var(--parchment-dim); opacity:0.75; max-width:190px; text-align:right; line-height:1.4; }
   #hint.off{ display:none; }
   /* ronda 15 (B17): en el tema claro, las líneas de ayuda sin transparencia y con --ink-2 (4,5:1 o más; barrido_temas las mide) */
-  body.light #hint, body.light #conexHint, body.light #refsCruzCount, body.light .cand-legend{ opacity:1 !important; color:var(--ink-2) !important; }
+  body.light #hint, body.light .cand-legend{ opacity:1 !important; color:var(--ink-2) !important; }
   /* ---- 3a: header compacto / móvil ---- */
   #hdrMore, #optsToggle, #hintInline{ display:none; }
   /* ronda 27 (A): la barra en una fila; «⋯» abre un menú */
@@ -1671,7 +1667,7 @@ body.light{ --accent-blue-ink:#34608B; }
     #optsToggle{ display:inline-flex; }
     #hintInline{ width:100%; font-size:var(--t-6); color:var(--parchment-dim); opacity:0.7; line-height:1.4; }
     #legend{ display:none !important; }
-    #hint, #conexHint, #refsCruzCount{ display:none !important; }
+    #hint{ display:none !important; }
     #zoomControls{ bottom:16px; right:12px; }
     #panel{ width:100%; padding:52px 18px 40px; }
     /* ronda 19: la barra de la ficha y la ✕ quedan fijas arriba al bajar, en una sola franja (top negativo: el sticky se
@@ -2034,6 +2030,38 @@ body.light{ --accent-blue-ink:#34608B; }
   .re .re-n.fuera{ opacity:.12; } .re .re-n.fuera .re-t{ display:none; }
   .re .re-n.sel .re-c{ stroke:var(--gold-bright); stroke-width:3; }
   .re .re-n.sel .re-t{ fill:var(--gold-bright); font-weight:600; }
+  /* ronda 30b (D-103): los nombres de las dos redes, a tamaño fijo en la pantalla (--zk = 1 / acercamiento), con un borde del color
+     del fondo que los separa de las líneas; se ven los que elige rotActualizar (.rot) */
+  #lexRedLayer, .re .re-capa{ --zk:1; }
+  #lexRedLayer text.rot-t, .re text.rot-t{ display:none; font-size:calc(13px * var(--zk)) !important; paint-order:stroke; stroke:var(--night);
+    stroke-width:calc(3.5px * var(--zk)); stroke-linejoin:round; }
+  #lexRedLayer text.rot-t.rot, .re text.rot-t.rot{ display:block; }
+  #lexRedLayer .rot-g{ font-family:'Source Sans 3', sans-serif; }
+  #lexRedLayer .lx-heb{ stroke:var(--gold); } #lexRedLayer .lx-grc{ stroke:var(--accent-blue); }
+  #lexRedLayer .lex-root.selected .vis-circle{ stroke:var(--gold-bright); stroke-width:3px; filter:url(#goldGlow); }
+  #lexRedLayer .lex-title.sincat{ opacity:.1; }
+  /* un título encendido desde la ficha de la palabra (o en la red, con su renglón en la ficha) */
+  #lexRedLayer .lex-title.lx-enc .vis-circle{ stroke:var(--gold-bright); stroke-width:3px; r:9px; }
+  #panel .lx-t.lx-enc{ background:rgba(201,162,39,0.16); }
+  #lexRedLayer .lx-etq{ font-family:'Cormorant Garamond', serif; font-size:var(--t-5); fill:var(--parchment); pointer-events:none;
+    paint-order:stroke; stroke:var(--night); stroke-width:3px; stroke-linejoin:round; }
+  #lexRedLayer .lx-etq-sel{ fill:var(--gold-bright); font-weight:600; font-size:var(--t-4); font-family:'Source Sans 3', sans-serif; }
+  #lexRedLayer .lx-guia{ stroke:var(--parchment-dim); stroke-width:.7; opacity:.55; }
+  #legend.sobre-red{ background:var(--night); border:1px solid var(--line-dim); border-radius:10px; padding:6px 10px; }
+  /* más contraste en el tema claro (las IA): las líneas y los contornos, más oscuros */
+  body.light #lexRedLayer .lex-link{ stroke:#7A5C0E; } body.light #lexRedLayer .lex-par-l{ stroke:#4A4033; }
+  body.light #lexRedLayer .lx-heb{ stroke:#8A6A0A; } body.light #lexRedLayer .lx-grc{ stroke:#24508A; }
+  body.light #lexRedLayer .lex-title .vis-circle{ stroke:rgba(0,0,0,.45); stroke-width:.8; }
+  body.light .re .re-l{ stroke:#7A5C0E; } body.light .re .re-c{ stroke:rgba(0,0,0,.45); }
+  #lexRedLayer .lex-par-l{ stroke:var(--parchment-dim); stroke-width:1.2; stroke-dasharray:5 4; }
+  #lexRedLayer .lex-par-l.dim{ opacity:0.04 !important; }
+  #lexRedLayer .lx-zona-t, .re .re-franja-t{ font-family:'Cormorant Garamond', serif; font-size:calc(16px * var(--zk)); font-weight:600; fill:var(--gold-bright);
+    letter-spacing:.02em; paint-order:stroke; stroke:var(--night); stroke-width:calc(4px * var(--zk)); stroke-linejoin:round; pointer-events:none; }
+  .re .re-franja-t{ fill:var(--parchment-dim); font-weight:500; }
+  #lexRedLayer.con-foco .lx-zona-t, .re .con-foco .re-franja-t{ opacity:.07; }
+  /* con algo elegido, lo demás casi apagado */
+  #lexRedLayer .lex-root.hoverdim, #lexRedLayer .lex-title.hoverdim{ opacity:0.07; }
+  .re .re-n.fuera{ opacity:.07; } .re .re-l.fuera{ opacity:.03; }
   @media (max-width: 719px){ #redEntera{ top:auto; bottom:0; left:0; right:0; width:auto; max-height:42vh; border-radius:var(--r-card) var(--r-card) 0 0; }
     #redEntera .rl-b{ min-height:44px; } .re .re-n.vec .re-t{ font-size:var(--t-6); } }
   #redLista h3{ font:600 var(--t-2) 'Cormorant Garamond', Georgia, serif; color:var(--gold-bright); margin:0; line-height:1.15; }
@@ -2249,7 +2277,6 @@ body.light{ --accent-blue-ink:#34608B; }
       <label id="radarRelativeLabel" class="toggle" style="display:none;"><input type="checkbox" id="radarRelative"> % de los títulos del libro</label>
       <button id="radarSimilar" class="hbtn" style="display:none;">Libro más parecido a A</button>
       <label id="cineticaTotalLabel" class="toggle" style="display:none;"><input type="checkbox" id="cineticaTotal"> densidad total (todas las categorías)</label>
-      <label id="refsCruzExcludeLabel" class="toggle" style="display:none;"><input type="checkbox" id="refsCruzExcludeRecip"> excluir origen 100% recíproco</label>
       <select id="matrixValue" class="hsel" aria-label="Valor de cada celda" style="display:none;" onchange="matrixSetOpt('value', this.value)">
         <option value="count">valor: conteo</option>
         <option value="pct">valor: % de los títulos de la columna</option>
@@ -2276,9 +2303,6 @@ body.light{ --accent-blue-ink:#34608B; }
         <option value="5">5+ títulos compartidos</option>
         <option value="10">10+ títulos compartidos</option>
       </select>
-      <label id="conexCandidatesLabel" class="toggle" style="display:none;"><input type="checkbox" id="conexShowCandidates"> candidatos automáticos al pasar el mouse (sin curar)</label>
-      <label id="conexCircularLabel" class="toggle" style="display:none;"><input type="checkbox" id="conexCircularToggle"> disposición circular</label>
-      <label id="canonCircularLabel" class="toggle" style="display:none;"><input type="checkbox" id="canonCircularToggle"> disposición circular</label>
       <button id="nubeExportPng" onclick="nubeExport('png')" class="hbtn" style="display:none;">Exportar PNG</button>
       <button id="nubeExportSvg" onclick="nubeExport('svg')" class="hbtn ghost" style="display:none;">SVG</button>
       <button id="nubeResetBtn" onclick="nubeResetPositions()" class="hbtn" style="display:none;">Reiniciar posiciones</button>
@@ -2292,7 +2316,6 @@ body.light{ --accent-blue-ink:#34608B; }
     <button id="zoomOut" title="Alejar" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-3); cursor:pointer;">−</button>
     <button id="zoomFit" title="Centrar / ajustar a pantalla" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-5); cursor:pointer;">⤢</button>
   </div>
-  <div id="refsCruzCount" style="display:none; position:absolute; bottom:16px; left:24px; z-index:5; font-size:var(--t-5); color:var(--parchment-dim); opacity:0.7; max-width:420px;">Pasá el mouse sobre un título para ver sus referencias cruzadas.</div>
   <div id="nubeLoading"><div class="nube-spin"></div><span>Componiendo la nube…</span></div>
   <div id="advPanel" class="sur-cristal" style="display:none;"></div>
   <div id="compTray"></div>
@@ -2309,7 +2332,6 @@ body.light{ --accent-blue-ink:#34608B; }
   <div id="grafoEnf" role="region" aria-label="Entre Testamentos"></div>
   <div id="redLista" role="region" aria-label="Los vínculos del título elegido"></div>
   <div id="redEntera" role="region" aria-label="La red entera"></div>
-  <div id="conexHint" style="display:none; position:absolute; bottom:16px; left:24px; z-index:5; font-size:var(--t-5); color:var(--parchment-dim); opacity:0.7; max-width:380px;">Anillo <span style="color:var(--amber);">ámbar</span> = tipología todavía sin conexión anotada.</div>
   <div id="promotionsIndicator" onclick="downloadPromotions()" style="display:none; position:absolute; top:var(--header-h); left:50%; transform:translateX(-50%); z-index:6; background:rgba(110,155,107,0.18); border:1px solid var(--ok); border-radius:100px; padding:7px 16px; font-size:var(--t-5); color:var(--ok); cursor:pointer;"></div>
   <div id="indexLayer" tabindex="-1" style="display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:10px 5% 80px;"></div>
   <div id="conexLayer"></div>
@@ -2496,9 +2518,7 @@ try { if (localStorage.getItem("jeb-modo") === "taller") jebModo = "taller"; } c
 })();
 function esTaller(){ return jebModo === "taller"; }
 
-// ---------- Períodos canónicos, compartidos por la línea canónica y la cinética ----------
-// (van acá, apenas tenemos rawNodes, porque canonPeriodBands los usa mucho antes
-// de llegar a la sección de la matriz — moverlos evita el ReferenceError de TDZ)
+// ---------- Períodos canónicos, compartidos por las vistas vigentes ----------
 const PERIOD_DEFS = [
   { name: "Pentateuco", books: ["Génesis","Éxodo","Levítico","Números","Deuteronomio"], color: "#8B5FA6" },
   { name: "Históricos", books: ["Josué","Jueces","Rut","1 Samuel","2 Samuel","1 Reyes","2 Reyes","1 Crónicas","2 Crónicas","Esdras","Nehemías","Ester"], color: "#5B7FA6" },
@@ -2742,9 +2762,8 @@ const zoomBehavior = d3.zoom().scaleExtent([0.05, 8]).on("zoom", (e) => {
   // espacio ENTRE nodos, no el texto, y dejan de superponerse.
   nodeSel.selectAll("text").style("font-size", (BASE_FONT / k) + "px");
   nodeSel.selectAll("circle").attr("r", d => (d.tipologia ? BASE_R_TIP : BASE_R) / k);
-  d3.selectAll(".book-tick-label").style("font-size", (7 / k) + "px");
-  if ((layoutMode === "canonica" || layoutMode === "refscruzadas") && !canonicaCircular) declutterCanonLabels(k);
   svg.classed("zoomed", k > 1.15);
+  if (rotActiva) rotPedir();   // ronda 30b: los nombres de las dos redes, por importancia y sin pisarse
 });
 svg.call(zoomBehavior);
 
@@ -2758,17 +2777,6 @@ function fitView(x0, y0, x1, y1, pad, reserve){
   const tx = leftR + pad + (availW - k*(x1 - x0))/2 - k*x0;
   const ty = topR + pad + (reserve.alignTop ? 0 : (availH - k*(y1 - y0))/2) - k*y0;   // ajustes: alignTop
   svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity.translate(tx, ty).scale(k));
-}
-
-// encuadra la línea canónica / referencias cruzadas: caja ancha y baja en
-// modo lineal, caja cuadrada centrada en el círculo en modo circular.
-function fitCanonView(){
-  if (canonicaCircular){
-    const m = conexCircleR + 70;
-    fitView(conexCircleCx - m, conexCircleCy - m, conexCircleCx + m, conexCircleCy + m, 20, {top:headerH()});
-  } else {
-    fitView(canonLeft - 40, rowTop - 90, canonRight + 40, rowBottom + 70, 20, {top:headerH()});
-  }
 }
 
 // anclas de categoría: las 15 categorías completas (antes solo las que
@@ -2792,27 +2800,6 @@ CATS_ORDER.forEach((c, i) => {
   catAnchor[c] = { x: width/2 + R*Math.cos(angle), y: centerY + R*Math.sin(angle) };
 });
 
-// contorno suave (blob) detrás de cada cluster, del tamaño de la categoría,
-// más el nombre flotando cerca del centro — para delimitar visualmente
-// dónde "empieza y termina" cada categoría, sin depender solo de la
-// leyenda de abajo.
-const catBlobs = g.append("g").attr("id", "catBlobs").style("display", "none");
-const catFloatLabels = g.append("g").attr("id", "catFloatLabels").style("display", "none");
-CATS_ORDER.forEach(c => {
-  const count = rawNodes.filter(n => n.cats.includes(c)).length;
-  const r = Math.max(45, Math.min(150, Math.sqrt(count) * 10));
-  catBlobs.append("circle")
-    .attr("cx", catAnchor[c].x).attr("cy", catAnchor[c].y).attr("r", r)
-    .attr("fill", catColors[c] || "#888").attr("opacity", 0.07).attr("stroke", "none");
-  catFloatLabels.append("text")
-    .attr("x", catAnchor[c].x).attr("y", catAnchor[c].y)
-    .attr("text-anchor", "middle").attr("dominant-baseline", "middle")
-    .attr("font-family", "'Cormorant Garamond', serif").attr("font-size", 12.5)
-    .attr("fill", catColors[c] || "#888").attr("opacity", 0.55)
-    .attr("pointer-events", "none").text(c);
-});
-catBlobs.lower();
-
 // ancla multi-foco: si un título tiene varias categorías, se lo atrae
 // al centroide de TODAS ellas (matemáticamente equivalente a sumar una
 // fuerza hacia cada categoría con la misma fuerza total), en vez de
@@ -2825,35 +2812,6 @@ function multiCatAnchor(d){
   return { x, y };
 }
 
-// anclas del modo "conexlienzo": AT a la izquierda, NT a la derecha,
-// categorías como franjas horizontales (mismo carril en ambos lados)
-// para que los vínculos queden casi horizontales y cortos.
-const rowTop = 110, rowBottom = height - 40;
-const catRow = {};
-catsWithNodes.forEach((c, i) => {
-  catRow[c] = rowTop + (i / Math.max(catsWithNodes.length - 1, 1)) * (rowBottom - rowTop);
-});
-const testAnchorX = { AT: width * 0.24, NT: width * 0.76 };
-let conexCircular = false;
-const conexCircleCx = width/2, conexCircleCy = rowTop + (rowBottom-rowTop)/2;
-const conexCircleR = Math.min(width, height) * 0.36;
-function conexCircleAnchor(d){
-  // un solo anillo, ordenado por posición canónica (Génesis arriba, en
-  // sentido horario) — AT y NT quedan naturalmente en mitades opuestas
-  // del círculo sin tener que forzar la separación.
-  const angle = (d.canonIdx / canonMax) * 2*Math.PI - Math.PI/2;
-  return { x: conexCircleCx + conexCircleR*Math.cos(angle), y: conexCircleCy + conexCircleR*Math.sin(angle) };
-}
-function testAnchor(d){
-  if (conexCircular) return conexCircleAnchor(d);
-  return { x: testAnchorX[d.testamento], y: catRow[d.cat] };
-}
-
-// anclas del modo "línea canónica": AT y NT van en dos bandas separadas,
-// cada una con su propia escala (Génesis→Malaquías ocupa el 100% del ancho,
-// igual que Mateo→Apocalipsis) — así el NT no queda comprimido en la
-// fracción minoritaria que le tocaría por cantidad real de versículos.
-// Dentro de cada banda, y = fila de categoría (como antes).
 const canonMax = Math.max(...rawNodes.map(n => n.canonIdx));
 const canonSorted = [...rawNodes].sort((a,b) => a.canonIdx - b.canonIdx);
 
@@ -3249,41 +3207,7 @@ function curExportMd(){
   expDownload(new Blob([L.join("\n")], { type: "text/markdown;charset=utf-8" }), "cola de curacion.md");
 }
 
-const atCanonMin = Math.min(...rawNodes.filter(n=>n.testamento==="AT").map(n=>n.canonIdx));
-const atCanonMax = Math.max(...rawNodes.filter(n=>n.testamento==="AT").map(n=>n.canonIdx));
-const ntCanonMin = Math.min(...rawNodes.filter(n=>n.testamento==="NT").map(n=>n.canonIdx));
-const ntCanonMax = Math.max(...rawNodes.filter(n=>n.testamento==="NT").map(n=>n.canonIdx));
-const canonBandGap = 75;
-const atBandTop = rowTop, atBandBottom = rowTop + (rowBottom - rowTop - canonBandGap) / 2;
-const ntBandTop = atBandBottom + canonBandGap, ntBandBottom = rowBottom;
-const atCatRow = {}, ntCatRow = {};
-catsWithNodes.forEach((c, i) => {
-  const frac = i / Math.max(catsWithNodes.length - 1, 1);
-  atCatRow[c] = atBandTop + frac * (atBandBottom - atBandTop);
-  ntCatRow[c] = ntBandTop + frac * (ntBandBottom - ntBandTop);
-});
-// agrupados por testamento+categoría (fila real) para que el anti-solapamiento
-// de etiquetas compare distancia dentro de la MISMA fila, no entre la fila
-// de AT y la de NT que ahora pueden compartir posición X (cada una tiene su
-// propia escala 0-100%).
-const canonRowGroups = {};
-canonSorted.forEach(n => {
-  const key = n.testamento + "|" + n.cat;
-  (canonRowGroups[key] = canonRowGroups[key] || []).push(n);
-});
-const canonLeft = 60, canonRight = canonLeft + Math.max(rawNodes.length * 15, width * 3);
-let canonicaCircular = false;
-function canonAnchor(d){
-  if (canonicaCircular) return conexCircleAnchor(d);
-  if (d.testamento === "AT"){
-    const x = canonLeft + ((d.canonIdx - atCanonMin) / (atCanonMax - atCanonMin)) * (canonRight - canonLeft);
-    return { x, y: atCatRow[d.cat] };
-  }
-  const x = canonLeft + ((d.canonIdx - ntCanonMin) / (ntCanonMax - ntCanonMin)) * (canonRight - canonLeft);
-  return { x, y: ntCatRow[d.cat] };
-}
-
-let layoutMode = "indice"; // indice | categorias | conexiones | canonica | matriz | ...
+let layoutMode = "indice";
 
 document.getElementById("stats").textContent = `${rawNodes.length} títulos · ${catsWithNodes.length} categorías`;   // ronda 22: sin «(N con texto repetido)»
 
@@ -3425,57 +3349,6 @@ const linkSel = canvasLayer.append("g").selectAll("path")
   .data(rawLinks).join("path")
   .attr("class", "typo-link");
 
-// arcos de la vista "referencias cruzadas": no son estáticos como linkSel —
-// se recalculan al pasar el mouse sobre un título, mostrando solo SUS
-// referencias cruzadas que matchean con otros títulos del proyecto.
-const refsCruzLayer = canvasLayer.append("g");
-let refsCruzLinkSel = refsCruzLayer.selectAll("path");
-const REFS_CRUZ_MAX_ARCS = 15;
-function updateRefsCruzadasArcs(d){
-  const excludeReciprocal = document.getElementById("refsCruzExcludeRecip").checked;
-  if (excludeReciprocal && d.origenRefs === "recíproca") {
-    clearRefsCruzadasArcs();
-    document.getElementById("refsCruzCount").textContent = `${d.title}: origen 100% recíproco, excluido por el filtro activo`;
-    return;
-  }
-  const matches = [];
-  const seen = new Set();
-  (d.refsCruzadas || []).forEach(refStr => {
-    matchRefToNodes(refStr, d.id).forEach(target => {
-      if (!seen.has(target.id)) { seen.add(target.id); matches.push({ source: d, target }); }
-    });
-  });
-  // si hay más matches que el tope, mostramos los canónicamente más cercanos
-  // primero (más fáciles de leer en el arco) y avisamos que se recortó
-  matches.sort((a,b) => Math.abs(a.target.canonIdx - d.canonIdx) - Math.abs(b.target.canonIdx - d.canonIdx));
-  const shown = matches.slice(0, REFS_CRUZ_MAX_ARCS);
-  refsCruzLinkSel = refsCruzLayer.selectAll("path").data(shown).join("path")
-    .attr("class", "refs-cruz-link");
-  renderRefsCruzArcPositions();
-  const countEl = document.getElementById("refsCruzCount");
-  if (countEl) {
-    const truncated = matches.length > REFS_CRUZ_MAX_ARCS ? ` (mostrando los ${REFS_CRUZ_MAX_ARCS} más cercanos, cola recortada)` : "";
-    countEl.textContent = (d.refsCruzadas && d.refsCruzadas.length)
-      ? `${d.title}: ${matches.length} de ${d.refsCruzadas.length} referencias cruzadas coinciden con otro título del proyecto${truncated}`
-      : `${d.title}: sin referencias cruzadas cargadas`;
-  }
-}
-function clearRefsCruzadasArcs(){
-  refsCruzLinkSel = refsCruzLayer.selectAll("path").data([]).join("path");
-  const countEl = document.getElementById("refsCruzCount");
-  if (countEl) countEl.textContent = "Pasá el mouse sobre un título para ver sus referencias cruzadas.";
-}
-function renderRefsCruzArcPositions(){
-  refsCruzLinkSel.attr("d", l => {
-    const s = l.source, t = l.target;
-    // arco elíptico simple: ya no hay una línea base fija (cada categoría
-    // tiene su propia fila), así que el mismo formato sirve en cualquier disposición.
-    const dx = t.x - s.x, dy = t.y - s.y;
-    const dr = Math.sqrt(dx*dx + dy*dy) * 1.3;
-    return `M${s.x},${s.y}A${dr},${dr} 0 0,1 ${t.x},${t.y}`;
-  });
-}
-
 const nodeSel = canvasLayer.append("g").selectAll("g")
   .data(rawNodes).join("g")
   .attr("class", d => "node" + (d.revisar ? " revisar" : "") + (d.linked ? " linked" : "") +
@@ -3487,14 +3360,6 @@ const nodeSel = canvasLayer.append("g").selectAll("g")
   .on("click", (e,d) => { e.stopPropagation(); openPanel(d); })
   .on("mouseenter", (e,d) => {
     if (layoutMode === "matriz") return;
-    if (layoutMode === "refscruzadas") { updateRefsCruzadasArcs(d); return; }
-    if (layoutMode === "catlienzo") {
-      // acá lo relevante es la categoría compartida, no ConectaCon —
-      // casi ningún título tiene vínculo tipológico, así que resaltar por
-      // eso apagaría el mapa entero sin razón.
-      nodeSel.classed("hoverdim", n => n.id !== d.id && !n.cats.some(c => d.cats.includes(c)));
-      return;
-    }
     const connectedIds = new Set([d.id]);
     rawLinks.forEach(l => {
       const sId = l.source.id || l.source, tId = l.target.id || l.target;
@@ -3509,14 +3374,10 @@ const nodeSel = canvasLayer.append("g").selectAll("g")
         return sId !== d.id && tId !== d.id;
       });
     }
-    if (layoutMode === "conexlienzo" && document.getElementById("conexShowCandidates").checked) {
-      updateRefsCruzadasArcs(d);
-    }
   })
   .on("mouseleave", () => {
     nodeSel.classed("hoverdim", false);
     linkSel.classed("hoverdim", false);
-    if (layoutMode === "refscruzadas" || layoutMode === "conexlienzo") clearRefsCruzadasArcs();
   });
 
 nodeSel.append("circle")
@@ -3525,36 +3386,11 @@ nodeSel.append("circle")
 
 nodeSel.append("text").attr("x", 6).attr("y", 3).text(d => d.title);
 
-function anchorX(d){
-  if (layoutMode === "conexlienzo") return testAnchor(d).x;
-  if (layoutMode === "canonica" || layoutMode === "refscruzadas") return canonAnchor(d).x;
-  return multiCatAnchor(d).x;
-}
-function anchorY(d){
-  if (layoutMode === "conexlienzo") return testAnchor(d).y;
-  if (layoutMode === "canonica" || layoutMode === "refscruzadas") return canonAnchor(d).y;
-  return multiCatAnchor(d).y;
-}
-// fuerza de cada eje según el modo: en "canónica" y en "referencias cruzadas"
-// (que comparten la misma línea base) el eje X debe quedar exacto, así que
-// va con fuerza alta; el eje Y queda débil para que sea la colisión la que
-// reparte densidad verticalmente (mapa topográfico), no una distorsión del eje.
-function xStrength(){
-  if ((layoutMode === "canonica" || layoutMode === "refscruzadas") && canonicaCircular) return 0.7;
-  if (layoutMode === "canonica" || layoutMode === "refscruzadas") return 0.9;
-  if (layoutMode === "conexlienzo" && conexCircular) return 0.7;
-  return 0.12;
-}
-function yStrength(){
-  if ((layoutMode === "canonica" || layoutMode === "refscruzadas") && canonicaCircular) return 0.7;
-  if (layoutMode === "canonica" || layoutMode === "refscruzadas") return 0.15;
-  if (layoutMode === "conexlienzo" && conexCircular) return 0.7;
-  return 0.12;
-}
-
-// colisión más generosa en los modos de línea base: con la fuerza X anclada
-// firme, la colisión es la única que reparte densidad vertical.
-function collideRadius(){ return (layoutMode === "canonica" || layoutMode === "refscruzadas") ? 10 : 7; }
+function anchorX(d){ return multiCatAnchor(d).x; }
+function anchorY(d){ return multiCatAnchor(d).y; }
+function xStrength(){ return 0.12; }
+function yStrength(){ return 0.12; }
+function collideRadius(){ return 7; }
 
 const sim = d3.forceSimulation(rawNodes)
   .force("charge", d3.forceManyBody().strength(-18))
@@ -3573,24 +3409,6 @@ function renderTick(){
     const dr = Math.sqrt(dx*dx + dy*dy) * 1.3;
     return `M${s.x},${s.y}A${dr},${dr} 0 0,1 ${t.x},${t.y}`;
   });
-  if (layoutMode === "refscruzadas" || layoutMode === "conexlienzo") renderRefsCruzArcPositions();
-  if ((layoutMode === "canonica" || layoutMode === "refscruzadas") && !canonicaCircular) declutterCanonLabels(d3.zoomTransform(svg.node()).k);
-}
-
-// oculta etiquetas que quedarían pisadas entre sí, comparando distancia
-// SOLO dentro de la misma fila de categoría — dos títulos en categorías
-// distintas no compiten por espacio aunque su posición canónica (X) sea
-// cercana, porque ya están separados en Y por la fila.
-function declutterCanonLabels(k){
-  const minGapData = 85 / k;
-  Object.values(canonRowGroups).forEach(group => {
-    let lastX = -Infinity;
-    group.forEach(d => {
-      if (d.x - lastX >= minGapData){ d._labelOk = true; lastX = d.x; }
-      else d._labelOk = false;
-    });
-  });
-  nodeSel.select("text").style("display", d => d._labelOk === false ? "none" : null);
 }
 
 // avanza la simulación varios pasos de golpe (sin animar) para que al
@@ -3600,142 +3418,6 @@ function fastForwardSim(steps){
   for (let i = 0; i < steps; i++) sim.tick();
   renderTick();
 }
-
-const colLabels = g.append("g").attr("id", "colLabels").style("opacity", 0);
-colLabels.append("text").attr("x", testAnchorX.AT).attr("y", 90).attr("text-anchor", "middle")
-  .attr("fill", "var(--parchment-dim)").attr("font-family", "'Cormorant Garamond', serif")
-  .attr("font-size", 14.5).attr("font-style", "italic").text("Antiguo Testamento");
-colLabels.append("text").attr("x", testAnchorX.NT).attr("y", 90).attr("text-anchor", "middle")
-  .attr("fill", "var(--parchment-dim)").attr("font-family", "'Cormorant Garamond', serif")
-  .attr("font-size", 14.5).attr("font-style", "italic").text("Nuevo Testamento");
-
-// escalas horizontales independientes por testamento, reutilizadas por
-// etiquetas, franjas de período y marcas de libro de acá en adelante.
-function atX(canonIdx){ return canonLeft + ((canonIdx - atCanonMin) / (atCanonMax - atCanonMin)) * (canonRight - canonLeft); }
-function ntX(canonIdx){ return canonLeft + ((canonIdx - ntCanonMin) / (ntCanonMax - ntCanonMin)) * (canonRight - canonLeft); }
-const bookTestamento = {};
-rawNodes.forEach(n => { bookTestamento[n.book] = n.testamento; });
-const atBookList = computeBookBoundaries().filter(b => bookTestamento[b.book] === "AT");
-const ntBookList = computeBookBoundaries().filter(b => bookTestamento[b.book] === "NT");
-
-const canonLabels = g.append("g").attr("id", "canonLabels").style("opacity", 0);
-canonLabels.append("text").attr("x", canonLeft).attr("y", atBandTop - 22).attr("text-anchor", "start")
-  .attr("fill", "var(--parchment-dim)").attr("font-family", "'Cormorant Garamond', serif")
-  .attr("font-size", 12.5).attr("font-style", "italic").text(atBookList[0].book);
-canonLabels.append("text").attr("x", canonRight).attr("y", atBandTop - 22).attr("text-anchor", "end")
-  .attr("fill", "var(--parchment-dim)").attr("font-family", "'Cormorant Garamond', serif")
-  .attr("font-size", 12.5).attr("font-style", "italic").text(atBookList[atBookList.length-1].book);
-canonLabels.append("text").attr("x", canonLeft).attr("y", ntBandTop - 22).attr("text-anchor", "start")
-  .attr("fill", "var(--parchment-dim)").attr("font-family", "'Cormorant Garamond', serif")
-  .attr("font-size", 12.5).attr("font-style", "italic").text(ntBookList[0].book);
-canonLabels.append("text").attr("x", canonRight).attr("y", ntBandTop - 22).attr("text-anchor", "end")
-  .attr("fill", "var(--parchment-dim)").attr("font-family", "'Cormorant Garamond', serif")
-  .attr("font-size", 12.5).attr("font-style", "italic").text(ntBookList[ntBookList.length-1].book);
-
-// franjas de período (detrás de todo) — cada una en la banda y con la
-// escala de su propio testamento.
-const canonPeriodBands = g.append("g").attr("id", "canonPeriodBands").style("opacity", 0);
-computePeriodRanges().forEach(p => {
-  const isAT = p.max <= atCanonMax;
-  const xFn = isAT ? atX : ntX;
-  const bandTop = isAT ? atBandTop : ntBandTop, bandBottom = isAT ? atBandBottom : ntBandBottom;
-  const padTop = bandTop - 12, padBottom = bandBottom + 12;
-  const x0 = xFn(p.min), x1 = xFn(p.max);
-  canonPeriodBands.append("rect")
-    .attr("x", x0 - 8).attr("y", padTop).attr("width", Math.max(2, x1-x0+16)).attr("height", padBottom-padTop)
-    .attr("fill", p.color).attr("opacity", 0.08);
-  canonPeriodBands.append("text")
-    .attr("x", (x0+x1)/2).attr("y", bandTop - 28).attr("text-anchor", "middle")
-    .attr("font-family", "'Source Sans 3', sans-serif").attr("font-size", 9.5)
-    .attr("fill", p.color).attr("opacity", 0.8).text(p.name);
-});
-canonPeriodBands.lower();
-
-// marcas de libro — las de AT quedan en el hueco entre las dos bandas, las
-// de NT debajo de todo.
-const canonBookTicks = g.append("g").attr("id", "canonBookTicks").style("opacity", 0);
-function drawBookTicks(list, xFn, tickY, labelY){
-  list.forEach(b => {
-    const x = xFn(b.canonIdx);
-    canonBookTicks.append("line").attr("x1", x).attr("x2", x)
-      .attr("y1", tickY).attr("y2", tickY + 6)
-      .attr("stroke", "var(--parchment-dim)").attr("stroke-width", 0.6).attr("opacity", 0.5);
-    canonBookTicks.append("text")
-      .attr("transform", `translate(${x},${labelY}) rotate(-55)`)
-      .attr("text-anchor", "start").attr("font-family", "'Source Sans 3', sans-serif")
-      .attr("font-size", 9.5).attr("fill", "var(--parchment-dim)").attr("class", "book-tick-label")
-      .text(b.book);
-  });
-}
-drawBookTicks(atBookList, atX, atBandBottom + 6, atBandBottom + 16);
-drawBookTicks(ntBookList, ntX, ntBandBottom + 8, ntBandBottom + 20);
-
-// ---------- Versión circular de la línea canónica ----------
-// mismo ángulo que conexCircleAnchor (0 = arriba, sentido horario), así que
-// etiquetas de libro y franjas de período pueden usarse en ambas vistas
-// circulares (conexiones y línea canónica) sin duplicar la geometría base.
-function canonAngle(canonIdx){ return (canonIdx / canonMax) * 2*Math.PI - Math.PI/2; }
-
-const canonCircleLabels = g.append("g").attr("id", "canonCircleLabels").style("display", "none");
-// Génesis y Apocalipsis quedan casi pegados arriba (el círculo empieza y
-// termina en el mismo punto) — los separo levemente a cada lado para que
-// no se pisen.
-canonCircleLabels.append("text")
-  .attr("x", conexCircleCx - 8).attr("y", conexCircleCy - conexCircleR - 14)
-  .attr("text-anchor", "end").attr("fill", "var(--parchment-dim)")
-  .attr("font-family", "'Cormorant Garamond', serif").attr("font-size", 14.5).attr("font-style", "italic")
-  .text("Génesis");
-canonCircleLabels.append("text")
-  .attr("x", conexCircleCx + 8).attr("y", conexCircleCy - conexCircleR - 14)
-  .attr("text-anchor", "start").attr("fill", "var(--parchment-dim)")
-  .attr("font-family", "'Cormorant Garamond', serif").attr("font-size", 14.5).attr("font-style", "italic")
-  .text("Apocalipsis");
-
-// marcas de libro radiales: una línea corta hacia afuera del anillo y el
-// nombre rotado en la misma dirección — al estar "abierto" en círculo, cada
-// libro tiene su propio rayo en vez de pelear por espacio en una sola línea.
-const canonCircleBookTicks = g.append("g").attr("id", "canonCircleBookTicks").style("display", "none");
-computeBookBoundaries().forEach(b => {
-  const angle = canonAngle(b.canonIdx);
-  const r0 = conexCircleR + 4, r1 = conexCircleR + 12, r2 = conexCircleR + 18;
-  const x0 = conexCircleCx + r0*Math.cos(angle), y0 = conexCircleCy + r0*Math.sin(angle);
-  const x1 = conexCircleCx + r1*Math.cos(angle), y1 = conexCircleCy + r1*Math.sin(angle);
-  const x2 = conexCircleCx + r2*Math.cos(angle), y2 = conexCircleCy + r2*Math.sin(angle);
-  canonCircleBookTicks.append("line").attr("x1", x0).attr("y1", y0).attr("x2", x1).attr("y2", y1)
-    .attr("stroke", "var(--parchment-dim)").attr("stroke-width", 0.6).attr("opacity", 0.5);
-  // el texto se rota para apuntar hacia afuera; en la mitad izquierda del
-  // círculo se lo gira 180° más y se ancla al revés, para que nunca quede
-  // al revés de cabeza.
-  const deg = angle * 180/Math.PI;
-  const flip = Math.cos(angle) < 0;
-  canonCircleBookTicks.append("text")
-    .attr("transform", `translate(${x2},${y2}) rotate(${flip ? deg+180 : deg})`)
-    .attr("text-anchor", flip ? "end" : "start").attr("dominant-baseline", "middle")
-    .attr("font-family", "'Source Sans 3', sans-serif").attr("font-size", 9.5)
-    .attr("fill", "var(--parchment-dim)").attr("class", "book-tick-label")
-    .text(b.book);
-});
-
-// franjas de período como arcos (d3.arc ya usa la misma convención de
-// ángulo que canonAngle: 0 = arriba, sentido horario), en vez de rectángulos.
-const canonCirclePeriodBands = g.append("g").attr("id", "canonCirclePeriodBands").style("display", "none");
-const periodArcGen = d3.arc().innerRadius(conexCircleR - 6).outerRadius(conexCircleR + 30);
-computePeriodRanges().forEach(p => {
-  const a0 = canonAngle(p.min) + Math.PI/2, a1 = canonAngle(p.max) + Math.PI/2; // d3.arc: 0 = arriba ya
-  canonCirclePeriodBands.append("path")
-    .attr("transform", `translate(${conexCircleCx},${conexCircleCy})`)
-    .attr("d", periodArcGen({ startAngle: a0, endAngle: a1 }))
-    .attr("fill", p.color).attr("opacity", 0.08);
-  const midAngle = canonAngle((p.min+p.max)/2);
-  const lr = conexCircleR + 42;
-  canonCirclePeriodBands.append("text")
-    .attr("x", conexCircleCx + lr*Math.cos(midAngle)).attr("y", conexCircleCy + lr*Math.sin(midAngle))
-    .attr("text-anchor", "middle").attr("dominant-baseline", "middle")
-    .attr("font-family", "'Source Sans 3', sans-serif").attr("font-size", 9.5)
-    .attr("fill", p.color).attr("opacity", 0.8).text(p.name);
-});
-canonCirclePeriodBands.lower();
-
 
 // ---------- Modo matriz (libro × categoría) ----------
 const matrixData = JSON.parse(document.getElementById("matrix-data").textContent);
@@ -4233,7 +3915,7 @@ function lexCuerpo(){
   // ronda 30: «Red», el dibujo de fuerzas en el lienzo; el panel queda en la barra
   document.getElementById("lexSide").classList.toggle("en-red", modo === "red");
   if (modo === "red"){
-    el.innerHTML = `<p class="lx-zd lx-red-ayuda">Cada círculo es una palabra hebrea (dorado) o griega (azul), más grande cuantos más títulos la usan; los puntos de color son los títulos, unidos a sus palabras. ${toca(true)} una palabra para ver su ficha y su estrella; con la rueda o con «+ −» se acerca.</p>${lexRed && lexRed.listo ? "" : `<p class="lx-zd lx-red-armando" aria-live="polite">Armando la red…</p>`}`;
+    el.innerHTML = `<p class="lx-zd lx-red-ayuda">Cada círculo es una palabra hebrea; cada rombo, una griega; más grandes cuantos más títulos las usan. Los puntos son los títulos, del color de su tema (la leyenda, abajo), unidos a sus palabras. A la izquierda, el hebreo sin pareja; al centro, las parejas (la palabra hebrea frente a la griega con que la traduce la traducción griega); a la derecha, el griego sin pareja. ${toca(true)} una palabra para ver su ficha y su estrella; con la rueda o con «+ −» se acerca.</p>${lexRed && lexRed.listo ? "" : `<p class="lx-zd lx-red-armando" aria-live="polite">Armando la red…</p>`}`;
     if (lexRedVisible()) lexRedFiltrar(); else lexRedMostrar();
     return;
   }
@@ -4339,7 +4021,7 @@ function lexFichaHtml(code, par){
     ${pares.length ? `<section class="field lx-eq"><label>La misma palabra en la traducción griega</label>
       <p class="lx-eq-d">${H ? "La traducción griega del Antiguo Testamento la traduce con" : "La traducción griega del Antiguo Testamento usa esta palabra para traducir"} ${pares.length === 1 ? "esta palabra" : `estas ${pares.length}`}; el Nuevo Testamento la usa en estos pares de títulos.</p>${eq}</section>` : ""}
     <section class="field"><label>${n === 1 ? "La usa un título" : `La usan ${n} títulos`}, en el orden de la Biblia</label>
-      <div class="val lx-ts">${titles.map(t => `<button type="button" class="lx-t" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'><span class="lx-t-ti">${escHtml(t.title)}</span><span class="lx-t-rf">${escHtml(t.ref)}${forma(t) ? " · " + forma(t) : ""}</span></button>`).join("")}</div></section>
+      <div class="val lx-ts">${titles.map(t => `<button type="button" class="lx-t" data-id="${t.id}" onmouseenter="lexRedEncender(this.dataset.id)" onmouseleave="lexRedEncender(null)" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'><span class="lx-t-ti">${escHtml(t.title)}</span><span class="lx-t-rf">${escHtml(t.ref)}${forma(t) ? " · " + forma(t) : ""}</span></button>`).join("")}</div></section>
     ${lemaEntry && lemaEntry.text ? `<details class="field og-dicc-panel"><summary>Diccionario Strong${freq ? ` · ${freq} apariciones en la Biblia` : ""}</summary><blockquote class="dicc-strong">${lemaEntry.text}</blockquote></details>` : ""}
     <p class="lx-pie"><span class="lx-cod">Strong ${code}</span>${stepUrl ? ` · <a href="${stepUrl}" target="_blank" rel="noopener" title="Su diccionario y todas las veces que aparece. Abre una pestaña nueva.">Esta palabra en STEP Bible ↗</a>` : ""}</p>`;
 }
@@ -4362,109 +4044,256 @@ function openPalabra(code, par){
   if (fila && fila.scrollIntoView) fila.scrollIntoView({ block: "nearest" });
   urlSync(true);
 }
+// ════ ronda 30b (D-103): los nombres de las dos redes, por importancia y sin pisarse ════
+// Van a un tamaño fijo en la pantalla (ROT_PX): al acercar no crece la letra sino el espacio entre los puntos. Con un borde del color
+// del fondo, que los separa de las líneas. Se ven por importancia (el orden de R.items): al entrar, los R.base primeros; al acercar,
+// más (el cupo crece con el acercamiento al cuadrado), y cada uno solo si no pisa a otro ya puesto ni se sale de lo libre del
+// lienzo. Con algo elegido, solo los de su estrella (R.solo), el elegido primero; bajo el puntero, ese primero (R.hover). Van en
+// una capa propia, arriba de los puntos, para que ningún punto los tape. La red a la vista (rotActiva) queda además
+// dentro de su área: el lienzo se recorta debajo del encabezado translúcido y de la barra de la vista (clip-path).
+var rotActiva = null, rotPend = false;   // var: el zoom puede preguntar antes de que este bloque corra
+const ROT_PX = 13, ROT_AIRE = 4;
+let rotLienzo = null;
+function rotAncho(txt, fuente, px){
+  if (!rotLienzo) rotLienzo = document.createElement("canvas").getContext("2d");
+  rotLienzo.font = `${px || ROT_PX}px ${fuente}`; return rotLienzo.measureText(txt || "").width;
+}
+function rotPedir(){ if (rotPend) return; rotPend = true; requestAnimationFrame(() => { rotPend = false; rotActualizar(); }); }
+function rotCaja(it, t){
+  const sx = t.applyX(it.x), sy = t.applyY(it.y), rr = it.r * t.k + 3;
+  return it.lado === "arriba" ? [sx - it.w / 2, sy - rr - it.h, sx + it.w / 2, sy - rr]
+    : it.lado === "centro" ? [sx - it.w / 2, sy - it.h, sx + it.w / 2, sy + 4] : [sx + rr, sy - it.h / 2, sx + rr + it.w, sy + it.h / 2];
+}
+function rotActualizar(){
+  const R = rotActiva; if (!R || !R.listo) return;
+  const t = d3.zoomTransform(svg.node()), A = R.area();
+  R.capa.style("--zk", (1 / t.k).toFixed(4));
+  svg.style("clip-path", `inset(${Math.round(A.clip)}px 0px 0px 0px)`);
+  const pisa = (b, o) => b[0] < o[2] + ROT_AIRE && o[0] < b[2] + ROT_AIRE && b[1] < o[3] + ROT_AIRE && o[1] < b[3] + ROT_AIRE;
+  const tom = (R.fijos || []).map(it => rotCaja(it, t)), ver = new Set();
+  let lista = R.items, cupo = Math.round(R.base * Math.max(1, t.k / (R.k0 || t.k)) ** 2);
+  if (!R.solo && R.hover){ const h = R.items.find(it => it.id === R.hover); if (h){ lista = [h, ...R.items.filter(it => it !== h)]; cupo++; } }
+  if (R.solo){ lista = R.items.filter(it => (R.solo.has(it.id) || it.id === R.hover) && (it.id === R.foco || it.id === R.hover || !(R.oculto && R.oculto.has(it.id))));
+    [R.hover, R.foco].forEach(f => { const i = lista.findIndex(it => it.id === f); if (i > 0) lista = [lista[i], ...lista.slice(0, i), ...lista.slice(i + 1)]; }); cupo = Infinity; }
+  else lista = lista.filter(it => it.id === R.hover || (!it.sinReposo && !(R.oculto && R.oculto.has(it.id))));
+  for (let n = 0; n < lista.length && n < cupo; n++){
+    const b = rotCaja(lista[n], t);
+    if (b[0] < A.izq || b[2] > A.der || b[1] < A.top || b[3] > A.abajo || tom.some(o => pisa(b, o))) continue;
+    tom.push(b); ver.add(lista[n].id);
+  }
+  const antes = R.ver || new Set();
+  R.sel.each(function(d){ const v = ver.has(d.id); if (v !== antes.has(d.id)) this.classList.toggle("rot", v); });
+  R.ver = ver;
+}
+function rotSoltar(R){ if (rotActiva && rotActiva === R){ rotActiva = null; svg.style("clip-path", null); } }
+
 // ════ ronda 30 (D-100): «Red», la red léxica de fuerzas, como cuarta manera de «Palabras originales» (solo en la compu) ════
-// La de hasta la 29a: las palabras que usan dos títulos o más y los títulos que las usan. Se arma recién al elegirla (nada al
-// cargar); las posiciones salen de 300 pasos de la simulación, sin animación ni azar (d3 ubica los puntos sin posición en una
-// espiral fija): la misma red en cada visita. Los controles de la vista atenúan lo que queda afuera.
+// Las palabras que usan dos títulos o más y los títulos que las usan. Se arma recién al elegirla (nada al cargar); las posiciones
+// salen de los pasos de la simulación, sin animación ni azar (d3 ubica los puntos sin posición en una espiral fija): la misma red en
+// cada visita. Los controles de la vista atenúan lo que queda afuera.
 // La simulación se hace en tandas de unos 12 ms por cuadro (simEnPasos), para no trabar la página mientras se arma: la cantidad de
 // pasos es fija, así que el resultado es el mismo que de una vez. Mientras tanto, la vista dice «Armando la red…».
+// 30b (D-103): en las tres zonas de D-24, como el Dibujo: el hebreo sin pareja a la izquierda, las parejas al centro (la hebrea
+// frente a su griega, unidas por una línea) y el griego sin pareja a la derecha; los títulos, entre sus palabras. Las palabras con
+// nombre a la vista al entrar apartan a las demás según el largo de su nombre.
 let lexRed = null;
-const LEX_TITLE_R = 6, RED_PASOS = 160, RED_DECAE = 0.045;
+const LEX_TITLE_R = 6, RED_PASOS = 220, RED_DECAE = 0.035, LEX_ROT_BASE = 50;
+const LEX_ZONA_X = { h: -820, ph: -110, pg: 110, g: 820 };   // el centro de cada zona, en unidades del dibujo
+const LEX_ZONAS = [["h", "Hebreo sin pareja"], ["p", "Parejas: la hebrea y su griega"], ["g", "Griego sin pareja"]];
+const LEX_FUENTE_W = "'Noto Serif Hebrew','Noto Serif',serif", LEX_FUENTE_G = "'Source Sans 3',sans-serif", LEX_FUENTE_T = "'Cormorant Garamond',serif";
+const LEX_VECINOS = 12;   // con una palabra elegida, nombre a sus títulos si son estos o menos
 function lexRootR(d){ return 5 + Math.min(d.count, 12); }
+function lexOriginal(code){ const v = VOC[code]; return (v && v.lema) || lexLexema(code) || code; }   // la palabra, sin la pronunciación
 function simEnPasos(sim, pasos, alFinal){
   let hechos = 0;
   const tanda = () => { const t0 = performance.now(); while (hechos < pasos && performance.now() - t0 < 12){ sim.tick(); hechos++; }
     if (hechos < pasos) requestAnimationFrame(tanda); else alFinal(); };
   tanda();
 }
+// la zona de cada palabra: con pareja (las dos de la pareja en la red), «ph» o «pg»; sin pareja, «h» o «g»
+function lexZonas(){
+  const hay = new Set(lexicaRoots.map(r => r.code)), Z = {};
+  LEX_PARES.forEach(p => { if (hay.has(p.h) && hay.has(p.g)){ Z[p.h] = "ph"; Z[p.g] = "pg"; } });
+  lexicaRoots.forEach(r => { if (!Z[r.code]) Z[r.code] = r.lang === "Hebreo" ? "h" : "g"; });
+  return Z;
+}
 function lexRedArmar(){
   if (lexRed) return lexRed;
   const capa = g.append("g").attr("id", "lexRedLayer").style("display", "none");
-  const roots = lexicaRoots.map(r => ({ ...r }));
+  const Z = lexZonas();
+  const roots = lexicaRoots.map(r => { const b = lexGlosa(r.code);
+    return { ...r, zona: Z[r.code], w: (b ? rotAncho(b + " · ", LEX_FUENTE_G) : 0) + rotAncho(lexOriginal(r.code), LEX_FUENTE_W) }; });
   const tits = rawNodes.filter(n => lexicaTitleIds.has(n.id)).map(n => ({ id: n.id, isRoot: false, title: n.title, cat: n.cat,
-    codes: [...new Set(n.strong.split("+").map(s => s.trim()).filter(Boolean))] }));
+    codes: [...new Set(n.strong.split("+").map(s => s.trim()).filter(Boolean))], w: rotAncho(n.title, LEX_FUENTE_T) }));
   const nodos = [...roots, ...tits], hay = new Set(roots.map(r => r.id)), links = [];
+  tits.forEach(t => { t.zx = d3.mean(t.codes.filter(c => hay.has("root:" + c)), c => LEX_ZONA_X[Z[c]]) || 0; });   // entre sus palabras
   tits.forEach(t => t.codes.forEach(c => { if (hay.has("root:" + c)) links.push({ source: t.id, target: "root:" + c }); }));
+  const pares = LEX_PARES.filter(p => hay.has("root:" + p.h) && hay.has("root:" + p.g)).map(p => ({ source: "root:" + p.h, target: "root:" + p.g, par: true }));
   const vec = {};
-  links.forEach(l => { (vec[l.source] = vec[l.source] || new Set([l.source])).add(l.target); (vec[l.target] = vec[l.target] || new Set([l.target])).add(l.source); });
+  [...links, ...pares].forEach(l => { (vec[l.source] = vec[l.source] || new Set([l.source])).add(l.target); (vec[l.target] = vec[l.target] || new Set([l.target])).add(l.source); });
+  // las que tienen nombre al entrar (y algunas más) apartan a las demás según el largo de su nombre
+  const conNombre = new Set([...roots].sort(lexOrden).slice(0, LEX_ROT_BASE * 2).map(r => r.id));
   const sim = d3.forceSimulation(nodos)
-    .force("charge", d3.forceManyBody().strength(d => d.isRoot ? -140 : -40))
-    .force("link", d3.forceLink(links).id(d => d.id).distance(38).strength(0.6))
-    .force("collide", d3.forceCollide(d => d.isRoot ? 14 + Math.min(d.count, 12) : 11))
-    .force("x", d3.forceX(0).strength(0.025)).force("y", d3.forceY(0).strength(0.025)).alphaDecay(RED_DECAE).stop();
+    .force("charge", d3.forceManyBody().strength(d => d.isRoot ? -150 : -45).distanceMax(420))
+    .force("link", d3.forceLink([...links, ...pares]).id(d => d.id).distance(l => l.par ? 2 * LEX_ZONA_X.pg : 40).strength(l => l.par ? 0.9 : 0.5))
+    .force("collide", d3.forceCollide(d => d.isRoot ? Math.max(lexRootR(d) + 8, conNombre.has(d.id) ? d.w * 0.42 : 0) : 10))
+    .force("x", d3.forceX(d => d.isRoot ? LEX_ZONA_X[d.zona] : d.zx).strength(d => d.isRoot ? 0.3 : 0.06))
+    .force("y", d3.forceY(0).strength(d => d.isRoot ? 0.035 : 0.015)).alphaDecay(RED_DECAE).stop();
   let listo; const hecho = new Promise(r => { listo = r; });
-  lexRed = { capa, listo: false, hecho };
-  simEnPasos(sim, RED_PASOS, () => { lexRedDibujar(capa, nodos, links, vec, roots); listo(); });
+  lexRed = { capa, listo: false, hecho, base: LEX_ROT_BASE, area: lexRedArea };
+  simEnPasos(sim, RED_PASOS, () => { lexRedDibujar(capa, nodos, links, vec, pares); listo(); });
   return lexRed;
 }
-function lexRedDibujar(capa, nodos, links, vec, roots){
+function lexRedDibujar(capa, nodos, links, vec, pares){
   const f = v => v.toFixed(1);
-  const linkSel = capa.append("g").selectAll("line").data(links).join("line").attr("class", "lex-link")
-    .attr("stroke", "var(--gold)").attr("stroke-width", 0.8).attr("opacity", 0.4)
+  const linea = (sel, cls, op) => sel.attr("class", cls).attr("opacity", op)
     .attr("x1", l => f(l.source.x)).attr("y1", l => f(l.source.y)).attr("x2", l => f(l.target.x)).attr("y2", l => f(l.target.y));
-  const mayores = new Set([...roots].sort((a, b) => b.count - a.count).slice(0, 20).map(r => r.id));   // con nombre a la vista
+  const parSel = linea(capa.append("g").selectAll("line").data(pares).join("line"), "lex-link lex-par-l", 0.5);
+  const linkSel = linea(capa.append("g").selectAll("line").data(links).join("line"), "lex-link", 0.4).attr("stroke", "var(--gold)").attr("stroke-width", 0.8);
   const nodeSel = capa.append("g").selectAll("g").data(nodos).join("g")
-    .attr("class", d => d.isRoot ? "lex-root" + (mayores.has(d.id) ? " lex-major" : "") : "lex-title")
+    .attr("class", d => d.isRoot ? "lex-root" : "lex-title")
     .attr("transform", d => `translate(${f(d.x)},${f(d.y)})`)
     .on("click", (e, d) => { e.stopPropagation(); if (d.isRoot) openPalabra(d.code); else openPanel(nodeById[d.id]); })
-    .on("mouseenter", (e, d) => lexRedFoco(d.id))
-    .on("mouseleave", () => lexRedFoco(palabraAbierta ? "root:" + palabraAbierta : null));
+    .on("mouseenter", (e, d) => { if (!d.isRoot && lexRed.foco && lexRed.foco !== d.id && (lexRed.vec[lexRed.foco] || new Set()).has(d.id)) lexRedEncender(d.id); else lexRedFoco(d.id); })
+    .on("mouseleave", (e, d) => { if (lexRed.hover === d.id) lexRedEncender(null); else lexRedFoco(palabraAbierta ? "root:" + palabraAbierta : null); });
   nodeSel.append("circle").attr("class", "hit-circle").attr("r", d => Math.max((d.isRoot ? lexRootR(d) : LEX_TITLE_R) + 6, 12)).attr("fill", "transparent");
-  nodeSel.filter(d => d.isRoot).append("circle").attr("class", "vis-circle").attr("r", lexRootR).attr("fill", "none")
-    .attr("stroke", d => d.lang === "Hebreo" ? "var(--gold)" : "var(--accent-blue)").attr("stroke-width", 2).attr("pointer-events", "none");
-  nodeSel.filter(d => d.isRoot).append("text").attr("x", 0).attr("y", d => -(8 + Math.min(d.count, 12))).attr("text-anchor", "middle")
-    .attr("font-family", "'Noto Serif Hebrew','Noto Serif',serif").attr("font-size", 11).attr("fill", "var(--parchment)").attr("pointer-events", "none")
-    .call(t => t.append("tspan").attr("class", "lx-w").attr("x", 0).attr("dy", d => lexGlosa(d.code) ? "-1.65em" : 0).text(d => lexLexema(d.code) || d.code))
-    .call(t => t.append("tspan").attr("class", "lx-g").attr("x", 0).attr("dy", "1.15em").text(d => lexGlosa(d.code)));
+  // el idioma también por la forma: la hebrea, un círculo; la griega, un rombo
+  nodeSel.filter(d => d.isRoot && d.lang === "Hebreo").append("circle").attr("class", "vis-circle lx-heb").attr("r", lexRootR).attr("fill", "none")
+    .attr("stroke-width", 2).attr("pointer-events", "none");
+  nodeSel.filter(d => d.isRoot && d.lang !== "Hebreo").append("rect").attr("class", "vis-circle lx-grc").attr("fill", "none").attr("stroke-width", 2).attr("pointer-events", "none")
+    .attr("x", d => f(-lexRootR(d) * 0.8)).attr("y", d => f(-lexRootR(d) * 0.8)).attr("width", d => f(lexRootR(d) * 1.6)).attr("height", d => f(lexRootR(d) * 1.6))
+    .attr("rx", 1.5).attr("transform", "rotate(45)");
   nodeSel.filter(d => !d.isRoot).append("circle").attr("class", "vis-circle").attr("r", LEX_TITLE_R)
     .attr("fill", d => catColors[d.cat] || catColors["Sin categoría"]).attr("pointer-events", "none");
-  nodeSel.filter(d => !d.isRoot).append("text").attr("x", 8).attr("y", 4).attr("font-family", "'Cormorant Garamond', serif")
-    .attr("font-size", 12.5).attr("fill", "var(--parchment)").attr("pointer-events", "none").text(d => d.title);
-  // el encuadre deja afuera el 3 % más alejado del centro (los sueltos), como antes
-  const cx = d3.mean(nodos, d => d.x), cy = d3.mean(nodos, d => d.y);
-  const cerca = [...nodos].sort((a, b) => Math.hypot(a.x - cx, a.y - cy) - Math.hypot(b.x - cx, b.y - cy)).slice(0, Math.ceil(nodos.length * 0.97));
-  const xs = cerca.map(d => d.x), ys = cerca.map(d => d.y);
-  Object.assign(lexRed, { nodos, links, vec, nodeSel, linkSel, listo: true, caja: [Math.min(...xs) - 40, Math.min(...ys) - 40, Math.max(...xs) + 40, Math.max(...ys) + 40] });
+  // los nombres, en su capa, arriba de los puntos: el de la palabra arriba de su círculo (el significado y, al lado, la palabra:
+  // «Dios · θεός»); el del título, a su derecha
+  const rotSel = capa.append("g").attr("class", "lx-rots").selectAll("text").data(nodos).join("text").attr("class", "rot-t")
+    .attr("transform", d => `translate(${f(d.x)},${f(d.y)})`).attr("fill", "var(--parchment)").attr("pointer-events", "none");
+  rotSel.filter(d => d.isRoot).attr("x", 0).attr("y", d => -lexRootR(d)).attr("text-anchor", "middle").attr("font-family", LEX_FUENTE_W)
+    .attr("dy", "-0.45em")
+    .call(t => t.append("tspan").attr("class", "rot-g").text(d => lexGlosa(d.code) ? lexGlosa(d.code) + " · " : ""))
+    .call(t => t.append("tspan").attr("class", "rot-w").text(d => lexOriginal(d.code)));
+  rotSel.filter(d => !d.isRoot).attr("x", LEX_TITLE_R).attr("dx", "0.3em").attr("dy", "0.35em").attr("font-family", LEX_FUENTE_T).text(d => d.title);
+  // el rótulo de cada zona, arriba de sus palabras
+  const roots = nodos.filter(d => d.isRoot), arriba = Math.min(...nodos.map(d => d.y)) - 60;
+  const zonas = LEX_ZONAS.map(([z, t]) => { const R = roots.filter(d => d.zona[0] === z || d.zona === z);
+    return { id: "zona:" + z, t, x: z === "p" ? 0 : d3.mean(R, d => d.x) || LEX_ZONA_X[z], y: arriba, r: 0, w: rotAncho(t, LEX_FUENTE_T, 16) * 1.05, h: 17, lado: "centro" }; });
+  capa.append("g").selectAll("text").data(zonas).join("text").attr("class", "lx-zona-t").attr("x", d => f(d.x)).attr("y", d => f(d.y))
+    .attr("text-anchor", "middle").text(d => d.t);
+  // los nombres, por importancia: las palabras por cantidad de títulos; después, los títulos por cantidad de palabras
+  const porGrado = (a, b) => vec[b.id].size - vec[a.id].size || nodeById[a.id].canonIdx - nodeById[b.id].canonIdx;
+  // (los títulos, sin nombre en reposo: solo con algo elegido o bajo el cursor)
+  const items = [...roots.sort(lexOrden).map(d => ({ id: d.id, x: d.x, y: d.y, r: lexRootR(d), w: d.w, h: 1.25 * ROT_PX, lado: "arriba" })),
+    ...nodos.filter(d => !d.isRoot).sort(porGrado).map(d => ({ id: d.id, x: d.x, y: d.y, r: LEX_TITLE_R, w: d.w, h: 1.2 * ROT_PX, lado: "der", sinReposo: true }))];
+  // el encuadre: todas las zonas, sin el 1,5 % más apartado de cada lado
+  const q = (v, p) => d3.quantile(v.slice().sort((a, b) => a - b), p), xs = nodos.map(d => d.x), ys = nodos.map(d => d.y);
+  Object.assign(lexRed, { nodos, links, pares, vec, nodeSel, linkSel, parSel, sel: rotSel, items, fijos: zonas, listo: true,
+    caja: [q(xs, 0.015) - 30, Math.min(arriba - 20, q(ys, 0.015) - 40), q(xs, 0.985) + 30, q(ys, 0.985) + 30] });
   const a = document.querySelector("#lexSide .lx-red-armando"); if (a) a.remove();
   if (lexRedVisible()){ lexRedFiltrar(); lexRedFoco(palabraAbierta ? "root:" + palabraAbierta : null); lexRedEncuadrar(); }
 }
 function lexRedVisible(){ return !!lexRed && lexRed.capa.style("display") !== "none"; }
+// lo libre del lienzo: debajo de la barra de la vista y a la izquierda de la ficha abierta
+function lexRedArea(){
+  const ls = document.getElementById("lexSide"), top = ls ? ls.getBoundingClientRect().bottom : headerH();
+  const ficha = document.getElementById("panel").classList.contains("open") ? fichaAncho() : 0;
+  const ley = document.getElementById("legend"), lr = ley && getComputedStyle(ley).display !== "none" ? ley.getBoundingClientRect() : null;
+  return { clip: top, izq: 8, top: top + 6, der: width - ficha - 8, abajo: lr && lr.height ? lr.top - 6 : height - 8 };
+}
 function lexRedFiltrar(){
   const R = lexRed; if (!R || !R.listo) return;
   const ve = {}; lexicaRoots.forEach(r => { ve[r.id] = lexVisible(r) && lexCoincide(r.code, lexOpc.q); });
   R.nodeSel.classed("langdim", d => d.isRoot ? !ve[d.id] : !d.codes.some(c => ve["root:" + c]));
   R.linkSel.classed("dim", l => !ve[l.target.id]);
+  R.parSel.classed("dim", l => !ve[l.source.id] || !ve[l.target.id]);
+  const sinCat = d => !d.isRoot && !nodeById[d.id].cats.some(c => activeCats.has(c));
+  R.nodeSel.classed("sincat", sinCat);
+  R.oculto = new Set(R.nodos.filter(d => sinCat(d) || (d.isRoot ? !ve[d.id] : !d.codes.some(c => ve["root:" + c]))).map(d => d.id));
+  if (rotActiva === R) rotActualizar();
 }
-// la estrella de una palabra (o de un título): ella y sus vecinos; lo demás, tenue
+// la estrella de una palabra (o de un título): ella, su pareja (con su línea) y sus títulos (o sus palabras); lo demás, casi apagado,
+// sin nombres. Los títulos de la estrella, con nombre si son LEX_VECINOS o menos; si son más, se encienden de a uno (lexRedEncender).
 function lexRedFoco(id){
   const R = lexRed; if (!R || !R.listo) return;
   const V = id ? R.vec[id] : null;
   R.nodeSel.classed("hoverdim", d => !!V && !V.has(d.id)).classed("selected", d => !!V && d.id === id);
-  R.linkSel.style("opacity", l => !V ? 0.4 : (l.source.id === id || l.target.id === id) ? 0.95 : 0.05);
+  const op = (l, base) => !V ? base : (l.source.id === id || l.target.id === id) ? 0.95 : 0.03;
+  R.linkSel.style("opacity", l => op(l, 0.4)); R.parSel.style("opacity", l => op(l, 0.5));
+  // Agregado a D-103 (Ezequiel): con una palabra elegida, todos sus títulos con nombre, en columnas a los lados (lexEtiquetas, como
+  // en la red entera); el nombre de la palabra, arriba de todos; su pareja, con su nombre de siempre
+  const raiz = !!V && id.startsWith("root:");
+  R.solo = V ? (raiz ? new Set([...V].filter(x => x.startsWith("root:") && x !== id)) : V) : null;
+  R.foco = V ? id : null; R.capa.classed("con-foco", !!V);
+  lexEtiquetas(R, raiz ? id : null, V);
+  lexRedEncender(null);
 }
+const LEX_RENGLON = 16;
+function lexEtiquetas(R, s, V){
+  const G = R.etq || (R.etq = R.capa.append("g").attr("class", "lx-etqs")); G.selectAll("*").remove();
+  if (!s) return;
+  const P = Object.fromEntries(R.nodos.map(d => [d.id, d])), c = P[s], f = v => v.toFixed(1), rr = d => d.isRoot ? lexRootR(d) : LEX_TITLE_R;
+  const vs = [...V].map(i => P[i]).filter(d => d && !d.isRoot);
+  let arriba = c.y - rr(c) - 10;
+  [1, -1].forEach(L => {
+    const col = vs.filter(v => (v.x >= c.x ? 1 : -1) === L).sort((a, b) => a.y - b.y || a.x - b.x); if (!col.length) return;
+    const x = L > 0 ? Math.max(c.x + rr(c), ...col.map(v => v.x + rr(v))) + 22 : Math.min(c.x - rr(c), ...col.map(v => v.x - rr(v))) - 22;
+    const ys = []; col.forEach((v, i) => ys.push(i ? Math.max(v.y, ys[i - 1] + LEX_RENGLON) : v.y));
+    const corr = (col.reduce((a, v) => a + v.y, 0) - ys.reduce((a, y) => a + y, 0)) / col.length;
+    col.forEach((v, i) => {
+      const y = ys[i] + corr; arriba = Math.min(arriba, y - LEX_RENGLON - 6);
+      G.append("line").attr("class", "lx-guia").attr("x1", f(v.x + L * rr(v))).attr("y1", f(v.y)).attr("x2", f(x - L * 3)).attr("y2", f(y - 4));
+      G.append("text").attr("class", "lx-etq").attr("data-id", v.id).attr("x", f(x)).attr("y", f(y)).attr("text-anchor", L > 0 ? "start" : "end").text(nodeById[v.id].title);
+    });
+  });
+  const g = lexGlosa(c.code);
+  G.append("text").attr("class", "lx-etq lx-etq-sel").attr("data-id", s).attr("x", f(c.x)).attr("y", f(arriba)).attr("text-anchor", "middle")
+    .text((g ? g + " · " : "") + lexOriginal(c.code));
+}
+// un título de la estrella, encendido: su punto (y su nombre) en la red y su renglón en la ficha de la palabra
+function lexRedEncender(id){
+  const R = lexRed; if (!R || !R.listo) return;
+  R.hover = id; R.nodeSel.classed("lx-enc", d => d.id === id);
+  document.querySelectorAll("#panel .lx-t[data-id]").forEach(b => b.classList.toggle("lx-enc", b.dataset.id === id));
+  if (rotActiva === R) rotActualizar();
+}
+let lexRedBarraObs = null;
 function lexRedMostrar(){
   const R = lexRedArmar(); R.capa.style("display", null);
+  const ls = document.getElementById("lexSide");
+  if (!lexRedBarraObs && ls && window.ResizeObserver){ lexRedBarraObs = new ResizeObserver(() => { if (rotActiva === lexRed){ svg.style("clip-path", `inset(${Math.round(lexRedArea().clip)}px 0px 0px 0px)`); rotPedir(); } }); lexRedBarraObs.observe(ls); }
+  const ley = document.getElementById("legend"); ley.style.display = ""; ley.classList.add("sobre-red");
+  rotActiva = R; svg.style("clip-path", `inset(${Math.round(lexRedArea().clip)}px 0px 0px 0px)`);
   lexRedFiltrar(); lexRedFoco(palabraAbierta ? "root:" + palabraAbierta : null);
   document.getElementById("zoomControls").style.display = "flex";
   requestAnimationFrame(lexRedEncuadrar);   // después de que la barra se acomode
 }
 function lexRedOcultar(){
-  if (lexRed) lexRed.capa.style("display", "none");
+  if (lexRed){ lexRed.capa.style("display", "none"); rotSoltar(lexRed); }
+  document.getElementById("legend").classList.remove("sobre-red");
+  if (layoutMode === "lexica"){ document.getElementById("zoomControls").style.display = "none"; document.getElementById("legend").style.display = "none"; }
   const ls = document.getElementById("lexSide"); if (ls) ls.classList.remove("en-red");
 }
-// la palabra elegida, al centro de lo que queda libre (debajo de la barra y a la izquierda de su ficha), como antes
+// la palabra elegida con su estrella, en lo libre del lienzo (sin alejarse más que al entrar)
 function lexRedCentrar(id){
   const R = lexRed; if (!R || !R.listo) return;
-  const d = R.nodos.find(n => n.id === id); if (!d) return;
-  const ls = document.getElementById("lexSide"), top = ls ? ls.getBoundingClientRect().bottom : headerH();
-  const ficha = document.getElementById("panel").classList.contains("open") ? fichaAncho() : 0;
-  const k = 2.4, t = d3.zoomIdentity.translate((width - ficha) / 2 - k * d.x, top + (height - top) / 2 - k * d.y).scale(k);
+  const P = R.nodos.filter(n => (R.vec[id] || new Set([id])).has(n.id)); if (!P.length) return;
+  const A = lexRedArea(), xs = P.map(n => n.x), ys = P.map(n => n.y);
+  let x0 = Math.min(...xs) - 30, x1 = Math.max(...xs) + 30, y0 = Math.min(...ys) - 40, y1 = Math.max(...ys) + 20;
+  const E = R.etq && R.etq.node().childNodes.length ? R.etq.node().getBBox() : null;   // los nombres de sus títulos, enteros
+  if (E){ x0 = Math.min(x0, E.x - 12); x1 = Math.max(x1, E.x + E.width + 12); y0 = Math.min(y0, E.y - 12); y1 = Math.max(y1, E.y + E.height + 12); }
+  const W = A.der - A.izq - (E ? 24 : 300), H = A.abajo - A.top - (E ? 24 : 60);
+  const k = Math.min(W / (x1 - x0), H / (y1 - y0), 2.4);
+  const t = d3.zoomIdentity.translate((A.izq + A.der) / 2 - k * (x0 + x1) / 2, (A.top + A.abajo) / 2 - k * (y0 + y1) / 2).scale(k);
   if (menosMovimiento()) svg.call(zoomBehavior.transform, t); else svg.transition().duration(500).call(zoomBehavior.transform, t);
 }
+// al entrar, la red ocupa lo libre del lienzo
 function lexRedEncuadrar(){
   const R = lexRed; if (!R || !R.listo) return;
-  const ls = document.getElementById("lexSide"), abajo = ls ? Math.max(0, ls.getBoundingClientRect().bottom - headerH()) : 0;
-  fitView(...R.caja, 20, { top: headerH() + abajo });
+  const A = lexRedArea(), [x0, y0, x1, y1] = R.caja, W = A.der - A.izq - 24, H = A.abajo - A.top - 24;
+  const k = Math.min(W / (x1 - x0), H / (y1 - y0), 3); R.k0 = k;
+  const t = d3.zoomIdentity.translate(A.izq + 12 + (W - k * (x1 - x0)) / 2 - k * x0, A.top + 12 + (H - k * (y1 - y0)) / 2 - k * y0).scale(k);
+  if (menosMovimiento()) svg.call(zoomBehavior.transform, t); else svg.transition().duration(500).call(zoomBehavior.transform, t);
+  rotActualizar();
 }
 // desde «Palabras en común por la traducción griega» de una ficha: la vista, con la pareja elegida
 function lexIrPareja(h, g){
@@ -4869,49 +4698,94 @@ function redEncuadrar(){
 // ════ ronda 30 (D-100): «Ver la red entera» ════
 // La red de fuerzas de todos los títulos con algún vínculo en las capas elegidas —de entrada, las conexiones anotadas; «La misma
 // palabra», con su interruptor—, como la vista general de hasta la ronda 14, sobre los datos de hoy (grafoEdgesAll, capaDe). Se arma
-// recién al pedirla (nada al cargar) y queda armada para cada combinación de capas; las posiciones salen de 300 pasos de la
+// recién al pedirla (nada al cargar) y queda armada para cada combinación de capas; las posiciones salen de los pasos de la
 // simulación, sin animación ni azar. Tocar un título lo resalta con sus vecinos; «Su red» y «Ficha».
+// 30b (D-103): los grupos grandes (los que tienen el 10 % de los títulos o más) al centro, uno al lado del otro, y los grupos
+// sueltos en una franja aparte, abajo, de mayor a menor; cada título del tamaño de sus vínculos. Los nombres, por importancia
+// (rotulos, en la red léxica), con los más conectados primero.
 let reOn = false, reSel = null, reCapas = { anotada: true, palabra: false }, reG = null, reActual = null, reTelDe = null;
 const reCache = {};
-const RE_NOMBRES = 30;   // los nombres a la vista en reposo: los más conectados
-const RE_PASOS = 300, RE_DECAE = 0.02, RE_RENGLON = 15;   // los pasos y el decaimiento de la ronda 14; el renglón de los nombres
+const RE_NOMBRES = 50;   // los nombres a la vista al entrar: los más conectados (al acercar, más)
+const RE_PASOS = 300, RE_DECAE = 0.02, RE_RENGLON = 15, RE_PASOS_SUELTOS = 180;   // los pasos y el decaimiento de la ronda 14; el renglón de los nombres
+const RE_FUENTE = "'Cormorant Garamond',serif";
+function reRad(d){ return 3.5 + Math.sqrt(d.grado) * 1.8; }   // del tamaño de sus vínculos
 function reClave(){ return (reCapas.anotada ? "a" : "") + (reCapas.palabra ? "p" : ""); }
 function reArmar(){
   const k = reClave(); if (reCache[k]) return reCache[k];
   if (!reG) reG = grafoLayer.append("g").attr("class", "re");
   const aristas = grafoEdgesAll.filter(e => nodeById[e.a] && nodeById[e.b] && ((capaDe(e) === "anotada" && reCapas.anotada) || (capaDe(e) === "palabra" && reCapas.palabra)));
   const grado = {}; aristas.forEach(e => { grado[e.a] = (grado[e.a] || 0) + 1; grado[e.b] = (grado[e.b] || 0) + 1; });
-  const nodos = Object.keys(grado).sort((a, b) => nodeById[a].canonIdx - nodeById[b].canonIdx).map(id => ({ id, grado: grado[id] }));
+  const nodos = Object.keys(grado).sort((a, b) => nodeById[a].canonIdx - nodeById[b].canonIdx).map(id => ({ id, grado: grado[id], w: rotAncho(nodeById[id].title, RE_FUENTE) }));
   const links = aristas.map(e => ({ source: e.a, target: e.b, capa: capaDe(e) }));
   const vec = {};
   links.forEach(l => { (vec[l.source] = vec[l.source] || new Set()).add(l.target); (vec[l.target] = vec[l.target] || new Set()).add(l.source); });
-  const rad = d => 4.5 + Math.min(d.grado, 10) * 0.5;
-  // las fuerzas de la vista general de la ronda 14 (D-100, Agregado: «más apretada, como la de la ronda 14»): la repulsión con
-  // alcance máximo (los grupos sueltos no se alejan), vínculos de 54 y centrado firme; 300 pasos con el decaimiento de entonces
-  const sim = d3.forceSimulation(nodos).force("charge", d3.forceManyBody().strength(-60).distanceMax(300))
-    .force("link", d3.forceLink(links).id(d => d.id).distance(l => l.capa === "anotada" ? 54 : 48).strength(l => l.capa === "anotada" ? 0.8 : 0.5))
-    .force("collide", d3.forceCollide(d => rad(d) + 5)).force("center", d3.forceCenter(0, 0))
-    .force("x", d3.forceX(0).strength(0.03)).force("y", d3.forceY(0).strength(0.03)).alphaDecay(RE_DECAE).stop();
+  // los grupos: las partes de la red que no se tocan entre sí, de mayor a menor (y en el orden de la Biblia)
+  const raiz = {}, de = x => raiz[x] === x ? x : (raiz[x] = de(raiz[x]));
+  nodos.forEach(d => { raiz[d.id] = d.id; }); links.forEach(l => { raiz[de(l.source)] = de(l.target); });
+  const porRaiz = {}; nodos.forEach(d => (porRaiz[de(d.id)] = porRaiz[de(d.id)] || []).push(d));
+  const grupos = Object.values(porRaiz).sort((a, b) => b.length - a.length || nodeById[a[0].id].canonIdx - nodeById[b[0].id].canonIdx);
+  const umbral = Math.max(10, nodos.length * 0.1), grandes = grupos.filter(x => x.length >= umbral), sueltos = grupos.filter(x => x.length < umbral);
+  // los grandes, uno al lado del otro (el mayor a la izquierda), cada uno hacia su centro
+  const radio = x => 30 * Math.sqrt(x.length), sep = 60;
+  let xa = -(grandes.reduce((s, x) => s + 2 * radio(x), 0) + sep * Math.max(0, grandes.length - 1)) / 2;
+  grandes.forEach(x => { const c = xa + radio(x); x.forEach(d => { d.gx = c; }); xa += 2 * radio(x) + sep; });
+  const G = grandes.flat(), enG = new Set(G.map(d => d.id));
+  const conNombre = new Set([...G].sort((a, b) => b.grado - a.grado || nodeById[a.id].canonIdx - nodeById[b.id].canonIdx).slice(0, RE_NOMBRES).map(d => d.id));
+  // las fuerzas de la vista general de la ronda 14 (repulsión con alcance máximo, vínculos de 54, 300 pasos con el decaimiento de
+  // entonces); los títulos con nombre a la vista al entrar apartan a los demás según el largo de su nombre
+  const sim = d3.forceSimulation(G).force("charge", d3.forceManyBody().strength(-60).distanceMax(300))
+    .force("link", d3.forceLink(links.filter(l => enG.has(l.source))).id(d => d.id).distance(l => l.capa === "anotada" ? 54 : 48).strength(l => l.capa === "anotada" ? 0.8 : 0.5))
+    .force("collide", d3.forceCollide(d => reRad(d) + 5 + (conNombre.has(d.id) ? Math.min(d.w * 0.3, 40) : 0)))
+    .force("x", d3.forceX(d => d.gx).strength(0.03)).force("y", d3.forceY(0).strength(0.05)).alphaDecay(RE_DECAE).stop();
   const capa = reG.append("g").attr("class", "re-capa").attr("data-capas", k);
-  let listo; const D = reCache[k] = { capa, nodos, links, vec, n: nodos.length, m: links.length, listo: false, hecho: new Promise(r => { listo = r; }) };
-  simEnPasos(sim, RE_PASOS, () => { reDibujar(D, rad); listo(); if (reOn && reClave() === k) reMostrar(); });
+  let listo; const D = reCache[k] = { capa, nodos, links, vec, n: nodos.length, m: links.length, listo: false, hecho: new Promise(r => { listo = r; }),
+    base: RE_NOMBRES, area: reAreaRot, esRe: true };
+  simEnPasos(sim, RE_PASOS, () => {
+    // Agregado a D-103 (Ezequiel): los sueltos alrededor de los grandes, de mayor a menor, en vueltas de un rectángulo que los rodea
+    // (empieza arriba a la izquierda y sigue como las agujas del reloj); cada grupo en su lugar
+    const xs = G.map(d => d.x), ys = G.map(d => d.y), bx0 = G.length ? Math.min(...xs) : -200, bx1 = G.length ? Math.max(...xs) : 200;
+    const by0 = G.length ? Math.min(...ys) : -150, by1 = G.length ? Math.max(...ys) : 150;
+    const lados = sueltos.map(x => 30 + 46 * Math.sqrt(x.length));
+    let vuelta = 0, sv = 0, aire = 40 + lados[0] / 2;
+    const punto = (s, o) => { const w = bx1 - bx0 + 2 * o, h = by1 - by0 + 2 * o, x0 = bx0 - o, y0 = by0 - o;
+      if (s < w) return [x0 + s, y0]; s -= w; if (s < h) return [x0 + w, y0 + s]; s -= h; if (s < w) return [x0 + w - s, y0 + h]; s -= w; return [x0, y0 + h - s]; };
+    sueltos.forEach((gr, j) => { const lado = lados[j];
+      const perim = 2 * ((bx1 - bx0) + (by1 - by0)) + 8 * aire;
+      if (sv + lado > perim){ vuelta++; aire += Math.max(...lados.slice(0, j + 1)) + 10; sv = 0; }
+      const [cx, cy] = punto(sv + lado / 2, aire); sv += lado;
+      gr.forEach((d, i) => { d.gx = cx; d.gy = cy; d.x = cx + 8 * Math.cos(i * 2.4); d.y = cy + 8 * Math.sin(i * 2.4); }); });
+    const S = sueltos.flat(), enS = new Set(S.map(d => d.id));
+    D.franja = null;
+    const sim2 = d3.forceSimulation(S).force("charge", d3.forceManyBody().strength(-50).distanceMax(90))
+      .force("link", d3.forceLink(links.filter(l => enS.has(l.source))).id(d => d.id).distance(36).strength(0.8))
+      .force("collide", d3.forceCollide(d => reRad(d) + 4)).force("x", d3.forceX(d => d.gx).strength(0.07)).force("y", d3.forceY(d => d.gy).strength(0.07))
+      .alphaDecay(0.03).stop();
+    simEnPasos(sim2, RE_PASOS_SUELTOS, () => { reDibujar(D); listo(); if (reOn && reClave() === k) reMostrar(); });
+  });
   return D;
 }
-function reDibujar(D, rad){
-  const { capa, nodos, links } = D, f = v => v.toFixed(1);
+function reDibujar(D){
+  const { capa, nodos, links } = D, f = v => v.toFixed(1), rad = reRad;
   capa.append("g").selectAll("line").data(links).join("line").attr("class", l => "re-l " + l.capa)
     .attr("x1", l => f(l.source.x)).attr("y1", l => f(l.source.y)).attr("x2", l => f(l.target.x)).attr("y2", l => f(l.target.y));
-  const tops = new Set([...nodos].sort((a, b) => b.grado - a.grado || nodeById[a.id].canonIdx - nodeById[b.id].canonIdx).slice(0, RE_NOMBRES).map(d => d.id));
-  const ns = capa.append("g").selectAll("g").data(nodos).join("g").attr("class", d => "re-n" + (tops.has(d.id) ? " fijo" : ""))
+  const ns = capa.append("g").selectAll("g").data(nodos).join("g").attr("class", "re-n")
     .attr("data-id", d => d.id).attr("transform", d => `translate(${f(d.x)},${f(d.y)})`)
-    .on("click", (ev, d) => { ev.stopPropagation(); reElegir(d.id); });
+    .on("click", (ev, d) => { ev.stopPropagation(); reElegir(d.id); })
+    .on("mouseenter", (ev, d) => { D.hover = d.id; if (rotActiva === D) rotActualizar(); })
+    .on("mouseleave", () => { D.hover = null; if (rotActiva === D) rotActualizar(); });
   ns.append("circle").attr("class", "re-hit").attr("r", d => Math.max(rad(d) + 5, 11)).attr("fill", "transparent");
   ns.append("circle").attr("class", "re-c").attr("r", rad).attr("fill", d => catColors[nodeById[d.id].cat] || catColors["Sin categoría"]);
-  ns.append("text").attr("class", "re-t").attr("x", d => f(rad(d) + 3)).attr("y", 4).text(d => nodeById[d.id].title);
   ns.append("title").text(d => `${nodeById[d.id].title} · ${nodeById[d.id].ref} · ${grafoPlural(d.grado, "vínculo", "vínculos")}`);
+  if (D.franja){ D.franja.w = rotAncho(D.franja.t, RE_FUENTE, 16) * 1.05;
+    capa.append("text").attr("class", "re-franja-t").attr("x", f(D.franja.x)).attr("y", f(D.franja.y)).attr("text-anchor", "middle").text(D.franja.t); }
+  const rotSel = capa.append("g").attr("class", "re-rots").selectAll("text").data(nodos).join("text").attr("class", "re-t rot-t")   // 30b: arriba de los puntos
+    .attr("transform", d => `translate(${f(d.x)},${f(d.y)})`).attr("x", d => f(rad(d))).attr("dx", "0.3em").attr("dy", "0.35em").text(d => nodeById[d.id].title);
   capa.append("g").attr("class", "re-etqs");   // los nombres del elegido y sus vecinos (reEtiquetas), arriba de todo
   const xs = nodos.map(d => d.x), ys = nodos.map(d => d.y);
-  D.rad = rad; D.caja = [Math.min(...xs) - 20, Math.min(...ys) - 20, Math.max(...xs) + 140, Math.max(...ys) + 20]; D.listo = true;
+  D.items = [...nodos].sort((a, b) => b.grado - a.grado || nodeById[a.id].canonIdx - nodeById[b.id].canonIdx)
+    .map(d => ({ id: d.id, x: d.x, y: d.y, r: rad(d), w: d.w, h: 1.2 * ROT_PX, lado: "der" }));
+  D.sel = rotSel; D.fijos = D.franja ? [D.franja] : [];
+  D.rad = rad; D.caja = [Math.min(...xs) - 20, Math.min(...ys, D.franja ? D.franja.y - 20 : Infinity) - 20, Math.max(...xs) + 60, Math.max(...ys) + 20]; D.listo = true;
 }
 // D-100 (Agregado): los nombres del elegido y de sus vecinos, sin pisarse. Cada vecino va a una columna de su lado (a la derecha
 // del elegido, a la derecha de todos sus puntos; a la izquierda, igual), en el orden de su altura y a un renglón como mínimo,
@@ -4941,6 +4815,7 @@ function reCat(i){ const c = legendData[i].id; if (activeCats.has(c)) activeCats
 function reMostrar(){
   grafoElegirOcultar(); redOcultar(); grafoEnfOcultar();
   const D = reArmar(); reActual = D; reTelDe = grafoTel();
+  svg.style("clip-path", `inset(${Math.round(headerH())}px 0px 0px 0px)`);   // 30b: la red, debajo del encabezado
   if (!D.listo){   // se termina de armar en unos cuadros y vuelve a llamar a reMostrar
     if (reG) reG.style("display", "none");
     const el = document.getElementById("redEntera");
@@ -4949,6 +4824,8 @@ function reMostrar(){
   }
   reG.style("display", null);
   reG.selectAll(".re-capa").style("display", function(){ return this.getAttribute("data-capas") === reClave() ? null : "none"; });
+  if (rotActiva && rotActiva !== D && rotActiva.esRe) rotActiva.ver = null;
+  rotActiva = D;
   if (reSel && !D.vec[reSel]) reSel = null;
   reMarcar(); rePanel();
   document.getElementById("zoomControls").style.display = "flex";
@@ -4957,6 +4834,7 @@ function reMostrar(){
 }
 function reOcultar(){
   if (reG) reG.style("display", "none");
+  if (rotActiva && rotActiva.esRe) rotSoltar(rotActiva); else if (!rotActiva) svg.style("clip-path", null);
   const p = document.getElementById("redEntera"); if (p){ p.classList.remove("on"); p.innerHTML = ""; }
   if (layoutMode === "grafo") document.getElementById("legend").style.display = "none";   // la red de un título, sin leyenda (como siempre)
 }
@@ -4977,6 +4855,10 @@ function reMarcar(){
     .classed("sincat", d => !nodeById[d.id].cats.some(c => activeCats.has(c)));
   D.capa.selectAll(".re-l").classed("vec", l => !!s && (l.source.id === s || l.target.id === s)).classed("fuera", l => !!s && l.source.id !== s && l.target.id !== s);
   reEtiquetas(D, s, V);
+  // 30b: con un elegido, solo los nombres de su estrella (los de reEtiquetas); sin él, por importancia, sin los de las categorías apagadas
+  D.solo = s ? new Set() : null; D.foco = null; D.capa.classed("con-foco", !!s);
+  D.oculto = new Set(D.nodos.filter(d => !nodeById[d.id].cats.some(c => activeCats.has(c))).map(d => d.id));
+  if (rotActiva === D) rotActualizar();
 }
 function rePanel(){
   const el = document.getElementById("redEntera"), D = reActual; if (!el || !D) return;
@@ -5005,12 +4887,14 @@ function reArea(){
   const top = headerH() + 8, abajo = tel && r ? (height - r.top) + 8 : lr && lr.height ? (height - lr.top) + 8 : 8, izq = !tel && r ? r.right + 12 : 12;
   return { izq, top, w: Math.max(width - izq - 12, 120), h: Math.max(height - top - abajo, 120) };
 }
+function reAreaRot(){ const A = reArea(); return { clip: headerH(), izq: A.izq, top: A.top, der: A.izq + A.w, abajo: A.top + A.h }; }
 function reEncuadrar(){
   const D = reActual; if (!D) return;
   const [x0, y0, x1, y1] = D.caja, A = reArea();
-  const k = Math.min(A.w / (x1 - x0), A.h / (y1 - y0), 3);
+  const k = Math.min(A.w / (x1 - x0), A.h / (y1 - y0), 3); D.k0 = k;
   const t = d3.zoomIdentity.translate(A.izq + (A.w - k * (x1 - x0)) / 2 - k * x0, A.top + (A.h - k * (y1 - y0)) / 2 - k * y0).scale(k);
   if (menosMovimiento()) svg.call(zoomBehavior.transform, t); else svg.transition().duration(350).call(zoomBehavior.transform, t);
+  rotActualizar();
 }
 // el elegido con todos sus nombres a la vista (sin pasar del acercamiento de antes); otro de la lista, al centro
 function reCentrar(id){
@@ -7096,8 +6980,6 @@ function refitCurrentView(){
     case "lexica":      if (lexicaStarted && document.querySelector('#lexSide .lx-tab[data-m="dibujo"]') !== null === esTelefono()) lexRender(); else if (lexRedVisible()) lexRedEncuadrar(); break;   // ronda 29: compu ↔ teléfono; ronda 30
     case "matriz":      if (matrixBBox) matrizEncuadrar(); break;
     case "cinetica":    fitView(...cineticaBBox, 20, {top:headerH(), left:20}); break;
-    case "canonica":
-    case "refscruzadas": fitCanonView(); break;
   }
 }
 
@@ -7253,9 +7135,6 @@ let statsBBox;
 const MODE_HINTS = {
   indice: () => `${toca(true)} una fila para abrir la ficha. ★ = marcado por vos.<br>La búsqueda y los filtros recortan la lista.`,   // ronda 28a
   categorias: () => `Tamaño = títulos; grosor = títulos compartidos.<br>${toca(true)} un tema o una línea para listar sus títulos.`,
-  catlienzo: "Vista oculta del menú (la reemplaza la red de categorías).",
-  canonica: "Vista oculta del menú (la reemplaza el Explorador canónico).<br>Zoom para leer etiquetas.",
-  conexlienzo: "Vista oculta del menú (la reemplaza la lista AT → NT).",
   conexiones: () => `Una fila por conexión anotada, en orden canónico.<br>${toca(true)} un lado para abrir su ficha.`,
   grafo: "",
   entre: "",
@@ -7263,7 +7142,6 @@ const MODE_HINTS = {
   cadenas: "Dorado = conexión anotada; azul = extensión que elegiste, sin revisar.<br>▸ abre ramas y extensiones; ⟳ marca un ciclo.",
   recorridos: "",
   lexica: "",
-  refscruzadas: "Vista oculta del menú (pasa a Taller como candidatos).<br>Pasá el mouse sobre un título para ver arcos.",
   matriz: () => `Se construye con el filtro activo. ${toca(true)} una celda para listar sus títulos;<br>${toca()} una categoría para ordenar las columnas por ella.`,
   cinetica: "Vista oculta del menú. Densidad por categoría a lo largo del canon.",
   radar: "Vista oculta del menú. Compará el perfil temático de dos libros.",
@@ -7384,7 +7262,7 @@ function aplicarModo(){
   const oc = document.getElementById("hiddenModesGroup");
   if (oc){
     if (taller){
-      Object.keys(HIDDEN_MODE_LABELS).filter(m => !LIENZOS_RETIRADOS.includes(m)).forEach(m => {   // ronda 20: quedan cinética y radar
+      Object.keys(HIDDEN_MODE_LABELS).forEach(m => {   // limpieza (D-102): quedan cinética y radar
         if (![...document.getElementById("modeSelect").options].some(o => o.value === m))
           oc.appendChild(new Option(HIDDEN_MODE_LABELS[m], m));
       });
@@ -7569,9 +7447,7 @@ function syncHeader(){
   if (hh !== hhAntes && layoutMode === "matriz" && matrixBBox) matrizEncuadrar();
 }
 new ResizeObserver(() => syncHeader()).observe(document.querySelector("header"));
-const HIDDEN_MODE_LABELS = { catlienzo: "Por categoría (lienzo)", canonica: "Línea canónica (lienzo)", cinetica: "Cinética de la revelación", radar: "Huellas digitales (radar)", refscruzadas: "Referencias cruzadas (lienzo)", conexlienzo: "Conexiones anotadas (lienzo)" };
-// ronda 20 (decisión de Ezequiel): los cuatro lienzos con reemplazo salen del selector y de los enlaces; el código queda
-const LIENZOS_RETIRADOS = ["catlienzo", "canonica", "refscruzadas", "conexlienzo"];
+const HIDDEN_MODE_LABELS = { cinetica: "Cinética de la revelación", radar: "Huellas digitales (radar)" };
 // ronda 25 (D-52): las vistas del grupo «Taller» (la cola, los candidatos y, desde D-52, Recorridos, Cifras y la Nube, que
 // Ezequiel conserva para él); con los lienzos ocultos, son las que el estudio no abre
 const VISTAS_TALLER = ["curacion", "candidatos", "cadenas", "stats", "nube"];
@@ -7648,9 +7524,7 @@ function setMode(mode){
   if (isNube) nubeEnter();
 
   canvasLayer.style("display", isCanvas ? null : "none");
-  catBlobs.style("display", mode === "catlienzo" ? null : "none");
-  catFloatLabels.style("display", mode === "catlienzo" ? null : "none");
-  linkSel.style("display", (mode === "conexlienzo" || mode === "canonica") ? null : "none");
+  linkSel.style("display", "none");
   matrixLayer.style("display", isMatrix ? null : "none");
   matrixLayer.transition().duration(200).style("opacity", isMatrix ? 1 : 0);
   cineticaLayer.style("display", isCinetica ? null : "none");
@@ -7668,18 +7542,6 @@ function setMode(mode){
   document.getElementById("radarRelativeLabel").style.display = isRadar ? "flex" : "none";
   document.getElementById("radarSimilar").style.display = isRadar ? "inline-block" : "none";
   document.getElementById("legend").style.display = (isCanvas || isNube) ? null : "none";
-  document.getElementById("refsCruzCount").style.display = (mode === "refscruzadas") ? null : "none";
-  if (mode === "refscruzadas") clearRefsCruzadasArcs(); else refsCruzLinkSel = refsCruzLayer.selectAll("path").data([]).join("path");
-  colLabels.transition().duration(300).style("opacity", mode === "conexlienzo" ? 1 : 0);
-  const canonActive = (mode === "canonica" || mode === "refscruzadas");
-  canonLabels.transition().duration(300).style("opacity", (canonActive && !canonicaCircular) ? 1 : 0);
-  canonPeriodBands.transition().duration(300).style("opacity", (canonActive && !canonicaCircular) ? 1 : 0);
-  canonBookTicks.transition().duration(300).style("opacity", (canonActive && !canonicaCircular) ? 1 : 0);
-  canonCircleLabels.style("display", (canonActive && canonicaCircular) ? null : "none");
-  canonCircleBookTicks.style("display", (canonActive && canonicaCircular) ? null : "none");
-  canonCirclePeriodBands.style("display", (canonActive && canonicaCircular) ? null : "none");
-  document.getElementById("canonCircularLabel").style.display = canonActive ? "flex" : "none";
-
   if (isCanvas){
     sim.force("x", d3.forceX(anchorX).strength(xStrength()));
     sim.force("y", d3.forceY(anchorY).strength(yStrength()));
@@ -7692,24 +7554,13 @@ function setMode(mode){
   if (isLexica) lexRender(); else lexRedOcultar();   // ronda 29: HTML, sin simulación; ronda 30: «Red», solo en esta vista
   if (isGrafo){ redTel = grafoTel(); renderGrafo(); } else reOcultar();   // ronda 30
   if (isEntre) entreRender();
-  if (mode !== "canonica" && mode !== "refscruzadas"){
-    nodeSel.select("text").style("display", null); // limpia el anti-solapamiento si veníamos de la vista canónica
-  }
   if (isRadar) { drawRadarChart(radarBookA, radarBookB); fadeRadarAxes(); }
   document.getElementById("cineticaTotalLabel").style.display = isCinetica ? "flex" : "none";
-  document.getElementById("refsCruzExcludeLabel").style.display = (mode === "refscruzadas") ? "flex" : "none";
   ["matrixValue", "matrixGroup", "matrixOrder"].forEach(id => document.getElementById(id).style.display = isMatrix ? "inline-block" : "none");
   if (isMatrix) buildMatrix();
-  document.getElementById("conexCandidatesLabel").style.display = (mode === "conexlienzo") ? "flex" : "none";
-  document.getElementById("conexCircularLabel").style.display = (mode === "conexlienzo") ? "flex" : "none";
-  document.getElementById("conexHint").style.display = (mode === "conexlienzo") ? "block" : "none";
   if (isCinetica) updateCineticaFilter();
 
-  if (mode === "canonica"){
-    fitCanonView();
-  } else if (mode === "refscruzadas"){
-    fitCanonView();
-  } else if (mode === "matriz"){
+  if (mode === "matriz"){
     matrizEncuadrar();
   } else if (mode === "cinetica"){
     fitView(...cineticaBBox, 20, {top:headerH(), left:20});
@@ -7793,32 +7644,6 @@ function findMostSimilarBook(bookName){
   return best;
 }
 document.getElementById("cineticaTotal").addEventListener("change", updateCineticaFilter);
-document.getElementById("conexCircularToggle").addEventListener("change", (e) => {
-  conexCircular = e.target.checked;
-  sim.force("x", d3.forceX(anchorX).strength(xStrength()));
-  sim.force("y", d3.forceY(anchorY).strength(yStrength()));
-  sim.alpha(1).restart();
-  fastForwardSim(180);
-  svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
-});
-document.getElementById("canonCircularToggle").addEventListener("change", (e) => {
-  canonicaCircular = e.target.checked;
-  const canonActive = (layoutMode === "canonica" || layoutMode === "refscruzadas");
-  canonLabels.transition().duration(300).style("opacity", (canonActive && !canonicaCircular) ? 1 : 0);
-  canonPeriodBands.transition().duration(300).style("opacity", (canonActive && !canonicaCircular) ? 1 : 0);
-  canonBookTicks.transition().duration(300).style("opacity", (canonActive && !canonicaCircular) ? 1 : 0);
-  canonCircleLabels.style("display", (canonActive && canonicaCircular) ? null : "none");
-  canonCircleBookTicks.style("display", (canonActive && canonicaCircular) ? null : "none");
-  canonCirclePeriodBands.style("display", (canonActive && canonicaCircular) ? null : "none");
-  nodeSel.select("text").style("display", null); // el anti-solapamiento por fila no aplica en modo circular
-  sim.force("x", d3.forceX(anchorX).strength(xStrength()));
-  sim.force("y", d3.forceY(anchorY).strength(yStrength()));
-  sim.force("collide", d3.forceCollide(collideRadius()));
-  sim.alpha(1).restart();
-  fastForwardSim(180);
-  fitCanonView();
-});
-
 // leyenda: solo categorías con nodos, en CATS_ORDER — el mismo orden fijo que
 // usan la matriz y la paleta (§4). Antes iba por cantidad, y la leyenda y la
 // lista del panel de Filtros contradecían el orden de la matriz.
@@ -8021,6 +7846,7 @@ function applyFilters(){
 
   legend.classed("off", d => !activeCats.has(d.id));
   if (reOn && reActual && reActual.listo){ reMarcar(); if (grafoTel()) rePanel(); }   // ronda 30: la red entera atenúa los temas apagados
+  if (lexRedVisible()) lexRedFiltrar();   // ronda 30b: también la red léxica
   nodeSel.classed("dim", d => !isVisible(d));
   linkSel.classed("dim", l => {
     const s = nodeById[l.source.id || l.source], t = nodeById[l.target.id || l.target];
@@ -9564,9 +9390,7 @@ document.getElementById("zoomOut").addEventListener("click", () => {
   svg.transition().duration(250).call(zoomBehavior.scaleBy, 1/1.4);
 });
 document.getElementById("zoomFit").addEventListener("click", () => {
-  if (layoutMode === "canonica" || layoutMode === "refscruzadas"){
-    fitCanonView();
-  } else if (layoutMode === "matriz"){
+  if (layoutMode === "matriz"){
     matrizEncuadrar();
   } else if (layoutMode === "cinetica"){
     fitView(...cineticaBBox, 20, {top:headerH(), left:20});
@@ -10511,9 +10335,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document
 (function restoreViewState(){
   let state = null;
   try { state = JSON.parse(localStorage.getItem('jeb-viewstate') || 'null'); } catch (e) {}
-  // las 12 del selector más las 6 ocultas (HIDDEN_MODE_LABELS); test_ronda5b verifica que
-  // no falte ninguna: faltaba «conexiones» y un enlace directo caía al índice
-  // ronda 20: sin los cuatro lienzos retirados (LIENZOS_RETIRADOS): un enlace a uno cae en el índice
+  // limpieza (D-102): solo vistas vigentes; un enlace retirado cae en el índice.
   const validModes = ["indice","tiempo","categorias","seleccion","conexiones","cadenas","recorridos","entre","grafo","stats","lexica","matriz","curacion","candidatos","nube",
                       "cinetica","radar"];
   const fromUrl = urlRead();
