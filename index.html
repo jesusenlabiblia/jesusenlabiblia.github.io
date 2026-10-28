@@ -1866,6 +1866,81 @@ body.light{ --accent-blue-ink:#34608B; }
   /* ronda 30: en «Red», el panel queda en la barra y el lienzo se ve debajo */
   #lexSide.en-red{ bottom:auto; max-height:calc(100% - var(--header-h)); background:var(--night); border-bottom:1px solid var(--line-dim); padding-bottom:10px; }
   #lexSide.en-red .lx-red-ayuda{ margin:0; }
+  /* ronda 31 (D-104): la fila de la vista */
+  #vistaHead.lx-sin{ height:0; padding:0; border:0; overflow:hidden; }
+  #vistaHead.lx-sin .vh-t{ position:absolute; width:1px; height:1px; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  #lexSide .lx-barra{ margin:0 0 12px; }
+  #lexSide #lexSideQ{ flex:1 1 220px; max-width:360px; }
+  #lexSide .lx-cuenta{ margin:0; font-size:var(--t-5); color:var(--parchment-dim); white-space:nowrap; }
+  #lexSide .lx-opc, #lexSide .lx-como{ position:relative; font-size:var(--t-5); color:var(--parchment); }
+  #lexSide .lx-opc > summary, #lexSide .lx-como > summary{ cursor:pointer; list-style:none; min-height:34px; display:flex; align-items:center; gap:4px; padding:0 12px;
+    border:1px solid var(--line-dim); border-radius:999px; white-space:nowrap; }
+  #lexSide .lx-opc > summary::-webkit-details-marker, #lexSide .lx-como > summary::-webkit-details-marker{ display:none; }
+  #lexSide .lx-como > summary{ border:0; padding:0 4px; color:var(--gold-bright); text-decoration:underline; }
+  #lexSide .lx-opc[open] > summary{ border-color:var(--gold); }
+  #lexSide .lx-opc-n{ color:var(--gold-bright); font-weight:600; }
+  #lexSide .lx-opc > .lx-ctl, #lexSide .lx-como > .lx-como-d{ position:absolute; z-index:8; top:calc(100% + 6px); left:0; width:max-content; max-width:min(440px, 86vw);
+    flex-direction:column; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--night); border:1px solid var(--line-dim); border-radius:10px;
+    box-shadow:0 10px 30px var(--panel-shadow); }
+  /* Agregado a D-104 (Ezequiel): la explicación con renglones largos (unos 100 caracteres), no en una columna angosta */
+  #lexSide .lx-como > .lx-como-d{ left:auto; right:0; width:min(104ch, calc(100vw - 48px)); max-width:none; font-size:var(--t-5); line-height:1.5; color:var(--parchment); }
+  #lexSide .lx-como-d p{ margin:0 0 8px; } #lexSide .lx-como-d p:last-child{ margin:0; }
+  #lexSide .lx-idioma{ display:flex; gap:14px; } #lexSide .lx-idioma[hidden]{ display:none; }
+  #lexSide .lx-gen-d{ margin:0; max-width:46ch; font-size:var(--t-6); line-height:1.45; color:var(--parchment-dim); }
+  /* las formas del idioma (como en la Red): la hebrea, círculo; la griega, rombo; el título, punto */
+  .lx-forma{ display:inline-block; flex:none; width:9px; height:9px; margin-right:5px; vertical-align:middle; border:2px solid var(--gold); border-radius:50%; background:transparent; }
+  .lx-forma.grc{ border-color:var(--accent-blue); border-radius:1px; transform:rotate(45deg) scale(.86); }
+  .lx-forma.tit{ border:0; background:var(--parchment-dim); width:8px; height:8px; }
+  .lx-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  .lx-red-ley{ flex-basis:100%; display:flex; flex-wrap:wrap; gap:4px 14px; font-size:var(--t-6); color:var(--parchment); padding-bottom:4px; }
+  /* la tarjeta de cada pareja */
+  #lexSide .lx-par.lx-card{ display:block; border:1px solid var(--line-dim); border-radius:12px; padding:6px; background:rgba(255,255,255,0.02); }
+  #lexSide .lx-par.lx-card.on{ border-color:var(--gold-bright); }
+  #lexSide .lx-par-f{ display:grid; grid-template-columns:minmax(0, 1fr) auto minmax(0, 1fr); align-items:center; gap:6px; }
+  #lexSide .lx-card .lx-lado{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  #lexSide .lx-card .lx-puente{ height:auto; min-height:44px; padding:0 4px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+  #lexSide .lx-card .lx-puente::before{ top:calc(50% - 8px); }
+  #lexSide .lx-card .lx-puente span{ opacity:1; font-size:var(--t-6); white-space:normal; text-align:center; max-width:9em; line-height:1.2; }
+  #lexSide .lx-flecha{ position:relative; width:7px; height:7px; border-right:2px solid var(--gold-bright); border-bottom:2px solid var(--gold-bright); transform:rotate(45deg); }
+  #lexSide .lx-card.abierta .lx-flecha{ transform:rotate(225deg); }
+  #lexSide .lx-par-ps{ margin-top:6px; border-top:1px solid var(--line-dim); padding-top:6px; }
+  #lexSide .lx-pt-cab{ display:grid; grid-template-columns:1fr 18px 1fr; font-size:var(--t-6); color:var(--parchment-dim); margin-bottom:2px; }
+  #lexSide .lx-pt-cab span:last-child{ grid-column:3; text-align:right; }
+  #lexSide .lx-pt{ display:grid; grid-template-columns:1fr 18px 1fr; align-items:center; gap:4px; padding:2px 0; border-bottom:1px solid rgba(128,128,128,.14); }
+  #lexSide .lx-pt:last-child{ border-bottom:0; }
+  #lexSide .lx-pt-n{ display:flex; flex-direction:column; align-items:flex-end; }
+  #lexSide .lx-pt-y{ text-align:center; color:var(--accent-violet); }
+  #lexSide .lx-pt-t{ font:inherit; text-align:left; color:var(--parchment); background:transparent; border:0; border-radius:6px; padding:6px; min-height:44px; cursor:pointer;
+    display:flex; flex-direction:column; justify-content:center; }
+  #lexSide .lx-pt-n .lx-pt-t{ text-align:right; align-items:flex-end; }
+  #lexSide .lx-pt-t:hover, #lexSide .lx-pt-t:focus-visible{ background:rgba(201,162,39,0.10); }
+  #lexSide .lx-pt-t span{ font-family:'Cormorant Garamond', serif; font-size:var(--t-4); line-height:1.2; }
+  #lexSide .lx-pt-t small{ font-size:var(--t-6); color:var(--parchment-dim); }
+  #lexSide .lx-todas{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(520px, 100%), 1fr)); gap:10px; align-items:start; max-width:1600px; }
+  /* Lista */
+  #lexSide .lx-lista-ley{ display:flex; gap:10px; align-items:center; }
+  .lexside-dot.lx-forma{ width:10px; height:10px; margin:0; } .lexside-dot.lx-forma.heb{ background:transparent; } .lexside-dot.lx-forma.grk{ background:transparent; }
+  .lexside-row{ grid-template-columns:12px 1fr auto; } .lexside-row .lx-sq{ grid-column:2 / -1; }
+  .lexside-n{ font-size:var(--t-6); color:var(--parchment-dim); white-space:nowrap; } .lexside-n b{ font-size:var(--t-5); color:var(--gold-bright); font-weight:600; }
+  /* el teléfono: el puente de la ficha de una palabra; «Letra del original», al final */
+  #panel .lx-puente-tel{ display:flex; flex-direction:column; gap:10px; margin:14px 0 18px; }
+  #panel .lxp-f{ display:grid; grid-template-columns:minmax(0, 1fr) auto minmax(0, 1fr); align-items:center; gap:8px; }
+  #panel .lxp-f.solo{ grid-template-columns:1fr; }
+  #panel .lxp-w{ display:flex; flex-direction:column; gap:3px; min-width:0; font:inherit; text-align:left; color:var(--ink-1, var(--parchment)); background:transparent;
+    border:1px solid var(--papel-linea, var(--line-dim)); border-radius:10px; padding:8px; }
+  #panel button.lxp-w{ cursor:pointer; min-height:44px; }
+  #panel .lxp-l{ display:flex; align-items:center; font-size:var(--t-3); }
+  #panel .lxp-g, #panel .lxp-n{ font-size:var(--t-6); color:var(--ink-2, var(--parchment-dim)); }
+  #panel .lxp-par{ font-size:var(--t-6); text-align:center; max-width:6.5em; line-height:1.25; color:var(--ink-1, var(--parchment)); border-top:2px dashed var(--accent-violet); padding-top:3px; }
+  #panel .lx-letra-fin{ margin:14px 0 6px; }
+  /* los pares de la ficha, agrupados por el título del Antiguo Testamento */
+  #panel .lx-ptg{ padding:5px 0; border-bottom:1px dashed var(--papel-linea, var(--line-dim)); }
+  #panel .lx-ptg:last-child{ border-bottom:0; }
+  #panel .lx-ptg-nt{ padding-left:18px; margin-top:2px; }
+  #panel .lx-ptg-nt span{ color:var(--accent-violet); }
+  #panel .lx-ptg-mas > summary{ cursor:pointer; margin-top:6px; }
+  /* Agregado a D-104: en Parejas, la tarjeta abierta ocupa todo el ancho */
+  #lexSide .lx-todas .lx-card.abierta{ grid-column:1 / -1; }
   .lex-root.lex-major text{ font-size:var(--t-6); }
   .lex-root.lex-major.langdim text, .lex-root.lex-major.hoverdim text{ display:none; }
   @media (max-width: 720px){
@@ -1874,6 +1949,13 @@ body.light{ --accent-blue-ink:#34608B; }
     #lexSide .lx-par{ grid-template-columns:1fr 48px 1fr; }
     #lexSide .lx-opc{ font-size:var(--t-5); color:var(--parchment); } #lexSide .lx-opc summary{ cursor:pointer; min-height:36px; display:flex; align-items:center; }
     #lexSide .lx-opc .lx-ctl{ padding:6px 0 4px; }
+    /* ronda 31: en el teléfono, las maneras y «Opciones» en el primer renglón, el buscador y la cuenta debajo (el contenido, más
+       arriba); «Opciones» se abre encima de la lista, con «Cómo usar» adentro */
+    #lexSide .lx-tabs{ order:1; } #lexSide .lx-opc{ order:2; margin-left:auto; } #lexSide #lexSideQ{ order:3; } #lexSide .lx-cuenta{ order:4; }
+    #lexSide .lx-opc > .lx-ctl{ left:auto; right:0; width:calc(100vw - 24px); max-width:none; }
+    #lexSide .lx-opc .lx-como > .lx-como-d{ position:static; width:auto; max-width:none; box-shadow:none; margin-top:6px; }
+    #lexSide .lx-cuenta{ flex-basis:100%; }
+    #lexSide .lx-par-f{ grid-template-columns:minmax(0, 1fr) 64px minmax(0, 1fr); }
   }
   /* ---- 3a: táctil ---- */
   @media (pointer: coarse){
@@ -3862,10 +3944,29 @@ function lexChip(code){
     // los puntos de color de los títulos (D-24): un cuadradito por título, con su categoría principal, como las tarjetas del Mapa
     + `<span class="lx-sq" aria-hidden="true">${(strongToTitles[code] || []).map(t => `<i style="background:${mapaColor(t.cat)}"></i>`).join("")}</span></button>`;
 }
-function lexParHtml(p){
+// ronda 31 (D-104): cada pareja, una tarjeta compacta —la palabra hebrea y la griega a los lados de «N pares de títulos»—; al
+// tocarlo, se despliegan ahí los pares: el título del Antiguo Testamento a la izquierda y el del Nuevo a la derecha. La misma en
+// Parejas y en la columna central de Columnas.
+function lexParHtml(p, todas){
   const n = p.pares.length, on = palabraAbierta === p.h || palabraAbierta === p.g;
-  return `<div class="lx-par${n >= 3 ? " firme" : ""}${on ? " on" : ""}" data-h="${p.h}" data-g="${p.g}">${lexChip(p.h)}`
-    + `<button type="button" class="lx-puente" onclick="openPalabra('${p.h}', '${p.g}')" title="${n} ${n === 1 ? "par" : "pares"} de títulos: ${toca()} para verlos"><span>${n} ${n === 1 ? "par" : "pares"}</span></button>${lexChip(p.g)}</div>`;
+  const lado = c => `${lexChip(c)}${todas && lexN(c) === 1 ? `<span class="lx-un">1 título</span>` : ""}`;
+  return `<div class="lx-par lx-card${n >= 3 ? " firme" : ""}${on ? " on" : ""}" data-h="${p.h}" data-g="${p.g}"><div class="lx-par-f"><span class="lx-lado">${lado(p.h)}</span>`
+    + `<button type="button" class="lx-puente" aria-expanded="false" onclick="lexParDesplegar(this)" title="${toca()} para ver los pares de títulos"><span>${n} ${n === 1 ? "par" : "pares"} de títulos</span><i class="lx-flecha" aria-hidden="true"></i></button>`
+    + `<span class="lx-lado">${lado(p.g)}</span></div><div class="lx-par-ps" hidden></div></div>`;
+}
+function lexParDesplegar(b){
+  const c = b.closest(".lx-par"), L = c.querySelector(".lx-par-ps"), abrir = L.hidden;
+  if (abrir && !L.innerHTML){
+    const p = LEX_PARES.find(x => x.h === c.dataset.h && x.g === c.dataset.g); if (!p) return;
+    const t = id => { const d = nodeById[id]; return `<button type="button" class="lx-pt-t" onclick='openPanel(nodeById[${JSON.stringify(id)}])'><span>${escHtml(d.title)}</span><small>${escHtml(d.ref)}</small></button>`; };
+    const at = id => nodeById[id].testamento === "AT";
+    // agrupados por el título del Antiguo Testamento: él a la izquierda, una vez, y los del Nuevo que le corresponden a la derecha
+    const G = new Map();
+    p.pares.forEach(([a, z]) => { const [x, y] = at(a) || !at(z) ? [a, z] : [z, a]; (G.get(x) || G.set(x, []).get(x)).push(y); });
+    L.innerHTML = `<div class="lx-pt-cab"><span>En el Antiguo Testamento</span><span>En el Nuevo</span></div>`
+      + [...G].map(([x, ys]) => `<div class="lx-pt">${t(x)}<span class="lx-pt-y" aria-hidden="true">↔</span><div class="lx-pt-n">${ys.map(t).join("")}</div></div>`).join("");
+  }
+  L.hidden = !abrir; b.setAttribute("aria-expanded", abrir); c.classList.toggle("abierta", abrir);
 }
 const lexOrden = (a, b) => b.count - a.count || a.code.localeCompare(b.code, "en", { numeric: true });
 function lexDibujoHtml(vis){
@@ -3877,27 +3978,33 @@ function lexDibujoHtml(vis){
   const H = solos("Hebreo"), G = solos("Griego");
   return `<div class="lx-zonas">
     ${zona("lx-zh", "Hebreo", "Sin pareja griega entre estas palabras.", H.length ? `<div class="lx-grilla">${H.map(r => lexChip(r.code)).join("")}</div>` : "")}
-    ${zona("lx-zc", "La misma palabra en la traducción griega", "La palabra hebrea y, enfrente, la griega con que la traduce la traducción griega del Antiguo Testamento, que el Nuevo usa. La línea dice cuántos pares de títulos une.", pares.length ? `<div class="lx-parejas">${pares.map(lexParHtml).join("")}</div>` : "")}
+    ${zona("lx-zc", "La misma palabra en la traducción griega", "La palabra hebrea y la griega con que la traduce la traducción griega del Antiguo Testamento, que el Nuevo usa; tocá «pares de títulos» para verlos.", pares.length ? `<div class="lx-parejas">${pares.map(p => lexParHtml(p)).join("")}</div>` : "")}
     ${zona("lx-zg", "Griego", "Sin pareja hebrea entre estas palabras.", G.length ? `<div class="lx-grilla">${G.map(r => lexChip(r.code)).join("")}</div>` : "")}
   </div>`;
 }
 function lexEquivTxt(code){
   return (lexParesDe[code] || []).map(p => { const o = code === p.h ? p.g : p.h, v = VOC[o] || {}; return `<span${vocAttr(o)}>${escHtml(v.lema || o)}</span>`; }).join(", ");
 }
+// ronda 31 (D-104): el idioma por la forma (círculo, rombo) con su línea; la pareja con su pronunciación; el número con su unidad;
+// en la compu, los cuadraditos de tema
+function lexParejaTxt(code){
+  return (lexParesDe[code] || []).map(p => { const o = code === p.h ? p.g : p.h, v = VOC[o] || {};
+    return `<span${vocAttr(o)}>${escHtml(v.lema || o)}</span>${v.pron ? ` <i>${escHtml(v.pron)}</i>` : ""}`; }).join(", ");
+}
 function lexListaHtml(vis){
-  return `<div class="lexside-lista">${vis.slice().sort(lexOrden).map(r => { const eq = lexEquivTxt(r.code), v = VOC[r.code] || {};
+  const tel = esTelefono();
+  return `${tel ? "" : `<p class="lx-zd lx-lista-ley"><span><i class="lx-forma heb"></i>hebrea</span> <span><i class="lx-forma grc"></i>griega</span> · el número: cuántos títulos la usan</p>`}
+    <div class="lexside-lista">${vis.slice().sort(lexOrden).map(r => { const eq = lexParejaTxt(r.code), v = VOC[r.code] || {}, H = r.lang === "Hebreo";
     return `<button type="button" class="lexside-row${palabraAbierta === r.code ? " on" : ""}" data-c="${r.code}" onclick="openPalabra('${r.code}')">
-      <span class="lexside-dot ${r.lang === "Hebreo" ? "heb" : "grk"}"></span>
-      <span class="lexside-lex"><span${vocAttr(r.code)}>${escHtml(v.lema || lexLexema(r.code) || r.code)}</span>${v.pron ? ` <span class="lexside-pr">${escHtml(v.pron)}</span>` : ""}${v.glosa ? `<span class="lexside-gl">${escHtml(v.glosa)}</span>` : ""}${eq ? `<span class="lexside-eq">= ${eq}</span>` : ""}</span>
-      <span class="lexside-n" title="${r.count} títulos">${r.count}</span></button>`; }).join("")}</div>`;
+      <span class="lexside-dot lx-forma ${H ? "heb" : "grk grc"}" title="${H ? "Hebreo" : "Griego"}"><span class="lx-sr">${H ? "hebreo" : "griego"}</span></span>
+      <span class="lexside-lex"><span${vocAttr(r.code)}>${escHtml(v.lema || lexLexema(r.code) || r.code)}</span>${v.pron ? ` <span class="lexside-pr">${escHtml(v.pron)}</span>` : ""}${v.glosa ? `<span class="lexside-gl">${escHtml(v.glosa)}</span>` : ""}${eq ? `<span class="lexside-eq">Pareja: ${eq}</span>` : ""}</span>
+      <span class="lexside-n"><b>${r.count}</b> ${r.count === 1 ? "título" : "títulos"}</span>${tel ? "" : `<span class="lx-sq" aria-hidden="true">${(strongToTitles[r.code] || []).map(t => `<i style="background:${mapaColor(t.cat)}"></i>`).join("")}</span>`}</button>`; }).join("")}</div>`;
 }
 function lexParejasHtml(){
   const q = lexOpc.q;
   const ps = LEX_PARES.filter(p => (lexOpc.heb || lexOpc.grc) && (!q || lexCoincide(p.h, q) || lexCoincide(p.g, q)));
-  const lado = c => { const n = lexN(c); return `${lexChip(c)}${n === 1 ? `<span class="lx-un">1 título</span>` : ""}`; };
-  return `<p class="lx-zd">Todas las parejas, por cuántos pares de títulos unen: la palabra hebrea y la griega con que la traduce la traducción griega del Antiguo Testamento. «1 título»: esa palabra la usa un solo título.</p>
-    <div class="lx-parejas lx-todas">${ps.map(p => { const n = p.pares.length, on = palabraAbierta === p.h || palabraAbierta === p.g;
-      return `<div class="lx-par firme${on ? " on" : ""}" data-h="${p.h}" data-g="${p.g}"><span class="lx-lado">${lado(p.h)}</span><button type="button" class="lx-puente" onclick="openPalabra('${p.h}', '${p.g}')"><span>${n} ${n === 1 ? "par" : "pares"}</span></button><span class="lx-lado">${lado(p.g)}</span></div>`; }).join("") || `<p class="lx-vacio">Ninguna pareja con lo buscado.</p>`}</div>`;
+  // ronda 31: la explicación, en «Cómo usar esta vista»; las tarjetas, varias por fila si entran (todas «firme»: es su vista)
+  return `<div class="lx-parejas lx-todas">${ps.map(p => lexParHtml(p, true).replace('class="lx-par lx-card ', 'class="lx-par lx-card firme ').replace(' firme firme', ' firme')).join("") || `<p class="lx-vacio">Ninguna pareja con lo buscado.</p>`}</div>`;
 }
 // lo que se ve: las palabras con lo elegido y lo buscado
 function lexVisibles(){ return lexicaRoots.filter(r => lexVisible(r) && lexCoincide(r.code, lexOpc.q)); }
@@ -3907,15 +4014,36 @@ function lexCuentaTxt(vis){
   return `${vis.length} ${vis.length === 1 ? "palabra" : "palabras"} en ${tit.size} de ${rawNodes.length} títulos · ${np} ${np === 1 ? "pareja" : "parejas"} con la traducción griega`
     + (lexOpc.gen ? "" : ` · sin las palabras generales (πᾶς, כֹּל y εἰμί)`);
 }
+// ronda 31 (D-104): la cuenta corta de la fila («316 palabras · 55 parejas»); la larga queda al pasar el cursor
+function lexCuentaCorta(vis){
+  const visC = new Set(vis.map(r => r.code)), np = LEX_PARES.filter(p => visC.has(p.h) && visC.has(p.g)).length;
+  return `${vis.length} ${vis.length === 1 ? "palabra" : "palabras"} · ${np} ${np === 1 ? "pareja" : "parejas"}`;
+}
+// cuántas opciones dejaron de estar como al abrir (Hebreo, Griego, cantidad, generales)
+function lexOpcCambiadas(){ return (!lexOpc.heb) + (!lexOpc.grc) + (lexOpc.max !== 999) + (!!lexOpc.gen); }
+// «Cómo usar esta vista», de cada manera de ver
+function lexComoTxt(modo){
+  const base = `${toca(true)} una palabra para ver su ficha: sus títulos, su pareja y su dibujo. El buscador encuentra la palabra en castellano, en hebreo o griego (con o sin acentos y vocales), por su pronunciación o por su código.`;
+  const M = {
+    dibujo: "Columnas: al centro, cada pareja en su tarjeta —la palabra hebrea, la griega y cuántos pares de títulos une—; tocá «pares de títulos» para verlos. A los costados, las palabras sin pareja.",
+    lista: "Lista: cada renglón es una palabra —el círculo, hebrea; el rombo, griega—, con cuántos títulos la usan y su pareja en el otro idioma.",
+    parejas: "Parejas: todas las parejas, por cuántos pares de títulos unen: la palabra hebrea y la griega con que la traduce la traducción griega del Antiguo Testamento. Tocá «pares de títulos» para verlos ahí mismo. «1 título»: esa palabra la usa un solo título.",
+    red: `Red: cada círculo es una palabra hebrea; cada rombo, una griega; más grandes cuantos más títulos las usan. Los puntos son los títulos, del color de su tema (la leyenda, abajo), unidos a sus palabras. A la izquierda, el hebreo sin pareja; al centro, las parejas (la palabra hebrea frente a la griega con que la traduce la traducción griega); a la derecha, el griego sin pareja. ${toca(true)} una palabra para ver su ficha y su estrella; con la rueda o con «+ −» se acerca.`,
+  };
+  return `<p>${M[modo] || ""}</p><p>${base}</p>`;
+}
 function lexCuerpo(){
   const el = document.getElementById("lexCuerpo"); if (!el) return;
   const vis = lexVisibles(), modo = lexModo();
-  document.getElementById("lexCuenta").textContent = lexCuentaTxt(vis);
+  const cu = document.getElementById("lexCuenta"); cu.textContent = lexCuentaCorta(vis); cu.title = lexCuentaTxt(vis);   // ronda 31
+  const nOp = lexOpcCambiadas(), on = document.getElementById("lexOpcN"); if (on) on.textContent = nOp ? ` · ${nOp}` : "";
+  const co = document.getElementById("lexComo"); if (co) co.innerHTML = lexComoTxt(modo);
+  const idi = document.querySelector("#lexSide .lx-idioma"); if (idi) idi.hidden = modo === "parejas";   // toda pareja tiene los dos
   document.querySelectorAll("#lexSide .lx-tab").forEach(b => b.setAttribute("aria-selected", b.dataset.m === modo));
   // ronda 30: «Red», el dibujo de fuerzas en el lienzo; el panel queda en la barra
   document.getElementById("lexSide").classList.toggle("en-red", modo === "red");
   if (modo === "red"){
-    el.innerHTML = `<p class="lx-zd lx-red-ayuda">Cada círculo es una palabra hebrea; cada rombo, una griega; más grandes cuantos más títulos las usan. Los puntos son los títulos, del color de su tema (la leyenda, abajo), unidos a sus palabras. A la izquierda, el hebreo sin pareja; al centro, las parejas (la palabra hebrea frente a la griega con que la traduce la traducción griega); a la derecha, el griego sin pareja. ${toca(true)} una palabra para ver su ficha y su estrella; con la rueda o con «+ −» se acerca.</p>${lexRed && lexRed.listo ? "" : `<p class="lx-zd lx-red-armando" aria-live="polite">Armando la red…</p>`}`;
+    el.innerHTML = lexRed && lexRed.listo ? "" : `<p class="lx-zd lx-red-armando" aria-live="polite">Armando la red…</p>`;   // ronda 31: la explicación, en «Cómo usar»
     if (lexRedVisible()) lexRedFiltrar(); else lexRedMostrar();
     return;
   }
@@ -3931,18 +4059,23 @@ function lexRender(){
   const el = document.getElementById("lexSide"); if (!el) return;
   lexicaStarted = true; cargarFuentesOriginal();
   const tel = esTelefono(), tabs = (tel ? [["lista", "Lista"], ["parejas", "Parejas"]] : [["dibujo", "Columnas"], ["lista", "Lista"], ["parejas", "Parejas"], ["red", "Red"]]);   // ronda 30; «Dibujo» pasa a «Columnas» (D-100, Agregado); el valor interno queda, no va en la dirección
+  // ronda 31 (D-104): una fila —las maneras de ver, el buscador, la cuenta corta, «Opciones» y «Cómo usar esta vista»—; en el
+  // teléfono, «Cómo usar» dentro de «Opciones». «Letra del original», solo en la ficha.
+  const como = `<details class="lx-como"><summary>Cómo usar esta vista</summary><div class="lx-como-d" id="lexComo"></div></details>`;
   el.innerHTML = `<div class="lx-barra">
-      <input id="lexSideQ" type="search" placeholder="Buscar: rey, hesed, λόγος, G3056…" aria-label="Buscar una palabra: en castellano, en hebreo o griego, su pronunciación o su código" value="${escHtml(lexOpc.q)}">
       <div class="lx-tabs" role="tablist" aria-label="Cómo ver las palabras">${tabs.map(([m, t]) => `<button type="button" role="tab" class="lx-tab" data-m="${m}" onclick="lexModoPoner('${m}')">${t}</button>`).join("")}</div>
-      ${tel ? `<details class="lx-opc"><summary>Opciones</summary>` : ""}<div class="lx-ctl">
-        <label class="toggle"><input type="checkbox" id="lexHebreo"${lexOpc.heb ? " checked" : ""} onchange="lexOpc.heb = this.checked; lexCuerpo()"> Hebreo</label>
-        <label class="toggle"><input type="checkbox" id="lexGriego"${lexOpc.grc ? " checked" : ""} onchange="lexOpc.grc = this.checked; lexCuerpo()"> Griego</label>
+      <input id="lexSideQ" type="search" placeholder="Buscar: rey, hesed, λόγος, G3056…" aria-label="Buscar una palabra: en castellano, en hebreo o griego, su pronunciación o su código" value="${escHtml(lexOpc.q)}">
+      <span class="lx-cuenta" id="lexCuenta" aria-live="polite"></span>
+      <details class="lx-opc"><summary>Opciones<span class="lx-opc-n" id="lexOpcN"></span></summary><div class="lx-ctl">
+        <span class="lx-idioma"><label class="toggle"><input type="checkbox" id="lexHebreo"${lexOpc.heb ? " checked" : ""} onchange="lexOpc.heb = this.checked; lexCuerpo()"> Hebreo</label>
+        <label class="toggle"><input type="checkbox" id="lexGriego"${lexOpc.grc ? " checked" : ""} onchange="lexOpc.grc = this.checked; lexCuerpo()"> Griego</label></span>
         <label class="lx-sel">Cantidad de títulos <select id="lexThreshold" class="hsel" onchange="lexOpc.max = +this.value; lexCuerpo()">${[[999, "todas"], [6, "hasta 6"], [3, "hasta 3"]].map(([v, t]) => `<option value="${v}"${lexOpc.max === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="toggle"><input type="checkbox" id="lexGen"${lexOpc.gen ? " checked" : ""} onchange="lexOpc.gen = this.checked; lexCuerpo()"> Mostrar palabras generales (3)</label>
-        ${origTamHtml()}
-      </div>${tel ? "</details>" : ""}
+        <p class="lx-gen-d">Las palabras generales (πᾶς, <span lang="he">כֹּל</span> y εἰμί: «todo» y «ser») las usan muchos títulos sin decir nada de ellos: quedan ocultas, y el buscador las encuentra.</p>
+        ${tel ? como : ""}
+      </div></details>
+      ${tel ? "" : como}
     </div>
-    <p class="lx-cuenta" id="lexCuenta" aria-live="polite"></p>
     <div id="lexCuerpo"></div>`;
   const inp = document.getElementById("lexSideQ");
   inp.addEventListener("input", () => { lexOpc.q = inp.value; lexCuerpo(); });
@@ -3997,6 +4130,19 @@ function lexMini(code, par){
     ${conNombre ? "" : `<text x="${cx}" y="${Hh - 6}" text-anchor="middle" class="lxm-pg">los ${n} títulos, en la lista de abajo</text>`}
   </svg>`;
 }
+// ronda 31 (D-104): en el teléfono, en lugar del dibujo chico, un puente compacto: la palabra con sus cuadraditos de tema, «N pares
+// de títulos» y la pareja (hasta tres) con los suyos; los títulos se leen en la lista de abajo
+const LEX_PARES_TEL = 6;   // Agregado a D-104: en la ficha del teléfono, los pares de la pareja a la vista hasta estos
+function lexPuenteTel(code, par){
+  const pares = (lexParesDe[code] || []).slice().sort((a, b) => (b.h === par || b.g === par) - (a.h === par || a.g === par) || b.pares.length - a.pares.length).slice(0, 3);
+  const pal = (c, boton) => { const v = VOC[c] || {}, H = c[0] === "H";
+    const cuerpo = `<span class="lxp-l"><i class="lx-forma ${H ? "heb" : "grc"}"></i><span${vocAttr(c)}>${escHtml(v.lema || lexLexema(c) || c)}</span></span>${v.glosa ? `<span class="lxp-g">${escHtml(v.glosa)}</span>` : ""}`
+      + `<span class="lx-sq" aria-hidden="true">${(strongToTitles[c] || []).map(t => `<i style="background:${mapaColor(t.cat)}"></i>`).join("")}</span><span class="lxp-n">${lexN(c)} ${lexN(c) === 1 ? "título" : "títulos"}</span>`;
+    return boton ? `<button type="button" class="lxp-w" onclick="openPalabra('${c}')">${cuerpo}</button>` : `<span class="lxp-w">${cuerpo}</span>`; };
+  if (!pares.length) return `<div class="lx-puente-tel"><div class="lxp-f solo">${pal(code)}</div></div>`;
+  return `<div class="lx-puente-tel">${pares.map(p => { const o = code === p.h ? p.g : p.h, k = p.pares.length;
+    return `<div class="lxp-f">${pal(code)}<span class="lxp-par">${k} ${k === 1 ? "par" : "pares"} de títulos</span>${pal(o, true)}</div>`; }).join("")}</div>`;
+}
 // la ficha de una palabra: cualquiera de las del catálogo (también las de un solo título)
 function lexFichaHtml(code, par){
   const v = VOC[code] || {}, H = code[0] === "H", titles = strongToTitles[code] || [], n = titles.length;
@@ -4010,19 +4156,27 @@ function lexFichaHtml(code, par){
   const forma = t => { const p = (t.palabras || []).find(p => p.c.includes(code));
     return p ? `<span${vocAttr(code)}>${escHtml(p.f)}</span>${p.p ? ` <span class="og-pron">${escHtml(p.p)}</span>` : ""}` : ""; };
   const tit = id => { const t = nodeById[id]; return `<button type="button" class="ficha-link" onclick='openPanel(nodeById[${JSON.stringify(id)}])'>${escHtml(t.title)}</button> <span class="lx-rf">(${escHtml(t.ref)})</span>`; };
-  const eq = pares.map(p => { const o = H ? p.g : p.h, k = p.pares.length, on = par === o;
-    return `<div class="lx-eq-f${on ? " on" : ""}">${lexChip(o)}<details${on ? " open" : ""}><summary>ver ${k === 1 ? "el par" : `los ${k} pares`} de títulos</summary>
-      ${p.pares.map(([a, b]) => `<div class="lx-pt">${tit(a)} ↔ ${tit(b)}</div>`).join("")}</details></div>`; }).join("");
+  // ronda 31 (D-104 y su Agregado): los pares agrupados por el título del Antiguo Testamento —él una vez y debajo los del Nuevo—;
+  // en el teléfono, los de la pareja elegida (o la primera) a la vista, hasta LEX_PARES_TEL, y los demás en «ver los otros N»
+  const tel = esTelefono(), esAT = id => nodeById[id].testamento === "AT";
+  const grupos = ps => { const G = new Map();
+    ps.forEach(([a, b]) => { const [x, y] = esAT(a) || !esAT(b) ? [a, b] : [b, a]; (G.get(x) || G.set(x, []).get(x)).push(y); });
+    return [...G].map(([x, ys]) => `<div class="lx-ptg"><div class="lx-ptg-at">${tit(x)}</div>${ys.map(y => `<div class="lx-ptg-nt"><span aria-hidden="true">↔</span> ${tit(y)}</div>`).join("")}</div>`).join(""); };
+  const eq = pares.map((p, i) => { const o = H ? p.g : p.h, k = p.pares.length, on = par === o;
+    if (tel && (on || (!par && i === 0))){ const vis = p.pares.slice(0, LEX_PARES_TEL), resto = p.pares.slice(LEX_PARES_TEL);
+      return `<div class="lx-eq-f on">${lexChip(o)}<div class="lx-ptgs">${grupos(vis)}</div>${resto.length ? `<details class="lx-ptg-mas"><summary>ver ${resto.length === 1 ? "el otro par" : `los otros ${resto.length} pares`} de títulos</summary>${grupos(resto)}</details>` : ""}</div>`; }
+    return `<div class="lx-eq-f${on ? " on" : ""}">${lexChip(o)}<details${on ? " open" : ""}><summary>ver ${k === 1 ? "el par" : `los ${k} pares`} de títulos</summary>${grupos(p.pares)}</details></div>`; }).join("");
   return `<div class="cat-tags"><span class="cat-tag" style="--cb:${H ? "var(--gold)" : "var(--accent-blue)"}; --ci:${H ? "var(--cat-01-ink)" : "var(--cat-05-ink)"}">${H ? "Hebreo" : "Griego"}</span></div>
     <h2 class="lx-lema"><span${vocAttr(code)}>${escHtml(v.lema || lexLexema(code) || code)}</span></h2>
     <div class="ref lx-sub">${v.pron ? `<i>${escHtml(v.pron)}</i>` : ""}${v.glosa ? `${v.pron ? " · " : ""}${escHtml(v.glosa)}` : ""}</div>
-    ${origTamHtml()}
-    ${lexMini(code, par)}
+    ${tel ? "" : origTamHtml()}
+    ${tel ? lexPuenteTel(code, par) : lexMini(code, par)}
     ${pares.length ? `<section class="field lx-eq"><label>La misma palabra en la traducción griega</label>
       <p class="lx-eq-d">${H ? "La traducción griega del Antiguo Testamento la traduce con" : "La traducción griega del Antiguo Testamento usa esta palabra para traducir"} ${pares.length === 1 ? "esta palabra" : `estas ${pares.length}`}; el Nuevo Testamento la usa en estos pares de títulos.</p>${eq}</section>` : ""}
     <section class="field"><label>${n === 1 ? "La usa un título" : `La usan ${n} títulos`}, en el orden de la Biblia</label>
       <div class="val lx-ts">${titles.map(t => `<button type="button" class="lx-t" data-id="${t.id}" onmouseenter="lexRedEncender(this.dataset.id)" onmouseleave="lexRedEncender(null)" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'><span class="lx-t-ti">${escHtml(t.title)}</span><span class="lx-t-rf">${escHtml(t.ref)}${forma(t) ? " · " + forma(t) : ""}</span></button>`).join("")}</div></section>
     ${lemaEntry && lemaEntry.text ? `<details class="field og-dicc-panel"><summary>Diccionario Strong${freq ? ` · ${freq} apariciones en la Biblia` : ""}</summary><blockquote class="dicc-strong">${lemaEntry.text}</blockquote></details>` : ""}
+    ${tel ? `<div class="lx-letra-fin">${origTamHtml()}</div>` : ""}
     <p class="lx-pie"><span class="lx-cod">Strong ${code}</span>${stepUrl ? ` · <a href="${stepUrl}" target="_blank" rel="noopener" title="Su diccionario y todas las veces que aparece. Abre una pestaña nueva.">Esta palabra en STEP Bible ↗</a>` : ""}</p>`;
 }
 function openPalabra(code, par){
@@ -4262,6 +4416,10 @@ function lexRedMostrar(){
   const ls = document.getElementById("lexSide");
   if (!lexRedBarraObs && ls && window.ResizeObserver){ lexRedBarraObs = new ResizeObserver(() => { if (rotActiva === lexRed){ svg.style("clip-path", `inset(${Math.round(lexRedArea().clip)}px 0px 0px 0px)`); rotPedir(); } }); lexRedBarraObs.observe(ls); }
   const ley = document.getElementById("legend"); ley.style.display = ""; ley.classList.add("sobre-red");
+  // ronda 31: la leyenda corta de la Red, dentro del lienzo (con la de los temas); en el cuadro siguiente, antes del encuadre, para no
+  // forzar otra maquetación en la tarea que abre la Red (test_ronda30 G1)
+  requestAnimationFrame(() => { if (!document.getElementById("lexRedLey") && ley.classList.contains("sobre-red"))
+    ley.insertAdjacentHTML("afterbegin", `<div id="lexRedLey" class="lx-red-ley"><span><i class="lx-forma heb"></i>palabra hebrea</span><span><i class="lx-forma grc"></i>palabra griega</span><span>más grande, más títulos</span><span><i class="lx-forma tit"></i>título, del color de su tema:</span></div>`); });
   rotActiva = R; svg.style("clip-path", `inset(${Math.round(lexRedArea().clip)}px 0px 0px 0px)`);
   lexRedFiltrar(); lexRedFoco(palabraAbierta ? "root:" + palabraAbierta : null);
   document.getElementById("zoomControls").style.display = "flex";
@@ -4270,6 +4428,7 @@ function lexRedMostrar(){
 function lexRedOcultar(){
   if (lexRed){ lexRed.capa.style("display", "none"); rotSoltar(lexRed); }
   document.getElementById("legend").classList.remove("sobre-red");
+  const rl = document.getElementById("lexRedLey"); if (rl) rl.remove();   // ronda 31
   if (layoutMode === "lexica"){ document.getElementById("zoomControls").style.display = "none"; document.getElementById("legend").style.display = "none"; }
   const ls = document.getElementById("lexSide"); if (ls) ls.classList.remove("en-red");
 }
@@ -7234,6 +7393,9 @@ function renderVistaHead(){
   const info = vistaInfo(layoutMode);
   if (!info){ el.classList.remove("on"); el.innerHTML = ""; return; }
   el.classList.remove("plegado");
+  // ronda 31 (D-104): en «Palabras originales», el menú ya dice dónde se está; «Cómo usar esta vista» va en la fila de la vista
+  el.classList.toggle("lx-sin", layoutMode === "lexica");
+  if (layoutMode === "lexica"){ el.innerHTML = `<h1 class="vh-t">${info.t}</h1>`; el.classList.add("on"); return; }
   el.innerHTML = `<div class="vh-cab"><h1 class="vh-t">${info.t}</h1><span class="vh-f">${info.f}</span>
     <button type="button" class="vh-como" aria-expanded="${vistaComoAbierto}" onclick="vistaComoToggle()">${vistaComoAbierto ? "Ocultar" : "Cómo usar esta vista"}</button></div>
     ${vistaComoAbierto ? `<div class="vh-d">${info.c}</div>` : ""}${vistaLoQueSeVe()}`;
@@ -7446,7 +7608,7 @@ function syncHeader(){
   // la fila de «Opciones» aparece después del encuadre), se re-encuadra
   if (hh !== hhAntes && layoutMode === "matriz" && matrixBBox) matrizEncuadrar();
 }
-new ResizeObserver(() => syncHeader()).observe(document.querySelector("header"));
+new ResizeObserver(() => { if (Math.round(document.querySelector("header").getBoundingClientRect().height) !== headerH()) syncHeader(); }).observe(document.querySelector("header"));   // ronda 31: solo si el alto cambió de verdad
 const HIDDEN_MODE_LABELS = { cinetica: "Cinética de la revelación", radar: "Huellas digitales (radar)" };
 // ronda 25 (D-52): las vistas del grupo «Taller» (la cola, los candidatos y, desde D-52, Recorridos, Cifras y la Nube, que
 // Ezequiel conserva para él); con los lienzos ocultos, son las que el estudio no abre
