@@ -529,6 +529,46 @@
   #grafoElegir .ge-todo button{ background:none; border:none; color:var(--gold-bright);
     text-decoration:underline; cursor:pointer; font-family:inherit; font-size:var(--t-5); padding:6px 2px; }
   #grafoElegir .ge-vacio{ font-size:var(--t-5); color:var(--parchment-dim); line-height:1.5; }
+  /* ronda 32 (D-106): «Elegí un título» con el ancho de la pantalla y la lista en columnas */
+  #grafoElegir{ width:min(1500px, calc(100% - 32px)); }
+  #grafoLista{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap:0 14px; align-content:start; }
+  /* Mi selección: el nombre, solo para los lectores de pantalla; la frase, con renglones largos */
+  #selLayer .sel-oculto{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  #selLayer .sel-d{ max-width:104ch; }
+  /* Conexiones anotadas y Entre Testamentos: una fila con «Opciones» */
+  .cx-fila{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0 0 14px; }
+  .cx-fila .cx-modos{ margin:0; } .cx-fila .cx-busca{ flex:1 1 280px; margin:0; } .cx-fila .cx-busca-q{ flex:1; }
+  .cx-cuenta{ font-size:var(--t-5); color:var(--parchment-dim); white-space:nowrap; }
+  .cx-opc, #grafoEnf .en-opc{ position:relative; font-size:var(--t-5); color:var(--parchment); }
+  .cx-opc > summary, #grafoEnf .en-opc > summary{ cursor:pointer; list-style:none; min-height:36px; display:flex; align-items:center; padding:0 12px;
+    border:1px solid var(--line-dim); border-radius:999px; white-space:nowrap; }
+  .cx-opc > summary::-webkit-details-marker, #grafoEnf .en-opc > summary::-webkit-details-marker{ display:none; }
+  .cx-opc[open] > summary, #grafoEnf .en-opc[open] > summary{ border-color:var(--gold); }
+  .cx-opc-n, #grafoEnf .en-opc-n{ color:var(--gold-bright); font-weight:600; }
+  .cx-opc-c, #grafoEnf .en-opc-c{ position:absolute; z-index:9; top:calc(100% + 6px); right:0; width:max-content; max-width:min(620px, calc(100vw - 32px));
+    display:flex; flex-direction:column; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--night); border:1px solid var(--line-dim);
+    border-radius:10px; box-shadow:0 10px 30px var(--panel-shadow); }
+  .cx-opc-c .cx-tabs, .cx-opc-c .cx-tipos{ margin:0; flex-wrap:wrap; } .cx-opc-c .cx-meta{ margin:0; font-size:var(--t-6); color:var(--parchment-dim); }
+  .cx-libro{ display:flex; gap:8px; align-items:center; font-size:var(--t-5); }
+  .cx-libro select{ font:inherit; font-size:var(--t-5); min-height:34px; border-radius:var(--r-btn); border:1px solid var(--line-dim);
+    background:var(--select-bg); color:var(--parchment); padding:4px 10px; }   /* lo que tenía en .cx-busca */
+  #grafoEnf .en-opc-c .en-instr, #grafoEnf .en-opc-c .ge-ctl{ margin:0; } #grafoEnf .en-opc-c .ge-info{ max-width:60ch; }
+  #grafoEnf .en-opc-ayuda{ margin:0; font-size:var(--t-6); } #grafoEnf .en-opc-ayuda .ge-info-btn{ background:transparent; border:0; color:var(--gold-bright);
+    font:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:6px 4px; width:auto; height:auto; }
+  /* el Mapa: la leyenda de los temas, plegable */
+  #mapaLayer .mp-ley-d > summary{ cursor:pointer; font-size:var(--t-6); color:var(--parchment-dim); padding:4px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  #mapaLayer .mp-ley-pts{ display:inline-flex; gap:3px; } #mapaLayer .mp-ley-pts i{ width:9px; height:9px; border-radius:2px; display:block; }
+  #mapaLayer .mp-ley-d[open] .mp-ley-pts{ display:none; }
+  /* «Por dónde empezar», en una fila */
+  .idx-puertas .ip-fila{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; }
+  .idx-puertas .ip-t{ font-size:var(--t-5); color:var(--gold-bright); font-weight:600; white-space:nowrap; }
+  .idx-puertas .ip-fila .ip-grid{ flex:1; display:flex; flex-wrap:wrap; gap:6px; }
+  .idx-puertas .ip-fila .ip-p{ display:flex; align-items:baseline; gap:6px; padding:6px 12px; border-radius:999px; min-height:36px; }
+  .idx-puertas .ip-fila .ip-p b{ display:inline; margin:0; font-size:var(--t-4); }
+  .idx-puertas .ip-fila .ip-p span{ white-space:nowrap; }
+  .idx-puertas .ip-fila + .ip-marcas{ margin-top:6px; }
+  .idx-puertas.ip-compacta{ padding:8px 12px; }
+  .idx-puertas.con-filtro .ip-fila .ip-grid{ display:none; }   /* con un filtro, sin las puertas (ronda 25) */ #mapaLayer .mp-ley-d .mp-chips{ margin-top:6px; }
   .cx-par{ background:var(--panel-bg); border:1px solid var(--papel-linea);
     border-radius:var(--r-card); overflow:hidden; margin-bottom:12px;
     --ink-1:#241E12; --ink-2:#4A4326; --ink-3:#6B6142; --foco:#8E731C; color:var(--ink-1); }
@@ -2211,7 +2251,12 @@ body.light{ --accent-blue-ink:#34608B; }
   #grafoEnf .en-cont{ background:transparent; border:1px solid var(--line-dim); border-radius:100px; color:var(--gold-bright); font:inherit; font-size:var(--t-6); padding:4px 12px; min-height:30px; cursor:pointer; }
   #grafoEnf .en-cont[aria-pressed="true"]{ border-color:var(--gold); }
   #grafoEnf .en-tira-nota{ grid-column:1 / -1; font:400 var(--t-6) 'Source Sans 3', sans-serif; letter-spacing:0; text-transform:none; color:var(--parchment-dim); margin:0 0 6px; white-space:normal; }
-  @media (max-width:719px){ #grafoEnf .en-fijo{ position:static; margin:0 -8px; padding:6px 8px 4px; } #grafoEnf .en-fijo .capa-b{ padding:4px 8px; } }
+  @media (max-width:719px){ #grafoEnf .en-fijo{ position:sticky; top:-10px; margin:0 -8px; padding:6px 8px 6px; } #grafoEnf .en-fijo .capa-b{ padding:4px 8px; }
+    /* ronda 32: en el teléfono, una fila fija —las maneras y «Opciones»—; «Opciones» se abre a lo ancho */
+    #grafoEnf .en-cab1{ flex-wrap:nowrap; } #grafoEnf .en-opc{ margin-left:auto; }
+    #grafoEnf .en-opc-c{ width:calc(100vw - 16px); right:-8px; max-height:70vh; overflow-y:auto; }
+    .cx-opc-c{ width:calc(100vw - 24px); right:auto; left:0; } .cx-fila .cx-busca{ flex-basis:100%; order:4; }
+    .idx-puertas .ip-fila .ip-grid{ flex-basis:100%; order:3; } .idx-puertas .ip-fila .ip-p{ flex:1 1 calc(50% - 6px); flex-wrap:wrap; } }
   #grafoEnf .en-aviso{ font-size:var(--t-5); color:var(--parchment-dim); margin:0 0 8px; max-width:900px; }
   #grafoEnf .en-filtro{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 8px; font-size:var(--t-5); }
   #grafoEnf .en-filtro .en-a-libros{ background:transparent; border:1px solid var(--line-dim); border-radius:100px; color:var(--gold-bright);
@@ -2406,7 +2451,7 @@ body.light{ --accent-blue-ink:#34608B; }
   <div id="expOverlay" class="overlay" style="z-index:22;"><div id="expBody" class="overlay-card"></div></div>
   <div id="grafoElegir">
     <h3>Elegí un título</h3>
-    <div class="ge-sub">La red de <b>un</b> título: con qué otros se relaciona y por qué. Empezá por uno y navegá desde ahí.</div>
+    <div class="ge-sub">Empezá por uno y navegá desde ahí.</div>
     <input id="grafoBuscar" type="text" placeholder="Buscar un título o una referencia…" autocomplete="off">
     <div id="grafoLista"></div>
     <div class="ge-todo"><button onclick="entreAbrir()">Entre Testamentos: el Antiguo con el Nuevo ⇢</button> <button onclick="reAbrir()">Ver la red entera ⇢</button></div>
@@ -5255,7 +5300,7 @@ function grafoElegirMostrar(motivo){
   el.querySelector("h3").textContent = aislado ? "Sin vínculos todavía" : "Elegí un título";
   el.querySelector(".ge-sub").innerHTML = aislado
     ? `<b>${escHtml(motivo.titulo)}</b> todavía no tiene vínculos con otros títulos del catálogo, así que no hay red que dibujar. Elegí otro:`
-    : "La red de <b>un</b> título: con qué otros se relaciona y por qué. Empezá por uno y navegá desde ahí.";
+    : "Empezá por uno y navegá desde ahí.";   // ronda 32: lo demás, en la línea de la vista
   grafoRenderLista();
   el.classList.add("on");
 }
@@ -5320,16 +5365,25 @@ function entreIrA(id){
   const t = grafoEnf.querySelector(`.ge-t[data-id="${id}"]`); if (!t) return;
   grafoEnf.scrollTo({ top: t.getBoundingClientRect().top - grafoEnf.getBoundingClientRect().top + grafoEnf.scrollTop - grafoEnf.clientHeight * 0.35 });
 }
-function entreCabHtml(){
+// ronda 32 (D-106): una fila —las maneras, las capas y «Opciones»— (en el teléfono, las maneras y «Opciones»: las capas van adentro);
+// en «Opciones», lo de cada manera (extra: el orden del Nuevo Testamento y las cifras, «Mostrar también…»), la instrucción, «¿Qué es
+// cada capa?» y «Qué muestra esta vista»; afuera, cuántas opciones cambiaron
+let entreOpcAbierta = false;
+function entreCabHtml(extra){
   const seg = (v, t) => `<button data-n="${v}" class="${entreNivel === v ? "on" : ""}" aria-pressed="${entreNivel === v}">${t}</button>`;
   const ayudaRef = entreNivel === "titulos" && !entreFiltro ? " (se ven por libros)" : "";
   const tel = innerWidth < 720, porTit = entreNivel === "titulos";
+  const capas = `<div class="capas" role="group" aria-label="Capas">${CAPAS.map(c => `<button type="button" class="capa-b${entreCapas[c.k] ? " on" : ""}" data-capa="${c.k}" aria-pressed="${!!entreCapas[c.k]}" title="${escHtml(c.nombre + ": " + c.ayuda + (c.k === "ref" ? ayudaRef : ""))}">${capaMuestra(c.k)}<span>${c.nombre}</span> <b>${entreCuentas[c.k]}</b></button>`).join("")}</div>`;
+  const nOp = (grafoEnfOrden !== "par" ? 1 : 0) + (entreContinuidad ? 1 : 0) + (tel ? CAPAS.filter(c => !!entreCapas[c.k] !== (c.k === "anotada")).length : 0);
   return `<div class="en-fijo"><div class="en-cab1"><span class="ge-seg en-nivel" role="group" aria-label="Cómo verlo">${seg("titulos", "Por títulos")}${seg("libros", "Por libros")}</span>
-      <button type="button" class="ge-info-btn" aria-expanded="${grafoEnfInfo}" aria-controls="geInfo" title="Qué muestra esta vista" aria-label="Qué muestra esta vista">ⓘ</button>
-    <div class="capas" role="group" aria-label="Capas">${CAPAS.map(c => `<button type="button" class="capa-b${entreCapas[c.k] ? " on" : ""}" data-capa="${c.k}" aria-pressed="${!!entreCapas[c.k]}" title="${escHtml(c.nombre + ": " + c.ayuda + (c.k === "ref" ? ayudaRef : ""))}">${capaMuestra(c.k)}<span>${c.nombre}</span> <b>${entreCuentas[c.k]}</b></button>`).join("")}<button type="button" class="capas-q" aria-expanded="false">¿Qué es cada capa?</button></div></div></div>
-    ${capasAyudaHtml()}
-    <p class="en-instr">${porTit ? `${tel ? "Tocá un título para ver sus vínculos" : "Tocá un título para ver sus vínculos (o pasá el mouse)"}; el segundo toque abre su ficha.` : "Tocá una banda o un libro para verlo título por título."}</p>
+      ${tel ? "" : capas}
+      <details class="en-opc"${entreOpcAbierta ? " open" : ""} ontoggle="entreOpcAbierta = this.open"><summary>Opciones${nOp ? `<span class="en-opc-n"> · ${nOp}</span>` : ""}</summary><div class="en-opc-c">
+        ${tel ? capas : ""}${extra || ""}
+        <p class="en-instr">${porTit ? `${tel ? "Tocá un título para ver sus vínculos" : "Tocá un título para ver sus vínculos (o pasá el mouse)"}; el segundo toque abre su ficha.` : "Tocá una banda o un libro para verlo título por título."}</p>
+        <p class="en-opc-ayuda"><button type="button" class="capas-q" aria-expanded="false">¿Qué es cada capa?</button> · <button type="button" class="ge-info-btn" aria-expanded="${grafoEnfInfo}" aria-controls="geInfo">Qué muestra esta vista</button></p>
     <div class="ge-info" id="geInfo"${grafoEnfInfo ? "" : " hidden"}><p class="ge-res">Qué títulos del Antiguo Testamento vuelven en el Nuevo, y por qué camino. ${CAPAS_NOTA} Una pareja puede estar en más de una capa y se dibuja en la más firme. Las cifras de los interruptores cuentan parejas de títulos que cruzan de un Testamento al otro. ${CAPAS.map(c => `<b>${c.nombre}</b>: ${c.ayuda}.`).join(" ")} La línea de guion y punto es de la misma familia: la traducción griega usa una palabra pariente, no la misma. Las conexiones anotadas dentro de un mismo Testamento no se dibujan de entrada: con «Mostrar también las de un mismo Testamento», van por el margen de su columna. Por títulos, las referencias de todo el catálogo serían cientos de curvas: se ven por libros, o por títulos con un par de libros elegido.</p></div>
+      </div></details></div></div>
+    ${capasAyudaHtml()}
     ${entreFiltro ? `<div class="en-filtro"><span class="fc">${escHtml(entreFiltro.nombre)}<button class="fc-x en-quitar" title="Ver todos los libros" aria-label="Quitar el filtro ${escHtml(entreFiltro.nombre)}">✕</button></span><button type="button" class="en-a-libros">← Por libros</button></div>` : ""}
     ${entreAviso ? `<p class="en-aviso" role="status">${entreAviso}</p>` : ""}`;
 }
@@ -5386,8 +5440,7 @@ let entreLibDatos = null;
 function entreLibrosRender(){
   const D = entreLibDatos = entreLibrosCalcular(), tel = innerWidth < 720, auto = D.total - D.anot;
   const prendidas = CAPAS.filter(c => entreCapas[c.k]).map(c => c.nombre.toLowerCase());
-  grafoEnf.innerHTML = entreCabHtml() + `
-    <div class="ge-ctl en-ctl2">${entreContBoton()}</div>
+  grafoEnf.innerHTML = entreCabHtml(`<div class="ge-ctl en-ctl2">${entreContBoton()}</div>`) + `
     <div class="gl-ley"><span><i style="background:var(--gold)"></i>en esta vista, parejas de títulos con conexión anotada: ${D.anotCruza} de un Testamento al otro${D.anotMismo ? ` y ${D.anotMismo} dentro de un mismo Testamento (por el margen)` : ""}</span>${auto ? `<span><i style="background:var(--accent-blue);opacity:.55"></i>de las demás capas prendidas: ${auto} (sin las que ya tienen una conexión anotada)</span>` : ""}</div>
     <div class="gl-cab"><span>Antiguo Testamento</span><span>Nuevo Testamento</span></div>
     <div class="en-libros-g"><svg role="group" aria-label="Bandas entre libros"></svg></div>
@@ -5473,8 +5526,7 @@ function entreListaTel(){
   const otro = l => { const s = new Set(); l.ids.forEach(i => (par[i] || []).forEach(p => { if (nodeById[p.id].testamento !== desde) s.add(nodeById[p.id].book); })); return [...s].sort((a, b) => CANON_ALL.indexOf(a) - CANON_ALL.indexOf(b)); };
   const pares = i => (par[i] || []).slice().sort((x, y) => (CAPA[x.capa].i - CAPA[y.capa].i) || nodeById[x.id].canonIdx - nodeById[y.id].canonIdx);
   const tipo = (a, b) => { const i = conexInfoDe(a, b) || conexInfoDe(b, a); return i ? (i.provisional ? "provisional" : i.tipo ? conexTipoEt(i.tipo) : "") : ""; };
-  grafoEnf.innerHTML = entreCabHtml() + `
-    <div class="ge-ctl en-ctl2">${entreContBoton()}</div>
+  grafoEnf.innerHTML = entreCabHtml(`<div class="ge-ctl en-ctl2">${entreContBoton()}</div>`) + `
     <div class="et-desde"><span class="ge-seg" role="group" aria-label="Desde qué Testamento"><button data-d="AT" class="${desde === "AT" ? "on" : ""}" aria-pressed="${desde === "AT"}">Desde el Antiguo</button><button data-d="NT" class="${desde === "NT" ? "on" : ""}" aria-pressed="${desde === "NT"}">Desde el Nuevo</button></span></div>
     ${libros.map(L => { const o = otro(L);
       return `<details class="et-libro" data-book="${escHtml(L.libro)}"${L.ids.includes(grafoEnfSel) || entreFiltro ? " open" : ""}><summary><b>${escHtml(L.libro)}</b><span>${grafoPlural(L.ids.length, "título con vínculos", "títulos con vínculos")} → ${o.slice(0, 4).map(escHtml).join(", ")}${o.length > 4 ? "…" : ""}</span></summary>
@@ -5578,10 +5630,9 @@ function grafoEnfRender(){
   const conFilas = new Set(N.map(n => n.book)), todos = entreLibrosTira();
   const nav = `<nav class="ge-libros" aria-label="Ir a un libro">${["AT", "NT"].map(t => `<span class="ge-lib-g" role="group" aria-label="${t === "AT" ? "Antiguo" : "Nuevo"} Testamento" style="display:contents">${todos[t]
       .map(b => `<button type="button" data-book="${escHtml(b)}" data-t="${t}" title="${escHtml(b)}" class="${conFilas.has(b) ? "" : "vacio"}">${escHtml(corto(b))}</button>`).join("")}</span>`).join('<span class="ge-lib-sep" aria-hidden="true"></span>')}</nav>`;
-  grafoEnf.innerHTML = entreCabHtml() + `
-    <div class="ge-ctl"><span class="ge-ctl-et">El Nuevo Testamento:</span>
+  grafoEnf.innerHTML = entreCabHtml(`<div class="ge-ctl"><span class="ge-ctl-et">El Nuevo Testamento:</span>
       <span class="ge-seg en-orden" role="group" aria-label="Orden del Nuevo Testamento"><button data-v="par" class="${grafoEnfOrden === "par" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "par"}">a la altura de su par</button><button data-v="canon" class="${grafoEnfOrden === "canon" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "canon"}">en orden bíblico</button></span>
-      <span class="ge-ctl-et en-cifras">${entreCifrasHtml(N, ev, capaE)}</span></div><div class="ge-ctl en-ctl2">${entreContBoton()}</div>
+      <span class="ge-ctl-et en-cifras">${entreCifrasHtml(N, ev, capaE)}</span></div><div class="ge-ctl en-ctl2">${entreContBoton()}</div>`) + `
     <div class="ge-cab">${nav}<p class="en-tira-nota" hidden></p><div class="at">Antiguo Testamento</div><div class="medio">${grafoEnfOrden === "canon" ? `<span class="ge-medio-nota">En orden bíblico, las líneas aparecen al tocar un título</span><span class="ge-medio-v">vínculos</span>` : "vínculos"}</div><div class="nt">Nuevo Testamento</div></div>
     <div class="ge-red${grafoEnfOrden === "canon" ? " canon" : ""}"><div class="ge-col at">${lista(AT, true)}</div><div class="ge-hilos"><svg aria-hidden="true"></svg></div>
       <div class="ge-col nt${grafoEnfOrden === "par" ? " par" : ""}">${grafoEnfOrden === "par" ? NT.map(n => item(n, n.ref)).join("") : lista(NT, true)}</div>
@@ -5843,6 +5894,11 @@ function mapaEnCat(n){ return (!mapaCat || mapaCats(n).includes(mapaCat)) && (!m
 // D-57: pasa lo que pasa los Filtros y la búsqueda de la barra (isVisible) y la categoría de la leyenda
 function mapaPasa(n){ return isVisible(n) && mapaEnCat(n); }
 function mapaFiltrando(){ return !!mapaCat || !!mapaParte || isFiltered(); }
+// ronda 32 (D-106 y su Agregado): la leyenda de los temas, abierta desde 1600 px y plegada en las pantallas más chicas; si el lector la
+// abre o la cierra, queda como la dejó (en el navegador). matchMedia y no innerWidth: leerlo al cargar fuerza el diseño de la página
+let mapaLeyAbierta = matchMedia("(min-width:1600px)").matches;
+try { const g = localStorage.getItem("jeb-mapa-ley"); if (g) mapaLeyAbierta = g === "abierta"; } catch (e) {}
+function mapaLeyGuardar(abierta){ if (abierta === mapaLeyAbierta) return; mapaLeyAbierta = abierta; try { localStorage.setItem("jeb-mapa-ley", abierta ? "abierta" : "plegada"); } catch (e) {} }
 function mapaColor(c){ return catColors[c] || catColors["Sin categoría"]; }
 function mapaCapNombre(L, c){ return L.book === "Salmos" ? `Salmo ${c}` : `Capítulo ${c}`; }
 // la leyenda: las categorías (en el libro, las que tiene), con su color; tocar una la resalta
@@ -5851,7 +5907,7 @@ function mapaLeyendaHtml(scope){
   const parte = mapaParte ? ` en ${escHtml(MAPA_GRUPO[mapaParte] || mapaParte)}` : "";   // ronda 28a: la celda de la tabla
   const con = mapaCat ? `con «${escHtml(mapaCat)}»${parte}${isFiltered() ? " y el filtro" : ""}` : "con el filtro";
   const marcados = mapaParte ? scope.filter(mapaPasa) : [];
-  return `<div class="mp-ley">${mapaFiltrando() ? `<div class="mp-filtro"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}${marcados.length ? accionesConjunto(marcados.map(n => n.id), `${mapaCat}${parte.replace(/<[^>]+>/g, "")}`, true) : ""}</div>` : ""}<div class="mp-chips" role="group" aria-label="Resaltar un tema">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></div>`;
+  return `<div class="mp-ley">${mapaFiltrando() ? `<div class="mp-filtro"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}${marcados.length ? accionesConjunto(marcados.map(n => n.id), `${mapaCat}${parte.replace(/<[^>]+>/g, "")}`, true) : ""}</div>` : ""}<details class="mp-ley-d"${mapaLeyAbierta || mapaCat ? " open" : ""} ontoggle="mapaLeyGuardar(this.open)"><summary>Los colores: el tema de cada título <span class="mp-ley-pts" aria-hidden="true">${cats.map(c => `<i style="background:${mapaColor(c)}"></i>`).join("")}</span></summary><div class="mp-chips" role="group" aria-label="Resaltar un tema">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></details></div>`;
 }
 function mapaGridHtml(){
   const D = mapaDatos();
@@ -6390,10 +6446,13 @@ function conexBuscaHtml(base){
   const libros = {}; base.forEach(r => { libros[r.src.book] = (libros[r.src.book] || 0) + 1; if (r.dst.book !== r.src.book) libros[r.dst.book] = (libros[r.dst.book] || 0) + 1; });
   const orden = Object.keys(libros).sort((a, b) => CANON_ALL.indexOf(a) - CANON_ALL.indexOf(b));
   if (conexLibro && !libros[conexLibro]) orden.push(conexLibro);
-  return `<div class="cx-busca" role="search"><label><span>Libro</span><select id="cxLibro" onchange="conexLibroElegir(this.value)"><option value="">todos los libros</option>${orden.map(b => `<option value="${escHtml(b)}"${b === conexLibro ? " selected" : ""}>${escHtml(b)} (${libros[b] || 0})</option>`).join("")}</select></label>
+  // ronda 32 (D-106): el libro va en «Opciones» (conexLibroHtml); acá, el buscador
+  conexLibroOpc = `<label class="cx-libro"><span>Libro</span><select id="cxLibro" onchange="conexLibroElegir(this.value)"><option value="">todos los libros</option>${orden.map(b => `<option value="${escHtml(b)}"${b === conexLibro ? " selected" : ""}>${escHtml(b)} (${libros[b] || 0})</option>`).join("")}</select></label>`;
+  return `<div class="cx-busca" role="search">
     <label class="cx-busca-q"><input id="cxBusca" type="search" aria-label="Buscar en las conexiones" placeholder="Buscar en las conexiones: un título, una referencia, una palabra de la nota" value="${escHtml(conexBusca)}" oninput="conexBuscar(this.value)" autocomplete="off"></label>
     ${conexLibro || conexBusca.trim() ? `<button type="button" class="hbtn ghost" onclick="conexLibro = ''; conexBusca = ''; renderConex()">quitar</button>` : ""}</div>`;
 }
+let conexLibroOpc = "", conexOpcAbierta = false;   // ronda 32: el libro (en «Opciones») y si «Opciones» quedó abierta
 function renderConex(){
   // ronda 20 (F6): en «Por libros», las bandas; en «Lista», la lista (filtrada al par de libros elegido, si hay)
   if (layoutMode === "conexiones") conexLayer.style.display = "block";
@@ -6412,20 +6471,19 @@ function renderConex(){
     .map(([k, txt]) => `<button type="button" role="tab" class="cx-tab${conexTipo === k ? " on" : ""}" aria-selected="${conexTipo === k}" onclick='conexElegir(${JSON.stringify(k)})'>${txt}</button>`).join("")}</div>`;
   const visRows = rows.filter(r => isVisible(r.src) || isVisible(r.dst));
   const srcs = new Set(rows.map(r => r.src.id)), dsts = new Set(rows.map(r => r.dst.id));
-  let html = `${conexModosHtml()}<div class="cx-head">
-    <div>
-      <div class="cx-title-big">Conexiones anotadas <span>origen → destino</span></div>
-      <div class="cx-meta">${rows.length}${conexLibro || conexBusca.trim() ? ` de ${base.length}` : ""} conexiones · ${srcs.size} orígenes · ${dsts.size} destinos · ${new Set([...srcs, ...dsts]).size} títulos enlazados</div>
-    </div>
-    <div class="cx-actions">
+  // ronda 32 (D-106): una fila —Lista o «Por libros, en Entre Testamentos», el buscador, la cuenta y «Opciones»: el libro, las pestañas,
+  // el tipo, las cifras y «exportar como texto»—; el título, solo en la línea de la vista; «ver Entre Testamentos», una vez
+  const nOp = (conexLibro ? 1 : 0) + (conexTipo !== "todas" ? 1 : 0) + (conexClase !== "todos" ? 1 : 0);
+  const cifras = `${srcs.size} orígenes · ${dsts.size} destinos · ${new Set([...srcs, ...dsts]).size} títulos enlazados`;
+  const busca = conexBuscaHtml(base);
+  let html = `<div class="cx-fila">${conexModosHtml()}${busca}
+    <span class="cx-cuenta" title="${cifras}">${rows.length}${conexLibro || conexBusca.trim() ? ` de ${base.length}` : ""} ${rows.length === 1 ? "conexión" : "conexiones"}</span>
+    <details class="cx-opc"${conexOpcAbierta ? " open" : ""} ontoggle="conexOpcAbierta = this.open"><summary>Opciones${nOp ? `<span class="cx-opc-n"> · ${nOp}</span>` : ""}</summary><div class="cx-opc-c">
+      ${conexLibroOpc}${tabs}${filtroTipos}
+      <p class="cx-meta">${cifras}</p>
       <button class="hbtn ghost" onclick="conexExportMd()" title="Un archivo de texto (.md), que se abre con cualquier editor">exportar como texto</button>
-      <button class="hbtn" onclick="entreAbrir({ soloAnotadas: true })">ver Entre Testamentos ⇢</button>
-    </div>
-  </div>
+    </div></details></div>
   ${conexPar ? `<div class="cx-par-filtro"><span class="fc">${escHtml(conexPar.nombre)}<button class="fc-x" title="Quitar este filtro" aria-label="Quitar el filtro ${escHtml(conexPar.nombre)}" onclick="conexQuitarPar()">✕</button></span>${conexPar.par ? "" : `<button type="button" class="cx-a-libros" onclick="entreAbrir({ nivel: 'libros', soloAnotadas: true })">← Por libros</button>`}</div>` : ""}
-  ${conexBuscaHtml(base)}
-  ${tabs}
-  ${filtroTipos}
   ${conexClase !== "todos" && (TIPOS_CONEXION[conexClase] || conexClase === "provisional") ? `<p class="cx-tipo-def cx-tipo-def-filtro" role="note"><b>${escHtml(conexClase === "provisional" ? "provisional" : conexTipoEt(conexClase))}:</b> ${escHtml(TIPOS_CONEXION[conexClase] || CONEX_PROVISIONAL_DEF)}</p>` : ""}
   ${isFiltered() ? `<div class="cx-filtro-cuenta"><b>${visRows.length} de ${rows.length}</b> coinciden con el filtro${visRows.length < rows.length ? ` · <button type="button" class="cx-mostrar" onclick="conexMostrarTodas = !conexMostrarTodas; renderConex()">${conexMostrarTodas ? "ocultar las demás" : `mostrar las demás (${rows.length - visRows.length})`}</button>` : ""}</div>` : ""}
 `;
@@ -7352,7 +7410,7 @@ function vistaInfo(modo){
                          c: "Para leerla, repasarla o llevártela: copiar, imprimir o descargar como texto. Se guarda en este navegador; para tenerla en otro, el archivo para otro dispositivo." }),
     tiempo:     () => ({ t: "Mapa de la Biblia", f: mapaManera === "temas" ? "Cuántos títulos de cada tema hay en cada parte de la Biblia." : "Dónde aparece cada título, libro por libro.",
                          c: "Los 66 libros en orden, cada uno con un cuadradito por título pintado con su tema; elegí uno para ver en qué capítulos están. La cantidad es la selección de este catálogo, no una medida de cuánto habla un libro de Cristo." }),
-    categorias: () => ({ t: "Por tema", f: `Los ${CATS_ORDER.length} temas del catálogo.`,
+    categorias: () => ({ t: "Por tema", f: "Cómo se cruzan los temas del catálogo, y los títulos de cada uno.",   // ronda 32: «Los N temas», en la lista
                          c: `El mapa une dos temas cuando comparten títulos (la línea, más gruesa cuantos más comparten). ${toca(true)} un tema para ver sus títulos por libro, o una línea para ver los que comparten los dos. Debajo, todos los temas y todos los cruces.` }),
     conexiones: () => { const nPares = rawNodes.reduce((s, n) => s + (n.conectaCon || []).filter(t => nodeById[t]).length, 0);
                         return { t: "Conexiones anotadas", f: "Dos pasajes conectados, lado a lado.",
@@ -8392,8 +8450,8 @@ function selRender(){
       <ol class="sel-lista">${rec.map((d, i) => selItemHtml(d, i, false)).join("")}</ol></section>`;
   const grande = F.length > SEL_ENLACE_MAX;
   L.innerHTML = `${recibida}<section class="sel-propia" aria-label="Mi selección">
-    <h2 class="sel-t">Mi selección <span class="sel-n">${selPlural(F.length)}</span></h2>
-    <p class="sel-d">Tu lista, en el orden que elijas y con tus notas. Se guarda en este navegador; para tenerla en otro, usá «Archivo para otro dispositivo».</p>
+    <h2 class="sel-t sel-sin-t"><span class="sel-oculto">Mi selección: </span><span class="sel-n">${selPlural(F.length)}</span></h2>
+    <p class="sel-d">Se guarda en este navegador; para tenerla en otro, usá «Archivo para otro dispositivo».</p>
     ${selGuardable ? "" : `<p class="sel-aviso" role="alert">Este navegador no deja guardar: la lista dura mientras la página esté abierta. Para no perderla, descargá el archivo.</p>`}
     ${perdidas ? `<p class="sel-aviso">${perdidas === 1 ? "Uno de tus títulos ya no está" : `${perdidas} de tus títulos ya no están`} en el catálogo. ${b("perdidas", "Sacarlos de la lista")}</p>` : ""}
     ${F.length ? `<div class="sel-acc" role="group" aria-label="Qué hacer con la lista">
@@ -10079,21 +10137,22 @@ function idxFoldAll(fold){ idxFolded = fold ? new Set(Object.keys(indexBookHeade
 // Debajo, las tres marcas, con su texto del glosario al tocarlas (26)
 let idxPuertasPleg = false;
 // ronda 27: abierto la primera vez; después, compacto (lo que se elija en la visita vale hasta recargar)
-try { idxPuertasPleg = localStorage.getItem("jeb-puertas-visto") === "1" || esTelefono(); localStorage.setItem("jeb-puertas-visto", "1"); } catch (e) { idxPuertasPleg = esTelefono(); }
+// ronda 32 (D-106): si el lector lo abrió o lo cerró, queda así la próxima vez
+try { const g = localStorage.getItem("jeb-puertas"); idxPuertasPleg = g ? g === "plegado" : (localStorage.getItem("jeb-puertas-visto") === "1" || esTelefono()); localStorage.setItem("jeb-puertas-visto", "1"); } catch (e) { idxPuertasPleg = esTelefono(); }
 const MARCAS_GLOSARIO = [["en-el-texto", "en el texto", "lexico"], ["anuncio", "anuncio", "profecia"], ["figura-marca", "figura", "tipologia"]];
 function idxPuertasRender(){
   const p = document.getElementById("idxPuertas"); if (!p) return;
   const q = (document.getElementById("search") || {}).value || "";
-  p.classList.toggle("plegado", idxPuertasPleg);
+  p.classList.toggle("plegado", idxPuertasPleg); p.classList.add("ip-compacta");
   p.innerHTML = idxPuertasPleg
     ? `<div class="ip-mini"><button type="button" class="ip-x" aria-expanded="false">¿No sabés por dónde empezar?</button></div>`
-    : `<div class="ip-cab"><span>Por dónde empezar</span><button type="button" class="ip-x" aria-expanded="true">ocultar</button></div>
+    : `<div class="ip-fila"><span class="ip-t">Por dónde empezar</span>
       <div class="ip-grid">
-        <button type="button" class="ip-p" data-p="libro"><b>Por libro</b><span>Los 66 libros de la Biblia en orden, con sus títulos${librosSinTitulos()}: la lista de abajo.</span></button>
-        <button type="button" class="ip-p" data-p="tema"><b>Por tema</b><span>Los ${CATS_ORDER.length} temas del catálogo, con una frase cada uno y sus títulos.</span></button>
-        <button type="button" class="ip-p" data-p="entre"><b>Entre Testamentos</b><span>Qué títulos del Antiguo Testamento vuelven en el Nuevo, y por qué camino.</span></button>
-        ${RECORRIDOS.length ? `<button type="button" class="ip-p" data-p="recorridos"><b>Recorridos</b><span>${RECORRIDOS.length} caminos por la Biblia, paso a paso: un tema de Jesús, de un título al otro.</span></button>` : ""}
-      </div>
+        <button type="button" class="ip-p" data-p="libro"><b>Por libro</b><span>la lista de abajo</span></button>
+        <button type="button" class="ip-p" data-p="tema"><b>Por tema</b><span>${CATS_ORDER.length} temas, con sus títulos</span></button>
+        <button type="button" class="ip-p" data-p="entre"><b>Entre Testamentos</b><span>el Antiguo en el Nuevo</span></button>
+        ${RECORRIDOS.length ? `<button type="button" class="ip-p" data-p="recorridos"><b>Recorridos</b><span>${RECORRIDOS.length} caminos, paso a paso</span></button>` : ""}
+      </div><button type="button" class="ip-x" aria-expanded="true">ocultar</button></div>
       <p class="ip-marcas">Cada título lleva una marca: ${MARCAS_GLOSARIO.map(([k, t]) => `<button type="button" class="glosa-b" data-glosa="${k}" aria-expanded="false">${t}</button>`).join(" · ")}. Tocá una para ver qué quiere decir.</p>`;
   p.querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
     const k = b.dataset.p;
@@ -10102,7 +10161,7 @@ function idxPuertasRender(){
     else if (k === "recorridos"){ recClave = null; document.getElementById("modeSelect").value = "recorridos"; setMode("recorridos"); syncHeader(); applyFilters(); saveViewState(); urlSync(true); }   // ronda 28b (D-89)
     else { const s = indexLayer.querySelector(".idx-secciones"); if (s) s.scrollIntoView({ block: "start", behavior: movSuave() }); }
   }));
-  p.querySelector(".ip-x").addEventListener("click", () => { idxPuertasPleg = !idxPuertasPleg; idxPuertasRender(); syncHeader(); });
+  p.querySelector(".ip-x").addEventListener("click", () => { idxPuertasPleg = !idxPuertasPleg; try { localStorage.setItem("jeb-puertas", idxPuertasPleg ? "plegado" : "abierto"); } catch (e) {} idxPuertasRender(); syncHeader(); });
   const inp = p.querySelector(".ip-busca input");
   if (inp) inp.addEventListener("input", () => { const s = document.getElementById("search"); s.value = inp.value; s.dispatchEvent(new Event("input", { bubbles: true })); });
 }
