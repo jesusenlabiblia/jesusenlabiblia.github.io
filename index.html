@@ -2138,8 +2138,10 @@ body.light{ --accent-blue-ink:#34608B; }
     font-size:var(--t-5); padding:5px 12px; min-height:34px; cursor:pointer; }
   #redEntera .rl-b:hover, #redEntera .rl-b:focus-visible{ border-color:var(--gold); }
   #redEntera .re-volver{ margin-top:2px; }
+  #redEntera:focus{ outline:none; } #redEntera:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }   /* 33b: el foco, al soltar */
   .re .re-l{ stroke:var(--gold); stroke-width:1.4; opacity:.6; }
   .re .re-l.palabra{ stroke:var(--accent-violet); stroke-dasharray:7 4; opacity:.6; }
+  .re .re-l.comun{ stroke:var(--accent-violet); stroke-width:1.2; stroke-dasharray:2.5 3.5; opacity:.6; }   /* 33b: como en la red de un título */
   .re .re-l.vec{ opacity:.95; stroke-width:1.8; } .re .re-l.fuera{ opacity:.05; }
   .re .re-n{ cursor:pointer; } .re .re-c{ stroke:var(--night); stroke-width:1; }
   .re .re-t{ font-family:'Cormorant Garamond', serif; font-size:var(--t-5); fill:var(--parchment); display:none; pointer-events:none;
@@ -2190,7 +2192,7 @@ body.light{ --accent-blue-ink:#34608B; }
   #lexRedLayer .lex-root.hoverdim, #lexRedLayer .lex-title.hoverdim{ opacity:0.07; }
   .re .re-n.fuera{ opacity:.07; } .re .re-l.fuera{ opacity:.03; }
   @media (max-width: 719px){ #redEntera{ top:auto; bottom:0; left:0; right:0; width:auto; max-height:42vh; border-radius:var(--r-card) var(--r-card) 0 0; }
-    #redEntera .rl-b{ min-height:44px; } .re .re-n.vec .re-t{ font-size:var(--t-6); } }
+    #redEntera .rl-b{ min-height:44px; } #redEntera .re-dibuja{ display:block; }   /* 33b: en su renglón */ .re .re-n.vec .re-t{ font-size:var(--t-6); } }
   #redLista h3{ font:600 var(--t-2) 'Cormorant Garamond', Georgia, serif; color:var(--gold-bright); margin:0; line-height:1.15; }
   #redLista .rl-ref{ color:var(--parchment-dim); margin:2px 0 6px; }
   #redLista .rl-acc{ display:flex; flex-wrap:wrap; gap:6px; margin:6px 0; }
@@ -4939,17 +4941,17 @@ function redEncuadrar(){
 // 30b (D-103): los grupos grandes (los que tienen el 10 % de los títulos o más) al centro, uno al lado del otro, y los grupos
 // sueltos en una franja aparte, abajo, de mayor a menor; cada título del tamaño de sus vínculos. Los nombres, por importancia
 // (rotulos, en la red léxica), con los más conectados primero.
-let reOn = false, reSel = null, reCapas = { anotada: true, palabra: false }, reG = null, reActual = null, reTelDe = null;
+let reOn = false, reSel = null, reCapas = { anotada: true, palabra: false, comun: false }, reG = null, reActual = null, reTelDe = null;
 const reCache = {};
 const RE_NOMBRES = 50;   // los nombres a la vista al entrar: los más conectados (al acercar, más)
 const RE_PASOS = 300, RE_DECAE = 0.02, RE_RENGLON = 15, RE_PASOS_SUELTOS = 180;   // los pasos y el decaimiento de la ronda 14; el renglón de los nombres
 const RE_FUENTE = "'Cormorant Garamond',serif";
 function reRad(d){ return 3.5 + Math.sqrt(d.grado) * 1.8; }   // del tamaño de sus vínculos
-function reClave(){ return (reCapas.anotada ? "a" : "") + (reCapas.palabra ? "p" : ""); }
+function reClave(){ return (reCapas.anotada ? "a" : "") + (reCapas.palabra ? "p" : "") + (reCapas.comun ? "c" : ""); }
 function reArmar(){
   const k = reClave(); if (reCache[k]) return reCache[k];
   if (!reG) reG = grafoLayer.append("g").attr("class", "re");
-  const aristas = grafoEdgesAll.filter(e => nodeById[e.a] && nodeById[e.b] && ((capaDe(e) === "anotada" && reCapas.anotada) || (capaDe(e) === "palabra" && reCapas.palabra)));
+  const aristas = grafoEdgesAll.filter(e => nodeById[e.a] && nodeById[e.b] && RE_CAPAS.includes(capaDe(e)) && reCapas[capaDe(e)]);
   const grado = {}; aristas.forEach(e => { grado[e.a] = (grado[e.a] || 0) + 1; grado[e.b] = (grado[e.b] || 0) + 1; });
   const nodos = Object.keys(grado).sort((a, b) => nodeById[a].canonIdx - nodeById[b].canonIdx).map(id => ({ id, grado: grado[id], w: rotAncho(nodeById[id].title, RE_FUENTE) }));
   const links = aristas.map(e => ({ source: e.a, target: e.b, capa: capaDe(e) }));
@@ -5082,8 +5084,35 @@ function reAbrir(id){
 }
 function reCerrar(){ reOn = false; reOcultar(); renderGrafo(); urlSync(true); }
 function reSuRed(id){ reOn = false; reOcultar(); grafoFocus(id); urlSync(true); }
-function reElegir(id){ reSel = reSel === id ? null : id; reMarcar(); rePanel(); if (reSel) reCentrar(reSel); }
-function reCapa(k){ reCapas[k] = !reCapas[k]; if (!reCapas.anotada && !reCapas.palabra) reCapas[k] = true; reMostrar(); }
+function reElegir(id){ if (reSel === id) return reSoltar(); reSel = id; reMarcar(); rePanel(); reCentrar(reSel); }
+// ronda 33b: soltar el elegido (el botón «Ver la red entera», el fondo del lienzo, Escape o el mismo título otra vez): la red entera
+// a la vista, no el acercamiento de antes; en el teléfono, la lista desde arriba («Todos, por cantidad de vínculos»)
+function reSoltar(){
+  const D = reActual, el = document.getElementById("redEntera"); if (!reSel || !D || !D.listo) return;
+  const foco = el && el.contains(document.activeElement);   // el botón desaparece: el foco queda en el recuadro
+  reSel = null; reMarcar(); rePanel();
+  if (el){ el.scrollTop = 0; if (foco){ el.tabIndex = -1; el.focus({ preventScroll: true }); } }
+  reEncuadrar();
+}
+// Escape lo suelta, si no hay otro panel abierto ni se está escribiendo (antes que los demás Escape: si hay algo abierto, no hace nada)
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape" || !reOn || !reSel || layoutMode !== "grafo") return;
+  const tag = (document.activeElement && document.activeElement.tagName) || "", hm = document.getElementById("hdrMenu");
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || document.getElementById("panel").classList.contains("open")
+    || document.querySelector(".overlay[style*='flex']") || (hm && !hm.hidden) || document.getElementById("advPanel").style.display === "block"
+    || ["bienvenida", "acercaDe"].some(id => document.getElementById(id).classList.contains("on"))) return;
+  e.preventDefault(); reSoltar();
+}, true);
+function reCapa(k){ reCapas[k] = !reCapas[k]; if (!RE_CAPAS.some(c => reCapas[c])) reCapas[k] = true; reMostrar(); }
+// 33b: las capas de la red entera y lo que dibuja: las prendidas; las apagadas y las referencias, en la red de cada título. En el
+// teléfono, en un renglón.
+const RE_CAPAS = ["anotada", "palabra", "comun"], RE_CAPA_TXT = { anotada: "las conexiones anotadas", palabra: "la misma palabra", comun: "las palabras muy repetidas" };
+function reDibujaTxt(){
+  const y = a => a.length > 1 ? a.slice(0, -1).join(", ") + " y " + a[a.length - 1] : a[0];
+  const on = RE_CAPAS.filter(c => reCapas[c]).map(c => RE_CAPA_TXT[c]), off = RE_CAPAS.filter(c => !reCapas[c]).map(c => RE_CAPA_TXT[c]);
+  if (grafoTel()) return `<span class="re-dibuja">${off.length ? "Las demás capas y las referencias, en la red de cada título." : "Las referencias, en la red de cada título."}</span>`;
+  return `<span class="re-dibuja">Dibuja ${y(on)}; ${y([...off, "las referencias de la Biblia"])} se ven en la red de cada título.</span>`;
+}
 function reMarcar(){
   const D = reActual; if (!D || !D.listo) return;
   const s = reSel, V = s ? D.vec[s] || new Set() : null;
@@ -5096,6 +5125,11 @@ function reMarcar(){
   D.oculto = new Set(D.nodos.filter(d => !nodeById[d.id].cats.some(c => activeCats.has(c))).map(d => d.id));
   if (rotActiva === D) rotActualizar();
 }
+// 33b (Agregado): los vínculos del elegido acá (las capas de la red entera) y en su red (las cuatro capas); si es igual, uno solo
+function reVinculosTxt(id){
+  const aca = (reActual.vec[id] || new Set()).size, V = vinculosDe(id), red = CAPAS.reduce((t, c) => t + V[c.k].length, 0);
+  return red === aca ? grafoPlural(aca, "vínculo", "vínculos") : `${grafoPlural(aca, "vínculo", "vínculos")} acá · ${red} en su red`;
+}
 function rePanel(){
   const el = document.getElementById("redEntera"), D = reActual; if (!el || !D) return;
   const tel = grafoTel(), s = reSel && nodeById[reSel];
@@ -5106,12 +5140,12 @@ function rePanel(){
   const vecs = tel && s ? D.nodos.filter(d => (D.vec[reSel] || new Set()).has(d.id)).sort((a, b) => nodeById[a.id].canonIdx - nodeById[b.id].canonIdx) : [];
   const it = d => `<button type="button" class="re-it${d.id === reSel ? " on" : ""}" data-id="${d.id}" onclick="reElegir('${d.id}')"><span>${escHtml(nodeById[d.id].title)}</span> <small>${escHtml(nodeById[d.id].ref)} · ${grafoPlural(d.grado, "vínculo", "vínculos")}</small></button>`;
   el.innerHTML = `<div class="re-cab"><h3>La red entera</h3>
-      <p class="re-res">${grafoPlural(D.n, "título", "títulos")} con ${grafoPlural(D.m, "vínculo", "vínculos")}. ${toca(true)} un título para ver con cuáles se conecta.</p>
-      <div class="capas" role="group" aria-label="Qué se dibuja">${capaB("anotada", "Conexiones anotadas")}${capaB("palabra", "La misma palabra")}</div>
+      <p class="re-res">${grafoPlural(D.n, "título", "títulos")} con ${grafoPlural(D.m, "vínculo", "vínculos")}. ${reDibujaTxt()} ${toca(true)} un título para ver con cuáles se conecta.</p>
+      <div class="capas" role="group" aria-label="Qué se dibuja">${capaB("anotada", "Conexiones anotadas")}${capaB("palabra", "La misma palabra")}${capaB("comun", "Palabras muy repetidas")}</div>
       <button type="button" class="rl-b re-volver" onclick="reCerrar()">← ${grafoFocusId ? "Volver a su red" : "Elegir un título"}</button></div>
     ${s ? `<div class="re-sel"><b>${escHtml(s.title)}</b> <span class="rl-ref">${escHtml(s.ref)}</span>
-      <span class="re-n-v">${grafoPlural((D.vec[reSel] || new Set()).size, "vínculo", "vínculos")}</span>
-      <div class="rl-acc"><button type="button" class="rl-b" onclick="reSuRed('${reSel}')">Su red</button><button type="button" class="rl-b" onclick="openPanel(nodeById['${reSel}'])">Ficha</button></div></div>` : ""}
+      <span class="re-n-v">${reVinculosTxt(reSel)}</span>
+      <div class="rl-acc"><button type="button" class="rl-b" onclick="reSuRed('${reSel}')">Su red</button><button type="button" class="rl-b" onclick="openPanel(nodeById['${reSel}'])">Ficha</button><button type="button" class="rl-b re-soltar" onclick="reSoltar()">Ver la red entera</button></div></div>` : ""}
     ${tel ? `<div class="re-ley" role="group" aria-label="Los colores: el tema de cada título">${legendData.map((c, i) => `<button type="button" class="pill${activeCats.has(c.id) ? "" : " off"}" aria-pressed="${activeCats.has(c.id)}" onclick="reCat(${i})"><span class="dot" style="background:${c.color}"></span>${escHtml(c.label)}</button>`).join("")}</div>` : ""}
     ${tel ? `<div class="re-lista">${vecs.length ? `<h4>Se conecta con</h4>${vecs.map(it).join("")}<h4>Todos, por cantidad de vínculos</h4>` : ""}${lista.map(it).join("")}</div>` : ""}`;
   el.classList.add("on");
@@ -9661,8 +9695,8 @@ document.getElementById("zoomFit").addEventListener("click", () => {
   }
 });
 
-// click en el fondo del canvas (no en un nodo/celda) cierra el panel abierto
-svg.on("click", () => closePanel());
+// click en el fondo del canvas (no en un nodo/celda) cierra el panel abierto; en la red entera, además suelta el elegido (33b)
+svg.on("click", () => { closePanel(); if (reOn && reSel && layoutMode === "grafo") reSoltar(); });
 
 // Escape cierra lo que esté abierto: primero el modo repaso o lectura, si no el panel
 document.addEventListener("keydown", (e) => {
