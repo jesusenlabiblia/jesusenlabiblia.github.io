@@ -453,6 +453,16 @@
     box-shadow:-8px 0 30px var(--panel-shadow);
     transition:transform 0.3s cubic-bezier(.2,.8,.2,1); z-index:10; padding:34px 28px; overflow-y:auto; }
   #panel.open{ transform:translateX(0); }
+  /* ronda 36b (D-117): lo que espera al resto de los datos. Sobre la vista (encima de Palabras originales y de las redes, debajo de
+     los filtros y de la ficha) y, abajo, el aviso de las acciones y el de «no llegó», con «Reintentar» */
+  #restoCargando{ display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; z-index:7; background:var(--night);
+    justify-content:center; align-items:flex-start; padding:16vh 24px 0; color:var(--ink-2); font-size:var(--t-4); text-align:center; }
+  #restoCargando.on{ display:flex; }
+  .resto-cargando{ color:var(--ink-2); font-style:italic; margin:14px 0; }
+  #restoAviso{ display:none; position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:50; width:max-content;
+    max-width:min(92vw, 540px); padding:10px 14px; border-radius:10px; font-size:var(--t-4); line-height:1.4; align-items:center; gap:12px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.35); }
+  #restoAviso.on{ display:flex; }
   #panel .close{ position:absolute; top:18px; right:20px; background:none; border:none;
     font-size:var(--t-2); color:var(--ink-3); cursor:pointer; }
   #panel .cat-tags{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:14px; }
@@ -2480,7 +2490,7 @@ body.light{ --accent-blue-ink:#34608B; }
   </header>
   <svg id="canvas"></svg>
   <div id="legend"></div>
-  <div id="hint">763 títulos reales. Zoom para leer etiquetas.</div>
+  <div id="hint">787 títulos reales. Zoom para leer etiquetas.</div>
   <div id="zoomControls" style="position:absolute; bottom:var(--zoom-bottom,100px); right:24px; z-index:5; display:flex; flex-direction:var(--zoom-dir,column); gap:6px;">
     <button id="zoomIn" title="Acercar" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-3); cursor:pointer;">+</button>
     <button id="zoomOut" title="Alejar" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-3); cursor:pointer;">−</button>
@@ -2513,6 +2523,8 @@ body.light{ --accent-blue-ink:#34608B; }
   <div id="dashLayer"></div>
   <div id="cadenasLayer"><div id="cadList"></div><div id="cadMain"></div></div>
   <div id="recLayer" tabindex="-1" aria-label="Recorridos"></div>
+  <div id="restoCargando" role="status" aria-live="polite"></div>
+  <div id="restoAviso" class="sur-cristal" role="status" aria-live="polite"></div>
   <div id="acercaDe" role="dialog" aria-modal="true" aria-labelledby="acTitulo"><div class="ac sur-papel">
   <div class="ac-barra"><button class="ac-x" onclick="acercaCerrar()" aria-label="Cerrar">✕</button></div>
   <h2 id="acTitulo">Acerca de este catálogo</h2>
@@ -2615,7 +2627,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v106-6ee58fde.js"></script>
+<script src="datos-v107-c16afe89.js" data-resto="datos-v107-resto-4aec1693.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -2682,6 +2694,68 @@ window.addEventListener("error", (e) => {
 // window.__DATOS); si no está, de los bloques <script type="application/json"> de siempre (el prototipo de trabajo los trae adentro)
 function datosLeer(k, id){ return window.__DATOS ? window.__DATOS[k] : JSON.parse(document.getElementById(id).textContent); }
 const rawNodes = datosLeer("nodes", "node-data");
+// ronda 36b (D-117): los datos en dos partes. Si el index nombra un resto (<script … data-resto>), cada título arranca con el vacío
+// de los campos que faltan (window.__DATOS.vacios) y el resto se pide ya, sin frenar la página; se completa al terminar el arranque
+// (restoCompletar). Sin resto (el prototipo de trabajo, con los datos adentro), todo está listo desde el principio.
+const RESTO = window.__DATOS ? ((document.querySelector("script[data-resto]") || {}).dataset || {}).resto : null;
+let restoListo = !RESTO, restoBajado = false, restoFallo = false, restoIntento = 0;
+const restoEsperan = new Map();   // lo que espera al resto, por clave: cada cosa una vez, la última pedida
+const RESTO_NO = "No llegaron los versículos, las notas ni las palabras originales. Puede ser la conexión.";
+function restoCuando(clave, fn){ if (restoListo) fn(); else restoEsperan.set(clave, fn); }
+function restoPedir(){
+  const s = document.createElement("script");
+  s.src = RESTO + (restoIntento ? "?intento=" + restoIntento : "");
+  s.onload = () => { if (!window.__DATOS_RESTO) return restoNoLlego(); restoBajado = true; if (window.__arranqueListo) restoCompletar(); };
+  s.onerror = () => { s.remove(); restoNoLlego(); };
+  document.head.appendChild(s);
+}
+function restoCompletar(){
+  let R = window.__DATOS_RESTO; if (restoListo || !R) return;
+  // el resto llega como texto (partir_datos.py): leerlo no frena el primer pintado; el JSON.parse va acá, después del arranque
+  if (typeof R === "string"){ try { R = JSON.parse(R); } catch (e) { window.__DATOS_RESTO = null; return restoNoLlego(); } }
+  rawNodes.forEach(n => { if (R[n.id]) Object.assign(n, R[n.id]); delete n.__busca; });
+  window.__DATOS_RESTO = null;
+  vocArmar(); conexTiposNodo = null;
+  restoListo = true; restoFallo = false;
+  document.getElementById("restoCargando").classList.remove("on"); restoAvisar("");
+  const L = [...restoEsperan.values()]; restoEsperan.clear();
+  L.forEach(fn => { try { fn(); } catch (e) { console.error(e); } });
+}
+function restoAvisar(h){ const a = document.getElementById("restoAviso"); if (!a) return; a.innerHTML = h; a.classList.toggle("on", !!h); }
+function restoNoLlego(){
+  restoFallo = true;
+  restoAvisar(`<span>${RESTO_NO}</span><button type="button" class="hbtn" onclick="restoReintentar()">Reintentar</button>`);
+  document.querySelectorAll(".resto-cargando").forEach(e => e.textContent = "No llegó. Probá con «Reintentar», abajo.");
+  const c = document.getElementById("restoCargando"); if (c && c.classList.contains("on")) c.textContent = RESTO_NO;
+  if (layoutMode === "indice" || isFiltered()) renderVistaHead();
+}
+function restoReintentar(){
+  restoFallo = false; restoIntento++;
+  restoAvisar("Cargando los versículos y las notas…");
+  document.querySelectorAll(".resto-cargando").forEach(e => e.textContent = "Cargando…");
+  const c = document.getElementById("restoCargando"); if (c && c.classList.contains("on")) c.textContent = "Cargando…";
+  restoPedir();
+}
+// una vista que necesita el resto: «Cargando…» encima y, cuando llega, se dibuja (si se sigue en ella)
+function restoFalta(vista, dibujar){
+  if (restoListo) return false;
+  const c = document.getElementById("restoCargando");
+  if (c){ c.textContent = restoFallo ? RESTO_NO : "Cargando…"; c.classList.add("on"); }
+  restoCuando("vista", () => { if (layoutMode === vista) dibujar(); });
+  return true;
+}
+// una acción que necesita el resto (repasar, exportar, comparar): avisa y se hace apenas llega
+function restoAntes(fn){
+  if (restoListo) return false;
+  if (!restoFallo) restoAvisar("Cargando los versículos y las notas…");
+  restoCuando("accion", fn);
+  return true;
+}
+if (RESTO){
+  const V = window.__DATOS.vacios || {};
+  rawNodes.forEach(n => Object.keys(V).forEach(k => { if (!(k in n)) n[k] = Array.isArray(V[k]) ? [] : V[k] && typeof V[k] === "object" ? {} : V[k]; }));
+  restoPedir();
+}
 
 // ── ronda 3 · modo estudio (default) / taller ──
 // El hash lo prende o lo apaga UNA vez y queda en jeb-modo, que es por navegador:
@@ -3326,6 +3400,7 @@ function curActionsHtml(sec, n){
 }
 function compOpenWith(ids){ compSet = ids.slice(0, COMP_MAX); compSave(); renderCompTray(); openCompare(); }
 function renderCuracionQueue(){
+  if (restoFalta("curacion", renderCuracionQueue)) return;   // ronda 36b (el taller): los lemas, las notas y las referencias
   const layer = document.getElementById("curacionLayer");
   layer.innerHTML = "";
   const sections = buildCuracionQueue().filter(sec => sec.items.length).sort((a, b) => a.priority - b.priority);
@@ -3448,7 +3523,8 @@ function estaConectado(n){ return conexIndice().has(n.id); }
 // ronda 9: el diccionario de los códigos (lema, pronunciación del lema, glosa breve), armado con lo
 // que trae cada título en node-data (voc). No es un bloque aparte: ver notas-arquitectura, «Ronda 9».
 const VOC = {};
-rawNodes.forEach(n => Object.entries(n.voc || {}).forEach(([c, v]) => { if (!VOC[c]) VOC[c] = { lema: v[0], pron: v[1], glosa: v[2] }; }));
+function vocArmar(){ rawNodes.forEach(n => Object.entries(n.voc || {}).forEach(([c, v]) => { if (!VOC[c]) VOC[c] = { lema: v[0], pron: v[1], glosa: v[2] }; })); }
+vocArmar();   // ronda 36b: otra vez al llegar el resto (los títulos traen voc con el resto)
 // atributos de una palabra original: hebreo de derecha a izquierda; griego, «auto» (como la ronda 6)
 // ronda 29 (D-88, D-95): «Letra del original: A · A+ · A++», solo el hebreo y el griego, recordado; de entrada, 1,3 veces el castellano
 const ORIG_TAM = [1.3, 1.6, 1.9];
@@ -4173,6 +4249,7 @@ function lexCuerpo(){
 }
 function lexRender(){
   const el = document.getElementById("lexSide"); if (!el) return;
+  if (restoFalta("lexica", lexRender)) return;   // ronda 36b: el diccionario de las palabras (VOC) llega con el resto
   lexicaStarted = true; cargarFuentesOriginal();
   const tel = esTelefono(), tabs = (tel ? [["lista", "Lista"], ["parejas", "Parejas"]] : [["dibujo", "Columnas"], ["lista", "Lista"], ["parejas", "Parejas"], ["red", "Red"]]);   // ronda 30; «Dibujo» pasa a «Columnas» (D-100, Agregado); el valor interno queda, no va en la dirección
   // ronda 31 (D-104): una fila —las maneras de ver, el buscador, la cuenta corta, «Opciones» y «Cómo usar esta vista»—; en el
@@ -4303,6 +4380,12 @@ function openPalabra(code, par){
   if (!fichaVolviendo) fichaPila = [];
   fichaVolviendo = false; lastPanelId = null;
   palabraAbierta = code; lexParElegida = par || null;
+  if (!restoListo){   // ronda 36b: la ficha de la palabra usa el diccionario (VOC), que llega con el resto
+    document.getElementById("panel-body").innerHTML = `<p class="resto-cargando">${restoFallo ? "No llegó. Probá con «Reintentar», abajo." : "Cargando la palabra…"}</p>`;
+    document.getElementById("panel").classList.add("open");
+    restoCuando("ficha", () => { if (palabraAbierta === code && document.getElementById("panel").classList.contains("open")){ fichaVolviendo = true; openPalabra(code, par); } });
+    return;
+  }
   document.getElementById("panel-body").innerHTML = lexFichaHtml(code, par || null);
   document.getElementById("panel").classList.add("open");
   fichaListaAbierta = { nombre: (VOC[code] || {}).lema || code, abrir: () => openPalabra(code, par) };
@@ -5332,6 +5415,7 @@ document.getElementById("redLista").addEventListener("focusin", e => { const f =
 function renderGrafo(){
   // ronda 23: sin simulación; el dibujo tiene posiciones fijas y la lista va al costado
   if (reOn){ reMostrar(); syncHeader(); return; }   // ronda 30: la red entera
+  if (restoFalta("grafo", renderGrafo)) return;   // ronda 36b: la red de un título, con los tipos y las notas de sus vínculos
   reOcultar();
   grafoEnfOcultar();
   if (!grafoFocusId || !nodeById[grafoFocusId]){ grafoFocusId = null; redOcultar(); grafoElegirMostrar(); syncHeader(); return; }
@@ -5512,6 +5596,7 @@ function entreCabEventos(){
 }
 function entreRender(){
   if (layoutMode !== "entre") return;
+  if (restoFalta("entre", entreRender)) return;   // ronda 36b: los tipos de conexión y lo que dice la traducción griega
   entreTel = innerWidth < 720;
   grafoEnfHiloSel = null;
   grafoEnf.style.display = "block";
@@ -6257,6 +6342,7 @@ function cadStats(id, seen){
   return { depth, leaves, last };
 }
 function renderCadenas(){
+  if (restoFalta("cadenas", renderCadenas)) return;   // ronda 36b (el taller): los términos y los versículos
   document.getElementById("cadenasLayer").classList.toggle("has-path", cadPath.length > 0);
   // ---- lista de cadenas (izquierda)
   const list = cadRoots.map(r => {
@@ -6428,6 +6514,7 @@ function recTourHtml(r){
 }
 function recRender(){
   if (!recLayer) return;
+  if (recDe(recClave) && restoFalta("recorridos", recRender)) return;   // ronda 36b: un recorrido abierto muestra los versículos
   const r = recDe(recClave);
   if (!r) recClave = null;
   recLayer.classList.toggle("rc-abierto", !!r);
@@ -6557,6 +6644,7 @@ function conexBuscaHtml(base){
 }
 let conexLibroOpc = "", conexOpcAbierta = false;   // ronda 32: el libro (en «Opciones») y si «Opciones» quedó abierta
 function renderConex(){
+  if (restoFalta("conexiones", renderConex)) return;   // ronda 36b: las notas y los tipos de cada conexión
   // ronda 20 (F6): en «Por libros», las bandas; en «Lista», la lista (filtrada al par de libros elegido, si hay)
   if (layoutMode === "conexiones") conexLayer.style.display = "block";
   const base = conexRows().filter(conexEnPar), todas = base.filter(r => conexEnLibro(r) && conexEnBusca(r));   // ronda 28a
@@ -6880,6 +6968,7 @@ function candCell(n){
 }
 let candLimit = 150;
 function candRender(){
+  if (restoFalta("candidatos", candRender)) return;   // ronda 36b (el taller): las referencias
   const allRows = candRows(), rows = allRows.slice(0, candLimit);
   const all = candAll().filter(c => !candIsCurated(c.src, c.dst));
   const nDisc = all.filter(c => candDiscarded[c.key]).length;
@@ -6968,6 +7057,7 @@ function dashBars(items, prefixQuery, color){
     </div>`).join("");
 }
 function renderDash(){
+  if (restoFalta("stats", renderDash)) return;   // ronda 36b (el taller): los lemas
   const vis = rawNodes.filter(isVisible), N = vis.length || 1;
   const visId = new Set(vis.map(n => n.id));
   const f = isFiltered();
@@ -7569,7 +7659,8 @@ function vistaLoQueSeVe(){
   if (!filtrado && layoutMode !== "indice") return "";
   const vis = filtrado ? canonSorted.filter(isVisible) : canonSorted, nf = filtrosActivos(), raw = document.getElementById("search").value.trim();
   const partes = [raw ? `“${escHtml(raw)}”` : "", `${vis.length}${filtrado ? ` de ${rawNodes.length}` : ""} ${vis.length === 1 && !filtrado ? "título" : "títulos"}`,
-                  nf ? (nf === 1 ? "1 filtro" : `${nf} filtros`) : ""].filter(Boolean).join(" · ");
+                  nf ? (nf === 1 ? "1 filtro" : `${nf} filtros`) : "",
+                  raw && !restoListo ? (restoFallo ? "sin buscar en los versículos (no llegaron)" : "buscando también en los versículos…") : ""].filter(Boolean).join(" · ");   // ronda 36b
   return `<div class="vh-ve${filtrado ? "" : " sin-filtro"}"><span class="vh-cuenta">${partes}</span>${filtrado && vis.length ? accionesConjunto(vis.map(n => n.id), raw ? "Búsqueda" : "Filtros", true) : ""}</div>`;
 }
 function setModo(m){
@@ -7799,6 +7890,7 @@ function setMode(mode){
   ensureModeOption(mode);
   if (mode !== layoutMode && document.getElementById("advPanel").style.display === "block") advToggle(false);   // ronda 22
   layoutMode = mode;
+  document.getElementById("restoCargando").classList.remove("on");   // ronda 36b
   { const h = MODE_HINTS[mode]; document.getElementById("hint").innerHTML = (typeof h === "function" ? h() : h) || ""; }   // ronda 28a
   const isMatrix = mode === "matriz";
   const isCinetica = mode === "cinetica";
@@ -8173,6 +8265,7 @@ function applyFilters(){
   const rq = raw ? refQuery(raw) : null;
   const tokens = rq ? [{ ref: rq }] : raw ? tokenizeQuery(raw) : [];
   currentFilterState = { tokens, onlyTip, onlyRev };
+  if (raw && !restoListo) restoCuando("buscar", applyFilters);   // ronda 36b: busca otra vez con los versículos
 
   legend.classed("off", d => !activeCats.has(d.id));
   if (reOn && reActual && reActual.listo){ reMarcar(); if (grafoTel()) rePanel(); }   // ronda 30: la red entera atenúa los temas apagados
@@ -8549,6 +8642,7 @@ function selItemHtml(d, i, propio, total){
 }
 function selRender(){
   const L = document.getElementById("selLayer"); if (!L) return;
+  if (restoFalta("seleccion", selRender)) return;   // ronda 36b: el versículo de cada título
   if (!L.__ev){ L.__ev = true; L.addEventListener("click", selClick); L.addEventListener("input", selInput); }
   const vivos = selVivos(), perdidas = selItems.length - vivos.length, F = vivos.map(x => nodeById[x.id]);
   const rec = selRecibida && selRecibida.length ? selRecibida.map(id => nodeById[id]) : null;
@@ -9474,6 +9568,7 @@ function openPanel(d){
   // ronda 27 (D-60): igual en la compu y en el teléfono. La navegación; el título, la referencia y el versículo, con su línea
   // (la traducción, el pasaje completo, comparar); la descripción y las categorías; las acciones; cómo se relaciona con Jesús;
   // las notas; las conexiones; los otros títulos del pasaje; «Para estudiar más», cerrado; los derechos y «Avisar un error».
+  if (!restoListo){ fichaEsperando(d, body, tit, dots); return; }   // ronda 36b
   body.innerHTML = `
     ${fichaNav(d)}
     <h2>${escHtml(tit.t)}</h2>
@@ -9506,6 +9601,18 @@ function openPanel(d){
   document.getElementById("panel").classList.add("open");
 }
 
+// ronda 36b (D-117): la ficha mientras el resto no llegó: lo que trae el núcleo y «Cargando el versículo…»; al llegar, se dibuja entera
+function fichaEsperando(d, body, tit, dots){
+  body.innerHTML = `
+    ${fichaNav(d)}
+    <h2>${escHtml(tit.t)}</h2>
+    ${tit.sub ? `<div class="ficha-sub">${escHtml(tit.sub)}</div>` : ""}
+    <div class="ref">${escHtml(d.ref)} · ${d.testamento === "AT" ? "Antiguo Testamento" : "Nuevo Testamento"}</div>
+    <p class="resto-cargando">${restoFallo ? "No llegó. Probá con «Reintentar», abajo." : "Cargando el versículo…"}</p>
+    <div class="ficha-cats">${dots}</div>`;
+  document.getElementById("panel").classList.add("open");
+  restoCuando("ficha", () => { if (lastPanelId === d.id && !palabraAbierta && document.getElementById("panel").classList.contains("open")){ fichaVolviendo = true; openPanel(d); } });
+}
 // Relaciones que el CSV ya trae resueltas (v25+): otros títulos del mismo
 // pasaje, puentes léxicos LXX (G↔H) y títulos que citan/son citados por
 // este dentro del proyecto. Antes solo las veía el grafo; la lectura, no.
@@ -9715,6 +9822,7 @@ function reviewPickPool(){
   reviewIndex = 0; reviewCorrect = 0; reviewWrong = 0; reviewFallo = [];
 }
 function reviewAbrir(pool, origen){
+  if (restoAntes(() => reviewAbrir(pool, origen))) return;   // ronda 36b: las tarjetas muestran el versículo
   reviewBase = pool && pool.length ? pool.slice() : null;
   reviewOrigen = reviewBase ? (origen || "tu recorte") : isFiltered() ? "tu recorte" : "";
   reviewPickPool();
@@ -10506,6 +10614,7 @@ function compGlosa(n, code){
   return g ? { text: g.text, freq: validFreq(code, g.freq) } : { text: "", freq: null };
 }
 function openCompare(){
+  if (restoAntes(openCompare)) return;   // ronda 36b
   const items = compSet.map(id => nodeById[id]).filter(Boolean);
   if (items.length < 2) return;
   // códigos compartidos → grupo con color
@@ -10694,6 +10803,7 @@ function expDownload(blob, name){ const a = document.createElement("a"); a.href 
 // ---- diálogo
 let expItems = [];
 function openExport(ids){
+  if (restoAntes(() => openExport(ids))) return;   // ronda 36b
   expItems = (ids || []).map(id => nodeById[id]).filter(Boolean);
   if (!expItems.length) return;
   renderExport();
@@ -10841,6 +10951,7 @@ arrancando = false; syncHeader();   // ronda de carga (B): la primera medida, un
 if (layoutMode === "indice" && idxCursorId && indexRowByNodeId[idxCursorId]) indexRowByNodeId[idxCursorId].scrollIntoView({ block: "nearest" });
 window.__arranqueListo = true;
 bvPendiente();
+if (restoBajado) setTimeout(restoCompletar, 0);   // ronda 36b
 })();
 </script>
 </body>
