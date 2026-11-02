@@ -563,6 +563,8 @@
     padding:18px 20px; box-shadow:0 18px 50px var(--panel-shadow); max-height:calc(100% - var(--header-h) - 44px);
     display:none; flex-direction:column; }
   #grafoElegir.on{ display:flex; }
+  /* ronda 36c: mientras se elige un título no hay red que acercar; el zoom quedaba debajo del cuadro y en el orden del Tab */
+  body:has(#grafoElegir.on) #zoomControls{ display:none !important; }
   #grafoElegir h3{ font-family:'Cormorant Garamond', serif; font-size:var(--t-2); font-weight:600;
     color:var(--gold-bright); margin:0 0 4px; }
   #grafoElegir .ge-sub{ font-size:var(--t-5); color:var(--parchment-dim); margin-bottom:12px; line-height:1.45; }
@@ -687,11 +689,14 @@
   #panel .passage{ margin-bottom:6px; }
   #panel .ficha-verso{ position:relative; display:flex; flex-wrap:wrap; align-items:baseline; font-family:'Source Sans 3', sans-serif; font-size:var(--t-5); color:var(--ink-3); margin:0 0 14px; }
   #panel .ficha-verso .fv-i{ white-space:nowrap; }
-  #panel .ficha-verso .fv-sep{ padding:0 7px; }
+  /* ronda 36c: cada parte con su «·» en un lugar fijo a la izquierda; la línea corre ese lugar fuera de su borde y lo recorta: el de
+     la parte que arranca un renglón no se ve (antes, «· Comparar traducciones» al principio del segundo renglón en el teléfono) */
+  #panel .ficha-verso{ margin-left:-15px; clip-path:inset(-100vh -100vw -100vh 12px); z-index:6; }
+  #panel .ficha-verso .fv-sep{ display:inline-block; width:15px; padding:0; text-align:center; }
   #panel .ficha-verso .fv-l{ font:inherit; color:inherit; background:none; border:0; padding:4px 0; margin:0; cursor:pointer;
     text-decoration:underline; text-underline-offset:2px; border-bottom:0; }
   #panel .fv-trad{ position:static; }
-  #panel .fv-trad-m{ position:absolute; left:0; top:calc(100% + 2px); z-index:6; width:min(100%, 360px); display:flex; flex-direction:column; gap:2px; padding:6px;
+  #panel .fv-trad-m{ position:absolute; left:15px; top:calc(100% + 2px); z-index:6; width:min(100%, 360px); display:flex; flex-direction:column; gap:2px; padding:6px;
     background:var(--panel-bg); border:1px solid var(--papel-linea); border-radius:10px; box-shadow:0 10px 28px var(--panel-shadow); }
   #panel .fv-trad-m[hidden]{ display:none; }
   #panel .fv-trad-m{ white-space:normal; }
@@ -1864,6 +1869,7 @@ body.light{ --accent-blue-ink:#34608B; }
     #advPanel{ position:fixed; top:auto; bottom:0; left:0; right:0; max-height:86vh; border-radius:16px 16px 0 0; z-index:30; padding-bottom:28px; box-shadow:0 -10px 40px var(--panel-shadow); }
     .adv-group{ border-bottom:1px solid rgba(255,255,255,0.06); padding:6px 0; }
     .adv-label{ cursor:pointer; display:flex; align-items:center; min-height:36px; }
+    .adv-label .adv-mini{ margin-left:8px; }   /* ronda 36c: en el flex se perdía el espacio («CATEGORÍAStodas · ninguna») */
     .adv-label::before{ content:"▸"; margin-right:8px; color:var(--parchment-dim); font-size:var(--t-5); }
     .adv-group.open .adv-label::before{ content:"▾"; }
     .adv-group:not(.open) > :not(.adv-label){ display:none !important; }
@@ -2184,6 +2190,13 @@ body.light{ --accent-blue-ink:#34608B; }
     padding:16px 18px 48px; background:var(--select-bg); border-left:1px solid var(--line-dim); color:var(--parchment);
     font-size:var(--t-5); line-height:1.45; scrollbar-gutter:stable; }
   #redLista.on{ display:block; }
+  /* ronda 36c: la lista de Su red quedaba encima del zoom (H1 de la tanda 14): en la compu, el zoom a su izquierda; en el teléfono,
+     sobre la lista chica (con el dibujo a la vista) y fuera con la lista entera */
+  @media (min-width:720px){ body:has(#redLista.on) #zoomControls{ right:calc(min(400px, 38vw) + 24px) !important; } }
+  @media (max-width:719px){
+    body:has(#redLista.on:not(.mini)) #zoomControls{ display:none !important; }
+    body:has(#redLista.on.mini) #zoomControls{ bottom:calc(34vh + 12px) !important; }
+  }
   /* ronda 30: la red entera */
   #redEntera{ display:none; position:absolute; z-index:6; top:calc(var(--header-h) + 12px); left:16px; width:min(340px, 32vw);
     max-height:calc(100% - var(--header-h) - 24px); overflow-y:auto; padding:14px 16px; background:var(--select-bg);
@@ -2665,7 +2678,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v110-a3e44bdd.js" data-resto="datos-v110-resto-32810c11.js"></script>
+<script src="datos-v111-9d22029a.js" data-resto="datos-v111-resto-0321c676.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -3133,11 +3146,16 @@ const IDX_SECCIONES = [["Pentateuco", "Génesis", "Deuteronomio"], ["Históricos
   ["Profetas", "Isaías", "Malaquías"], ["Evangelios", "Mateo", "Juan"], ["Hechos", "Hechos", "Hechos"], ["Cartas", "Romanos", "Judas"], ["Apocalipsis", "Apocalipsis", "Apocalipsis"]];
 // ronda 25 (2): «Mi selección». Una lista propia, en el orden del lector y con una nota por título, guardada en este
 // navegador (jeb-seleccion). Si no se puede guardar, la lista dura mientras la página esté abierta y la vista lo dice.
+// ronda 36c: lo guardado en el navegador puede venir viejo o roto (otra versión, otra pestaña, a mano): cada clave se lee con su forma
+// y lo que no la tiene se descarta; lo válido se conserva y el arranque sigue (M5 de la tanda 13 de Codex)
+function guardadoObjeto(x){ return x && typeof x === "object" && !Array.isArray(x) ? x : null; }
+function guardadoTexto(x){ return typeof x === "string" ? x : ""; }
+function guardadoLista(x, ok){ return Array.isArray(x) ? x.filter(ok || (y => typeof y === "string")) : []; }
 let selItems = [], selGuardable = true, selRecibida = null;
 try {
   const s = JSON.parse(localStorage.getItem("jeb-seleccion") || "null");
-  if (s && Array.isArray(s.items)) selItems = s.items.filter(x => x && x.id != null && x.id !== "")
-    .map(x => ({ id: String(x.id), nota: String(x.nota || ""), ts: String(x.ts || "") }))
+  if (s && Array.isArray(s.items)) selItems = s.items.filter(x => x && (typeof x.id === "string" || typeof x.id === "number") && x.id !== "")   // ronda 36c: no un objeto
+    .map(x => ({ id: String(x.id), nota: guardadoTexto(x.nota), ts: guardadoTexto(x.ts) }))   // ronda 36c: una nota que no es texto, vacía
     .filter((x, i, a) => a.findIndex(y => y.id === x.id) === i);
 } catch (e) { /* sin localStorage o con un valor roto: se empieza vacía */ }
 function selGuardar(){
@@ -3329,7 +3347,7 @@ function renderIndexFilter(){
 // "Resuelto" se guarda en este navegador (jeb-cur-resueltos) hasta que el
 // ítem desaparezca solo del CSV; se puede exportar la lista pendiente a .md.
 let curResolved = {};
-try { curResolved = JSON.parse(localStorage.getItem("jeb-cur-resueltos") || "{}"); } catch (e) { curResolved = {}; }
+try { curResolved = guardadoObjeto(JSON.parse(localStorage.getItem("jeb-cur-resueltos") || "{}")) || {}; } catch (e) { curResolved = {}; }
 let curShowResolved = false;
 function curSave(){ try { localStorage.setItem("jeb-cur-resueltos", JSON.stringify(curResolved)); } catch (e) {} }
 function curKey(sec, id){ return sec + "|" + id; }
@@ -3532,7 +3550,7 @@ let pendingPromotions = [];
 try {
   const savedPromotions = JSON.parse(localStorage.getItem('jeb-promotions') || '[]');
   const tempById = Object.fromEntries(rawNodes.map(n => [n.id, n]));
-  savedPromotions.forEach(p => {
+  guardadoLista(savedPromotions, p => guardadoObjeto(p)).forEach(p => {   // ronda 36c: solo objetos
     const source = tempById[p.sourceId];
     if (!source || !tempById[p.targetId]) return; // el título pudo haberse eliminado en una actualización del CSV
     if (source.conectaCon.includes(p.targetId)) return; // ya está en el CSV maestro: la promoción cumplió su ciclo
@@ -6953,7 +6971,7 @@ new ResizeObserver(() => { if (layoutMode === "categorias") renderCatred(); }).o
 // descartar = ocultar en este navegador (jeb-cand-descartados).
 const candLayer = document.getElementById("candLayer");
 let candDiscarded = {};
-try { candDiscarded = JSON.parse(localStorage.getItem("jeb-cand-descartados") || "{}"); } catch (e) { candDiscarded = {}; }
+try { candDiscarded = guardadoObjeto(JSON.parse(localStorage.getItem("jeb-cand-descartados") || "{}")) || {}; } catch (e) { candDiscarded = {}; }
 let candOpts = { min: 0, onlyCross: false, showDiscarded: false, focus: null };
 function candSaveDiscarded(){ try { localStorage.setItem("jeb-cand-descartados", JSON.stringify(candDiscarded)); } catch (e) {} }
 function candKey(a, b){ return [a, b].sort((x, y) => +x - +y).join("|"); }
@@ -7341,7 +7359,7 @@ function renderNube() {
   if (nubeBuilt) return;
 
   let saved = null;
-  try { saved = JSON.parse(localStorage.getItem('jeb-nube-positions') || 'null'); } catch (e) {}
+  try { saved = guardadoObjeto(JSON.parse(localStorage.getItem('jeb-nube-positions') || 'null')); } catch (e) {}
 
   nubeLayoutData = {};
   const cw = nubeMeasure("JESÚS", NUBE_CENTER_FONT) + 40;
@@ -8605,6 +8623,7 @@ let lastPanelId = null;
 // todo era location.replace: ninguna ficha quedaba en el historial y el id seguía tras cerrarla.
 const TITULO_SITIO = document.title;
 let urlListo = false, urlDesdePop = false;
+let fichaCerrando = false;   // ronda 36c: la X volvió todas las fichas juntas (fichaCerrar); al llegar, se cierra
 function urlSync(push, id){
   try {
     const p = new URLSearchParams();
@@ -8617,7 +8636,11 @@ function urlSync(push, id){
     const next = "#" + p.toString();
     if (location.hash === next) return;
     const url = location.pathname + location.search + next;
-    if (push && urlListo && !urlDesdePop) history.pushState({ jeb: 1 }, "", url);
+    if (push && urlListo && !urlDesdePop){
+      // ronda 36c: una entrada de ficha (o de palabra) guarda cuántas fichas seguidas lleva el historial; la X las vuelve todas
+      const u0 = urlRead(), st = history.state, ficha = (abierta || p.has("palabra")) ? ((u0.id || u0.palabra) ? ((st && st.ficha) || 0) + 1 : 1) : 0;
+      history.pushState(ficha ? { jeb: 1, ficha } : { jeb: 1 }, "", url);
+    }
     else history.replaceState(history.state, "", url);
   } catch (e) {}
 }
@@ -8631,10 +8654,11 @@ addEventListener("popstate", () => {
       document.getElementById("modeSelect").value = u.vista; setMode(u.vista); syncHeader(); applyFilters();
     }
     if (layoutMode === "grafo"){ if (u.red === "entera" && !reOn) reAbrir(); else if (u.red !== "entera" && reOn) reCerrar(); }   // ronda 30
-    if (u.id && nodeById[u.id]) openPanel(nodeById[u.id]);
+    if (fichaCerrando){ if (document.getElementById("panel").classList.contains("open") && !fichaListaReponer()) closePanel(); }   // ronda 36c
+    else if (u.id && nodeById[u.id]) openPanel(nodeById[u.id]);
     else if (u.palabra && strongToTitles[u.palabra]){ if (u.palabra !== palabraAbierta || !document.getElementById("panel").classList.contains("open")) openPalabra(u.palabra); }   // ronda 29
     else if (document.getElementById("panel").classList.contains("open") && !fichaListaReponer()) closePanel();   // ronda 20 (F7)
-  } finally { urlDesdePop = false; }
+  } finally { urlDesdePop = false; fichaCerrando = false; }
 });
 function urlRead(){
   const p = new URLSearchParams((location.hash || "").replace(/^#/, ""));
@@ -9553,8 +9577,9 @@ function fichaVersoLinea(d){
   const grupos = TRAD_GRUPOS.map(g => [g, tradUrl(d, g)]).filter(x => x[1]);
   const comp = grupos.length ? `<span class="fv-trad"><button type="button" class="fv-l fv-trad-b" aria-haspopup="true" aria-expanded="false" onclick="fichaTradToggle(this)">Comparar traducciones ↗</button><span class="fv-trad-m" role="menu" hidden>${grupos.map(([g, u]) =>
     `<a role="menuitem" href="${escHtml(u)}" target="_blank" rel="noopener" title="${escHtml(g.join(" · "))}">${escHtml(g.map(x => TRAD_NOMBRES[x] || x).join(" · "))} ↗</a>`).join("")}<span class="fv-trad-n">En BibleGateway, en una pestaña nueva.</span></span></span>` : "";
-  // cada parte, con su «·» delante y sin cortarse: si no entra, baja entera
-  const partes = [v, pas, comp].filter(Boolean).map((x, i) => `<span class="fv-i">${i ? '<span class="fv-sep" aria-hidden="true">·</span>' : ""}${x}</span>`);
+  // cada parte, con su «·» delante y sin cortarse: si no entra, baja entera; ronda 36c: también la primera, porque el «·» de la
+  // que arranca un renglón queda fuera del recorte de la línea
+  const partes = [v, pas, comp].filter(Boolean).map(x => `<span class="fv-i"><span class="fv-sep" aria-hidden="true">·</span>${x}</span>`);
   return partes.length ? `<div class="ficha-verso">${partes.join("")}</div>` : "";
 }
 function fichaTradToggle(b){
@@ -9813,7 +9838,9 @@ document.addEventListener("keydown", (e) => {
 function fichaCerrar(){
   if (document.getElementById("panel").classList.contains("pantalla") && !lector){ fichaPantalla(false); return; }   // ronda 20 (F10)
   if (lector){ closePanel(); return; }   // ronda 27: cerrar la lectura vuelve a la lista
-  if (history.state && history.state.jeb && document.getElementById("panel").classList.contains("open")) history.back();
+  // ronda 36c: la X vuelve todas las fichas seguidas (las flechas suman una entrada cada una) y cierra; el atrás, de a una
+  if (history.state && history.state.ficha > 0 && document.getElementById("panel").classList.contains("open")){ fichaCerrando = true; history.go(-history.state.ficha); }
+  else if (history.state && history.state.jeb && document.getElementById("panel").classList.contains("open")) history.back();
   else if (!fichaListaReponer()) closePanel();   // ronda 20 (F7): una ficha abierta desde una lista devuelve la lista
 }
 function closePanel(){ fichaPila = []; fichaListaAbierta = null; fichaPantalla(false); lectorCerrar(); const abierta = document.getElementById("panel").classList.contains("open"); document.getElementById("panel").classList.remove("open");
@@ -9825,6 +9852,7 @@ const FICHA_DETRAS = ["header", "#canvas", "#legend", "#hint", "#zoomControls", 
   "#mapaLayer", "#candLayer", "#lexSide", "#dashLayer", "#cadenasLayer", "#recLayer", "#grafoEnf", "#redLista", "#redEntera",
   "#grafoElegir", "#curacionLayer", "#restoCargando", "#compTray", "#advPanel"];
 let fichaVuelta = null, fichaInertes = [];
+let fichaAncla = null;   // ronda 36c: la primera fila del índice a la vista al abrir la ficha en el teléfono
 function fichaFocoEstado(){
   const p = document.getElementById("panel"), abierta = p.classList.contains("open");
   const tapa = abierta && (p.classList.contains("pantalla") || matchMedia("(max-width: 720px)").matches);
@@ -9837,6 +9865,16 @@ function fichaFocoEstado(){
     const antes = fila ? fila.getBoundingClientRect().top : 0;
     document.body.classList.toggle("ficha-abierta", abierta);
     if (fila){ const d = fila.getBoundingClientRect().top - antes; if (Math.abs(d) >= 1) indexLayer.scrollTop += d; }
+  }
+  // ronda 36c: con la ficha tapando el índice (teléfono, pantalla completa), el índice puede acomodarse solo por detrás (las filas que
+  // se dibujan después de un salto lo corrían cientos de px); al cerrar, la primera fila a la vista vuelve a donde estaba al abrir
+  if (abierta && tapa && !fichaAncla && layoutMode === "indice"){
+    const tope = indexLayer.getBoundingClientRect().top, fila = [...indexLayer.querySelectorAll(".idx-row")].find(r => r.getBoundingClientRect().bottom > tope);
+    if (fila) fichaAncla = { fila, top: fila.getBoundingClientRect().top - tope };
+  }
+  if (!abierta && fichaAncla){
+    const a = fichaAncla, pon = () => { const d = a.fila.getBoundingClientRect().top - indexLayer.getBoundingClientRect().top - a.top; if (Math.abs(d) >= 1) indexLayer.scrollTop += d; };
+    fichaAncla = null; if (a.fila.isConnected && layoutMode === "indice"){ pon(); requestAnimationFrame(pon); }
   }
   fichaInertes.forEach(e => { e.inert = false; }); fichaInertes = [];
   if (tapa) FICHA_DETRAS.forEach(s => document.querySelectorAll(s).forEach(e => { e.inert = true; fichaInertes.push(e); }));
@@ -10342,9 +10380,10 @@ function advSerialize(){
   return { text: f.text, fields: [...f.fields], books: [...f.books], testamento: f.testamento, verif: [...f.verif], noTip: f.noTip, conexion: f.conexion, marked: !!f.marked, lectura: f.lectura || "", sujeto: f.sujeto || "", voz: [...f.voz], textoBase: !!f.textoBase, cats: CATS_ORDER.filter(c => !activeCats.has(c)) };
 }
 function advRestore(s){
+  s = guardadoObjeto(s);   // ronda 36c: con su forma (un número donde va una lista no se itera)
   if (!s) return;
-  advFilter = { text: s.text || "", fields: new Set(s.fields || advFilter.fields), books: new Set(s.books || []), testamento: s.testamento || "", verif: new Set(s.verif || []), noTip: !!s.noTip, conexion: !!s.conexion, marked: !!s.marked, lectura: s.lectura || "", sujeto: s.sujeto || "", voz: new Set(s.voz || []), textoBase: !!s.textoBase };
-  (s.cats || []).forEach(c => activeCats.delete(c));
+  advFilter = { text: guardadoTexto(s.text), fields: new Set(Array.isArray(s.fields) ? guardadoLista(s.fields) : advFilter.fields), books: new Set(guardadoLista(s.books)), testamento: guardadoTexto(s.testamento), verif: new Set(guardadoLista(s.verif)), noTip: !!s.noTip, conexion: !!s.conexion, marked: !!s.marked, lectura: guardadoTexto(s.lectura), sujeto: guardadoTexto(s.sujeto), voz: new Set(guardadoLista(s.voz)), textoBase: !!s.textoBase };
+  guardadoLista(s.cats).forEach(c => activeCats.delete(c));
 }
 buildAdvPanel();
 document.getElementById("advToggleBtn").addEventListener("click", () => advToggle());
@@ -10359,7 +10398,10 @@ document.addEventListener("keydown", (e) => {
 // nota no desmarca. Filtro "solo marcados" en el panel de Filtros;
 // exportar/importar JSON para no perderlas al cambiar de navegador.
 let marks = {};
-try { marks = JSON.parse(localStorage.getItem("jeb-marks") || "{}") || {}; } catch (e) { marks = {}; }
+try {   // ronda 36c: cada marca, un objeto { on, nota, ts }; lo demás (un null, un número) se descarta
+  marks = Object.fromEntries(Object.entries(guardadoObjeto(JSON.parse(localStorage.getItem("jeb-marks") || "{}")) || {})
+    .filter(([, m]) => guardadoObjeto(m)).map(([id, m]) => [id, { on: !!m.on, nota: guardadoTexto(m.nota), ts: guardadoTexto(m.ts) }]));
+} catch (e) { marks = {}; }
 function marksSave(){ try { localStorage.setItem("jeb-marks", JSON.stringify(marks)); } catch (e) {} }
 function isMarked(id){ return !!(marks[id] && marks[id].on); }
 function markNote(id){ return (marks[id] && marks[id].nota) || ""; }
@@ -10449,7 +10491,7 @@ function idxMarcasIniciales(){ Object.keys(marks).forEach(id => { const row = in
 // J/K o ↓/↑ mueven el cursor entre filas visibles, Enter abre la ficha,
 // "/" enfoca la búsqueda, Escape cierra la ficha.
 let idxFolded = new Set();
-try { idxFolded = new Set(JSON.parse(localStorage.getItem("jeb-idx-folded") || "[]")); } catch (e) {}
+try { idxFolded = new Set(guardadoLista(JSON.parse(localStorage.getItem("jeb-idx-folded") || "[]"))); } catch (e) {}
 function idxSaveFolded(){ try { localStorage.setItem("jeb-idx-folded", JSON.stringify([...idxFolded])); } catch (e) {} }
 // ronda 27 (D): «Leer estos N», «Repasar estos N» (y «Guardar estos N» donde ya estaba) en el encabezado de un conjunto:
 // una búsqueda o un filtro, un libro desplegado de Por libro, una categoría de Por tema, Mi selección. Nunca en cada fila.
@@ -10795,7 +10837,10 @@ renderCompTray();
 // El nombre de nota (y por lo tanto el destino de los wikilinks) sigue una
 // convención elegible: "Título" o "004 - Título".
 let expOpts = { naming: "titulo", refs: true, texto: true, notas: true, lex: true };
-try { Object.assign(expOpts, JSON.parse(localStorage.getItem("jeb-export") || "{}")); } catch (e) {}
+try {   // ronda 36c: solo las opciones que existen, con su tipo
+  const g = guardadoObjeto(JSON.parse(localStorage.getItem("jeb-export") || "{}")) || {};
+  Object.keys(expOpts).forEach(k => { if (typeof g[k] === typeof expOpts[k]) expOpts[k] = g[k]; });
+} catch (e) {}
 function expSaveOpts(){ try { localStorage.setItem("jeb-export", JSON.stringify(expOpts)); } catch (e) {} }
 
 function expSafe(s){ return String(s).replace(/[\\/:*?"<>|#^\[\]]/g, "").replace(/\s+/g, " ").trim(); }
@@ -10963,7 +11008,7 @@ idxAlArmar();
 await ceder();
 (function restoreViewState(){
   let state = null;
-  try { state = JSON.parse(localStorage.getItem('jeb-viewstate') || 'null'); } catch (e) {}
+  try { state = guardadoObjeto(JSON.parse(localStorage.getItem('jeb-viewstate') || 'null')); } catch (e) {}   // ronda 36c: un objeto o nada
   // limpieza (D-102): solo vistas vigentes; un enlace retirado cae en el índice.
   const validModes = ["indice","tiempo","categorias","seleccion","conexiones","cadenas","recorridos","entre","grafo","stats","lexica","matriz","curacion","candidatos","nube",
                       "cinetica","radar"];
@@ -10976,7 +11021,7 @@ await ceder();
   const LAB = VISTAS_TALLER.concat(Object.keys(HIDDEN_MODE_LABELS));   // ronda 25 (D-52)
   const mode = !esTaller() && (pedido === "matriz" || pedido === "cadenas") ? vistaEnEstudio(pedido) : !esTaller() && LAB.includes(pedido) ? "indice" : pedido;   // ronda 28a; ronda 28b
   if (state) {
-    document.getElementById("search").value = state.search || "";
+    document.getElementById("search").value = guardadoTexto(state.search);
     document.getElementById("onlyTipologia").checked = !!state.onlyTipologia;
     document.getElementById("onlyRevisar").checked = !!state.onlyRevisar;
     if (state.grafoFocus && nodeById[state.grafoFocus]) grafoFocusId = state.grafoFocus;
