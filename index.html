@@ -304,6 +304,7 @@
   #mapaLayer .mp-volver:hover, #mapaLayer .mp-vecinos button:hover{ border-color:var(--gold-texto); }
   #mapaLayer .mp-libro{ font-family:'Cormorant Garamond', Georgia, serif; font-size:var(--t-1); color:var(--gold-bright); font-weight:600; margin:4px 0 0; }
   #mapaLayer .mp-libro:focus{ outline:none; }
+  #mapaLayer .mp-resaltar{ display:none; }   /* ronda 39 (5): el selector de temas, solo en el teléfono */
   #mapaLayer .mp-sub{ margin:0; color:var(--parchment-dim); font-size:var(--t-5); }
   #mapaLayer .mp-cifra{ margin:4px 0 8px; color:var(--parchment); font-size:var(--t-5); }
   #mapaLayer .mp-cifra b{ color:var(--gold-bright); }
@@ -369,6 +370,7 @@
   #selLayer .sel-nota-l span{ display:block; margin-bottom:2px; }
   #selLayer .sel-acc-et{ align-self:center; font-size:var(--t-6); color:var(--ink-3); text-transform:uppercase; letter-spacing:.05em; margin-right:2px; }
   #selLayer .sel-otras{ margin-left:auto; }
+  #selLayer .sel-menu-b, #selLayer .sel-menu-solo{ display:none; }   /* ronda 39 (6): el menú, solo en el teléfono */
   #selLayer .sel-b.sel-vaciar{ border-color:transparent; color:var(--ink-3); text-decoration:underline; text-underline-offset:3px; }
   #selLayer .sel-nota{ width:100%; box-sizing:border-box; background:transparent; color:var(--parchment); border:1px solid var(--line-dim); border-radius:8px; padding:6px 8px; font:inherit; font-size:var(--t-5); resize:vertical; }
   #selLayer .sel-nota:focus{ border-color:var(--gold-texto); outline:none; }
@@ -820,6 +822,9 @@
   /* grafo de red navegable */
   /* buscador avanzado */
 
+  /* ronda 39 (3): «Búsqueda avanzada» (los prefijos) y «Ver N títulos», que solo se ve en el teléfono */
+  #advPanel .adv-avz > summary{ cursor:pointer; font-size:var(--t-5); color:var(--gold-bright); padding:4px 0; margin-bottom:4px; }
+  #advPanel .adv-ver{ display:none; }
   #advPanel{ position:absolute; top:calc(var(--header-h) - 34px); left:24px; z-index:8; width:330px; max-height:calc(100% - 90px); overflow-y:auto;
     background:var(--night); border:1px solid var(--line-dim); border-radius:12px; padding:14px 16px 18px;
     box-shadow:0 10px 30px var(--panel-shadow); font-size:var(--t-5); color:var(--parchment); }
@@ -871,6 +876,8 @@
   #recLayer .rc-t{ font-family:'Cormorant Garamond', Georgia, serif; font-size:var(--t-1); color:var(--gold-bright); font-weight:600; line-height:1.15; margin:10px 0 2px; }
   #recLayer .rc-t:focus, #recLayer .rc-ti:focus{ outline:none; }
   #recLayer .rc-lema{ margin:0 0 8px; font-family:'Cormorant Garamond', Georgia, serif; font-size:var(--t-3);  line-height:1.4; color:var(--parchment); font-weight:500; }
+  #recLayer .rc-intro-mas{ display:none; }
+  #conexLayer .cx-item{ display:contents; } #conexLayer .cx-comp{ display:none; }   /* ronda 39 (8): en la compu, las tarjetas como siempre */   /* ronda 39 (7): solo en el teléfono */
   #recLayer .rc-intro{ margin:0 0 10px; font-size:var(--t-4); line-height:1.55; color:var(--parchment); }
   #recLayer .rc-cifra{ display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; margin:0 0 12px; font-size:var(--t-6); color:var(--parchment-dim); }
   #recLayer .rc-pasos ol{ list-style:none; margin:0 0 12px; padding:0; display:flex; flex-wrap:wrap; gap:6px; }
@@ -1573,6 +1580,11 @@ body.light{ --accent-blue-ink:#34608B; }
   .dicc-strong{ margin:4px 0 0; padding:2px 0 2px 12px; border-left:3px solid var(--papel-linea);
     font-size:var(--t-5); line-height:1.55; color:var(--ink-2);  }
   #bienvenida .bv:focus{ outline:none; }   /* ronda 37: el foco inicial, sin anillo */
+  /* ronda 39 (1): dos puertas, la principal llena y la segunda con borde */
+  #bienvenida .bv-puertas{ display:flex; flex-wrap:wrap; gap:8px 10px; margin-top:8px; }
+  #bienvenida .bv-puertas .bv-go{ margin-top:0; }
+  #bienvenida .bv-go.bv-sec{ background:transparent; border-color:var(--gold-texto); color:var(--ink-1); font-weight:600; }
+  #bienvenida .bv-go.bv-sec:hover{ background:rgba(201,162,39,0.14); }
   #bienvenida .bv-go{ margin-top:8px; background:var(--gold); border:1px solid var(--gold);
     border-radius:var(--r-btn); color:#241E12; font-family:inherit; font-size:var(--t-4);
     font-weight:600; padding:10px 22px; min-height:44px; cursor:pointer; }
@@ -1688,6 +1700,9 @@ body.light{ --accent-blue-ink:#34608B; }
   header #advToggleBtn:hover, header #advToggleBtn:focus-visible{ border-color:var(--gold-texto); }
   #searchWrap #search{ border-top-right-radius:0; border-bottom-right-radius:0; }
   #modeSelect{ field-sizing:content; min-width:0; }
+  /* ronda 39 (2): el selector de vistas, un botón (con borde): no un título */
+  #modeSelect.hbtn{ border-color:var(--gold-texto); background-color:rgba(201,162,39,0.10); }
+  #modeSelect.hbtn:hover{ background-color:rgba(201,162,39,0.20); }
   @media (max-width: 370px){ header .brand{ font-size:calc(var(--t-3) - 1.5px); } header .header-row{ gap:6px; } }   /* ronda 37: el logo, excepción de identidad */
   @media (max-width: 380px){ .idx-row{ contain-intrinsic-size:auto 57px; } }   /* ronda 37: a 360 px, más títulos en dos renglones */   /* ronda 28a: en 360 px, más lugar para el selector */
   .hdr-extra #stats[hidden]{ display:none; }
@@ -1706,6 +1721,9 @@ body.light{ --accent-blue-ink:#34608B; }
   /* «Por dónde empezar» compacto: un enlace, sin la caja */
   .idx-puertas.plegado{ border:0; background:none; padding:2px 6px; margin:2px 0 6px; }
   .idx-book-header{ display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 10px; }
+  .idx-libro-busca, .idx-libro-b{ display:none; }   /* ronda 39 (9): solo en el teléfono */
+  .idx-libro-b{ font-size:var(--t-5); }
+  #indexLayer .idx-row.idx-fuera-libro{ display:none; }
   .catred-side-actions .conj-acc{ margin-right:6px; }
   /* el lector: el origen y la posición */
   .ficha-nav .fn-origen{ color:var(--gold-bright); font-weight:600; }
@@ -2446,6 +2464,59 @@ body.light{ --accent-blue-ink:#34608B; }
   /* ronda 37 (9.2): un solo color de enlace en la ficha */
   #panel .ficha-link, #panel .ficha-verso .fv-l, #panel .og-strong a, #panel .og a, #panel .evid-yhwh a, #panel .ficha-yhwh a, #panel .lx-eq-f summary, #panel .ficha-menu-lista .fm-fila .fm-sec, .glosa-b, #acercaDe a, .ficha-avisar a, .ficha-trad .ft-l, .cx-fuente-b, #panel .cx-fuente-c .cx-fuente-b, #redLista .cx-fuente-b, #grafoEnf .ge-tarjeta .cx-fuente-b, .cad-desde .cx-fuente-b{ color:inherit; border-bottom:0; text-decoration:underline; text-decoration-color:var(--enlace-raya); text-decoration-thickness:1px; text-underline-offset:3px; }
   #panel .ficha-link:hover, #panel .ficha-link:focus-visible, #panel .ficha-verso .fv-l:hover, #panel .ficha-verso .fv-l:focus-visible, #panel .og-strong a:hover, #panel .og-strong a:focus-visible, #panel .og a:hover, #panel .og a:focus-visible, #panel .evid-yhwh a:hover, #panel .evid-yhwh a:focus-visible, #panel .ficha-yhwh a:hover, #panel .ficha-yhwh a:focus-visible, #panel .lx-eq-f summary:hover, #panel .lx-eq-f summary:focus-visible, #panel .ficha-menu-lista .fm-fila .fm-sec:hover, #panel .ficha-menu-lista .fm-fila .fm-sec:focus-visible, .glosa-b:hover, .glosa-b:focus-visible, #acercaDe a:hover, #acercaDe a:focus-visible, .ficha-avisar a:hover, .ficha-avisar a:focus-visible, .ficha-trad .ft-l:hover, .ficha-trad .ft-l:focus-visible, .cx-fuente-b:hover, .cx-fuente-b:focus-visible, #panel .cx-fuente-c .cx-fuente-b:hover, #panel .cx-fuente-c .cx-fuente-b:focus-visible, #redLista .cx-fuente-b:hover, #redLista .cx-fuente-b:focus-visible, #grafoEnf .ge-tarjeta .cx-fuente-b:hover, #grafoEnf .ge-tarjeta .cx-fuente-b:focus-visible, .cad-desde .cx-fuente-b:hover, .cad-desde .cx-fuente-b:focus-visible{ text-decoration-thickness:2px; }
+  /* ronda 39 (D-125): el teléfono */
+  @media (max-width: 720px){
+    /* ronda 39 (2): la línea de la vista, solo con «Cómo usar esta vista» (el nombre ya está en el selector; queda para los lectores de pantalla) */
+    #vistaHead h1.vh-t{ position:absolute; width:1px; height:1px; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+    #searchBtn svg{ display:block; }
+    /* ronda 39 (3): «Libro» plegado dentro de su grupo; «Ctrl/⌘», no; «Ver N títulos», fijo abajo */
+    .adv-ctrl{ display:none; }
+    .adv-group.adv-two.open .adv-sub > .adv-label{ cursor:pointer; }
+    .adv-group.adv-two.open .adv-sub > .adv-label::before{ content:"▸"; margin-right:8px; }
+    .adv-group.adv-two.open .adv-sub.open > .adv-label::before{ content:"▾"; }
+    .adv-sub:not(.open) > :not(.adv-label){ display:none !important; }
+    #advPanel{ padding-bottom:0; }
+    #advPanel .adv-ver{ display:block; position:sticky; bottom:0; margin:8px -16px 0; padding:10px 16px 14px; background:var(--night);
+      border-top:1px solid var(--line-dim); z-index:2; }
+    #advPanel .adv-ver .b{ width:100%; min-height:44px; }
+    /* ronda 39 (4): en Su red, las capas sin nada, fuera de la lista (su botón queda, con su 0) */
+    #redLista .rl-cero{ display:none; }
+    /* ronda 39 (5): el Mapa, la leyenda como selector con el nombre de cada tema */
+    #mapaLayer .mp-ley-d{ display:none; }
+    #mapaLayer .mp-resaltar{ display:block; margin:6px 0 10px; }
+    #mapaLayer .mp-res-sel{ width:100%; min-height:44px; padding:0 12px; border-radius:10px; border:1px solid var(--gold-texto);
+      background:var(--sup-hundida); color:var(--ink-1); font:inherit; font-size:var(--t-4); }
+    /* ronda 39 (6): Mi selección, «Llevar o compartir ▾» */
+    #selLayer .sel-menu-b{ display:inline-flex; }
+    #selLayer .sel-llevar{ display:none !important; }
+    #selLayer .sel-llevar.abierto{ display:flex !important; flex-direction:column; align-items:stretch; gap:6px; width:100%; padding:8px;
+      border:1px solid var(--line-dim); border-radius:12px; background:var(--sup-elevada); }
+    #selLayer .sel-llevar .sel-acc-et{ display:none; }
+    #selLayer .sel-llevar.abierto .sel-menu-solo{ display:inline-flex; }
+    #selLayer .sel-menu-no{ display:none; }
+    #selLayer .sel-otras{ width:100%; margin-left:0; }
+    /* ronda 39 (7): la introducción del recorrido, a dos renglones con «leer más» */
+    #recLayer .rc-intro-w:not(.abierto) .rc-intro{ display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden; margin-bottom:2px; }
+    #recLayer .rc-intro-mas{ display:inline-block; font:inherit; font-size:var(--t-5); color:var(--gold-bright); background:none; border:0; padding:6px 0 10px;
+      min-height:32px; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+    #recLayer .rc-intro-w.entra .rc-intro-mas{ display:none; }
+    /* ronda 39 (8): Conexiones, una lista compacta de pares; tocar el par abre su tarjeta */
+    #conexLayer .cx-item{ display:block; border-bottom:1px solid var(--line-dim); }
+    #conexLayer .cx-comp{ display:flex; flex-direction:column; align-items:flex-start; gap:2px; width:100%; text-align:left; background:none; border:0;
+      padding:10px 2px; min-height:44px; font:inherit; font-size:var(--t-4); color:var(--ink-1); cursor:pointer; line-height:1.35; }
+    #conexLayer .cx-comp .cx-c2{ color:var(--ink-2); }
+    #conexLayer .cx-comp .cx-cr{ color:var(--ink-3); font-size:var(--t-5); white-space:nowrap; }
+    #conexLayer .cx-comp.dim{ opacity:.55; }
+    #conexLayer .cx-item:not(.abierta) > .cx-par{ display:none; }
+    #conexLayer .cx-item.abierta > .cx-comp{ color:var(--gold-bright); }
+    /* ronda 39 (9): «Buscar en este libro», en el encabezado del libro (distinto de la lupa general: un campo con borde punteado) */
+    .idx-book-header .idx-libro-busca:not([hidden]){ display:block; width:100%; }
+    .idx-book-header .idx-acc .idx-libro-b{ display:inline-flex; align-items:center; margin-left:6px; }
+    .idx-libro-b{ font:inherit; font-family:'Source Sans 3', sans-serif; font-size:var(--t-5); color:var(--gold-bright); background:none; border:1px dashed var(--gold-texto); border-radius:100px;
+      padding:6px 12px; min-height:36px; cursor:pointer; }
+    .idx-libro-q{ width:100%; min-height:40px; padding:0 12px; border-radius:10px; border:1px dashed var(--gold-texto); background:var(--sup-hundida);
+      color:var(--ink-1); font:inherit; font-family:'Source Sans 3', sans-serif; font-size:var(--t-4); }
+  }
 </style>
 </head>
 <body>
@@ -2480,7 +2551,7 @@ body.light{ --accent-blue-ink:#34608B; }
         <optgroup label="Lienzos y experimentos" id="hiddenModesGroup" style="display:none;"></optgroup>
       </select>
       <button id="selBtn" class="hbtn ghost" onclick="selIr()" title="Tu lista de títulos guardados">☆ Mi selección<span id="selCuenta"></span></button>
-      <button id="searchBtn" class="hbtn icon" title="Buscar" aria-label="Buscar" onclick="hdrBuscar()">⌕</button>
+      <button id="searchBtn" class="hbtn icon" title="Buscar" aria-label="Buscar" onclick="hdrBuscar()"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12.6 12.6 17 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
       <button id="themeToggle" class="hbtn icon" title="Modo claro/oscuro">☀</button>
       <script>try { if (localStorage.getItem("jeb-theme") === "light"){ document.body.classList.add("light"); document.getElementById("themeToggle").textContent = "🌙"; } } catch (e) {}</script>
       <span class="hdr-menu-w"><button id="hdrMore" class="hbtn icon" title="Más" aria-label="Más" aria-haspopup="true" aria-expanded="false" onclick="hdrMenuToggle()">⋯</button>
@@ -2630,7 +2701,7 @@ body.light{ --accent-blue-ink:#34608B; }
   <h2 id="bvTitulo">Jesús en la <em>Biblia</em></h2>
   <p>Títulos, nombres y figuras de Cristo de Génesis a Apocalipsis, cada uno con su versículo y, cuando las tiene, sus conexiones con el resto de la Escritura.</p>
   <p>Cada ficha dice cómo se relaciona con Jesús: si está en el texto, si es un anuncio o si es una figura.</p>
-  <button class="bv-go" onclick="bvTocar('ver')">Ver los títulos</button>
+  <div class="bv-puertas"><button class="bv-go" data-q="rec" data-t="Empezar por un recorrido" onclick="bvTocar('rec')">Empezar por un recorrido</button><button class="bv-go bv-sec" data-q="ver" data-t="Ver los títulos" onclick="bvTocar('ver')">Ver los títulos</button></div>
   <button class="bv-mas" type="button" onclick="bvTocar('acerca')">Más sobre este catálogo: quién lo hace, de dónde sale el texto y qué falta&nbsp;→</button>
 </div></div>
 <script>
@@ -2647,9 +2718,9 @@ window.__arranqueListo = false;   // el arranque lo pone en true al terminar (lo
   }
 })();
 function bvTocar(q){
-  if (window.__arranqueListo){ if (q === "acerca") bienvenidaAcerca(); else bienvenidaVer(); return; }
+  if (window.__arranqueListo){ if (q === "acerca") bienvenidaAcerca(); else if (q === "rec") bienvenidaRecorridos(); else bienvenidaVer(); return; }
   window.__bvPedido = q;
-  var g = document.querySelector("#bienvenida .bv-go"); if (g && q !== "acerca"){ g.disabled = true; g.textContent = "Cargando los títulos…"; }
+  if (q !== "acerca") document.querySelectorAll("#bienvenida .bv-go").forEach(function(g){ g.disabled = true; if (g.dataset.q === q) g.textContent = q === "rec" ? "Cargando los recorridos…" : "Cargando los títulos…"; });
 }
 </script>
 <div id="curacionLayer" style="display:none; position:absolute; top:var(--header-h); left:0; right:0; bottom:0; overflow-y:auto; padding:10px 5% 80px;"></div>
@@ -2678,7 +2749,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v111-9d22029a.js" data-resto="datos-v111-resto-0321c676.js"></script>
+<script src="datos-v112-d013d8cf.js" data-resto="datos-v112-resto-f481cab0.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -4867,10 +4938,10 @@ const CAPA_GLOSARIO = { anotada: "conexiones-anotadas", palabra: "misma-palabra"
 CAPAS.forEach(c => { const g = glosarioDatos()[CAPA_GLOSARIO[c.k]]; if (g) c.ayuda = g.texto.replace(/\.\s*$/, ""); });
 // 4. la línea fija debajo de los interruptores (Entre Testamentos y La red de un título)
 const CAPAS_NOTA = "Solo las conexiones anotadas explican la relación; las otras capas muestran vocabulario en común o pasajes para comparar: no son citas.";
-function capasAyudaHtml(){
+function capasAyudaHtml(extra = ""){   // ronda 39 (4): en el teléfono, también las explicaciones de la red de un título
   const fam = glosarioDatos()["misma-familia"];
   return `<div class="capas-ayuda" hidden>${CAPAS.map(c => `<p>${capaMuestra(c.k, 24)}<b>${escHtml(c.nombre)}.</b> ${escHtml(c.ayuda)}.</p>`).join("")}${fam
-    ? `<p>${capaMuestra("palabra", 24, true)}<b>${escHtml(fam.termino)}.</b> ${escHtml(fam.texto)}</p>` : ""}</div>`;
+    ? `<p>${capaMuestra("palabra", 24, true)}<b>${escHtml(fam.termino)}.</b> ${escHtml(fam.texto)}</p>` : ""}${extra}</div>`;
 }
 // el botón «¿Qué es cada capa?» abre y cierra la ayuda (sin mouse); vale para Entre Testamentos y La red
 document.addEventListener("click", e => {
@@ -5430,7 +5501,7 @@ function redListaRender(){
     const dice = famAT && (c.k === "palabra" || c.k === "comun")
       ? [...new Set(vs.flatMap(v => (v.e.rel.familia || []).map(p => familiaDiceTxt(d, p)).filter(Boolean)))] : [];
     const cuenta = vs.length + (dd.length ? ` · y ${dd.length} dentro de una conexión anotada` : "");
-    secs += `<section class="rl-capa" data-capa="${c.k}"><h4>${capaMuestra(c.k, 24)}<span>${c.nombre}</span> (${cuenta})</h4>${dice.length ? `<p class="rl-dice">De la misma familia: ${dice.map(escHtml).join("; ")}.</p>` : ""}${cuerpo}${mismo.length
+    secs += `<section class="rl-capa${!vs.length && !mismo.length && !dd.length ? " rl-cero" : ""}" data-capa="${c.k}"><h4>${capaMuestra(c.k, 24)}<span>${c.nombre}</span> (${cuenta})</h4>${dice.length ? `<p class="rl-dice">De la misma familia: ${dice.map(escHtml).join("; ")}.</p>` : ""}${cuerpo}${mismo.length
       ? `<h4 class="rl-mismo">${capaMuestra(c.k, 24)}<span>Dentro del mismo Testamento</span> (${mismo.length})</h4>${mismo.map(v => fila(v, c.k)).join("")}` : ""}</section>`;
   });
   if (ampliado){
@@ -5445,10 +5516,13 @@ function redListaRender(){
   el.innerHTML = `<h3>${escHtml(d.title)}</h3><div class="rl-ref">${escHtml(d.ref)}</div>
     <div class="rl-acc"><button type="button" class="rl-b" data-acc="ficha" data-id="${foco}">Ficha</button><button type="button" class="rl-b" data-acc="entre" data-id="${foco}">Ver en Entre Testamentos</button><button type="button" class="rl-b" data-acc="entera" data-id="${foco}">Ver la red entera</button>${grafoHistory.length ? `<button type="button" class="rl-b" data-acc="volver">← Volver</button>` : ""}${tel ? `<button type="button" class="rl-b princ" data-acc="${mini ? "lista" : "dibujo"}">${mini ? "Ver la lista" : "Ver el dibujo"}</button>` : ""}</div>
     ${sel}${mini ? "" : `
+    ${tel ? `<p class="rl-res">${res}</p>${capas}${capasAyudaHtml(`<p class="capas-nota">${CAPAS_NOTA}</p>${ampliable && !ampliado ? `<p class="rl-nota rl-aviso-dos">Suma, debajo de cada uno, los títulos con que se relacionan por una conexión anotada o la misma palabra. Esos no tienen vínculo directo con «${escHtml(d.title)}».</p>` : ""}<p class="rl-nota">El punto tiene el color de la categoría del título; la línea dice el vínculo${CAPAS.some(c => V[c.k].some(v => esFamilia(v.e))) ? " (la de guion y punto es de la misma familia: la traducción griega usa una palabra pariente, no la misma)" : ""}. Tocá un título para ver qué hacer con él; tocalo otra vez para ver su red.</p>`)}
+    ${ampliable ? `<div class="rl-acc"><button type="button" class="rl-b${ampliado ? "" : " princ"}" data-acc="${ampliado ? "un" : "dos"}">${ampliado ? "Quitar las conexiones sumadas" : "Sumar las conexiones de estos títulos"}</button></div>` : ""}` : `
     <p class="rl-res">${res}</p>${capas}${capasAyudaHtml()}
     <p class="capas-nota">${CAPAS_NOTA}</p>
     ${ampliable ? `<div class="rl-acc"><button type="button" class="rl-b${ampliado ? "" : " princ"}" data-acc="${ampliado ? "un" : "dos"}">${ampliado ? "Quitar las conexiones sumadas" : "Sumar las conexiones de estos títulos"}</button></div>${ampliado ? "" : `<p class="rl-nota rl-aviso-dos">Suma, debajo de cada uno, los títulos con que se relacionan por una conexión anotada o la misma palabra. Esos no tienen vínculo directo con «${escHtml(d.title)}».</p>`}` : ""}
     <p class="rl-nota">El punto tiene el color de la categoría del título; la línea dice el vínculo${CAPAS.some(c => V[c.k].some(v => esFamilia(v.e))) ? " (la de guion y punto es de la misma familia: la traducción griega usa una palabra pariente, no la misma)" : ""}. Tocá un título para ver qué hacer con él; tocalo otra vez para ver su red.</p>
+`}
     ${secs}`}`;
   el.classList.add("on");
 }
@@ -6152,7 +6226,7 @@ function mapaLeyendaHtml(scope){
   const parte = mapaParte ? ` en ${escHtml(MAPA_GRUPO[mapaParte] || mapaParte)}` : "";   // ronda 28a: la celda de la tabla
   const con = mapaCat ? `con «${escHtml(mapaCat)}»${parte}${isFiltered() ? " y el filtro" : ""}` : "con el filtro";
   const marcados = mapaParte ? scope.filter(mapaPasa) : [];
-  return `<div class="mp-ley">${mapaFiltrando() ? `<div class="mp-filtro"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}${marcados.length ? accionesConjunto(marcados.map(n => n.id), `${mapaCat}${parte.replace(/<[^>]+>/g, "")}`, true) : ""}</div>` : ""}<details class="mp-ley-d"${mapaLeyAbierta || mapaCat ? " open" : ""} ontoggle="mapaLeyGuardar(this.open)"><summary>Los colores: el tema de cada título <span class="mp-ley-pts" aria-hidden="true">${cats.map(c => `<i style="background:${mapaColor(c)}"></i>`).join("")}</span></summary><div class="mp-chips" role="group" aria-label="Resaltar un tema">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></details></div>`;
+  return `<div class="mp-ley">${mapaFiltrando() ? `<div class="mp-filtro"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}${marcados.length ? accionesConjunto(marcados.map(n => n.id), `${mapaCat}${parte.replace(/<[^>]+>/g, "")}`, true) : ""}</div>` : ""}<details class="mp-ley-d"${mapaLeyAbierta || mapaCat ? " open" : ""} ontoggle="mapaLeyGuardar(this.open)"><summary>Los colores: el tema de cada título <span class="mp-ley-pts" aria-hidden="true">${cats.map(c => `<i style="background:${mapaColor(c)}"></i>`).join("")}</span></summary><div class="mp-chips" role="group" aria-label="Resaltar un tema">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></details><label class="mp-resaltar"><select class="mp-res-sel" aria-label="Resaltar un tema"><option value="">Resaltar un tema…</option>${cats.map(c => `<option value="${escHtml(c)}"${c === mapaCat ? " selected" : ""}>${escHtml(c)}</option>`).join("")}</select></label></div>`;
 }
 function mapaGridHtml(){
   const D = mapaDatos();
@@ -6263,7 +6337,8 @@ mapaLayer.addEventListener("click", e => {
   else if (x.dataset.manera) mapaManeraElegir(x.dataset.manera);   // ronda 28a
   else if (x.dataset.tcat) mapaMarcar(x.dataset.tcat, x.dataset.tparte);
 });
-mapaLayer.addEventListener("change", e => { if (e.target.closest(".mp-ir") && e.target.value) mapaIr(e.target.value); });
+mapaLayer.addEventListener("change", e => { if (e.target.closest(".mp-ir") && e.target.value) mapaIr(e.target.value);
+  else if (e.target.closest(".mp-res-sel")){ mapaParte = null; mapaFiltrar(e.target.value || null); } });   // ronda 39 (5)
 mapaLayer.addEventListener("scroll", () => { mapaScroll[mapaLibro || (mapaManera === "temas" ? "temas" : "")] = mapaLayer.scrollTop; }, { passive: true });
 // el título abierto, resaltado; al cerrar la ficha queda marcado el último (para ubicarse)
 function tiempoHighlight(id){
@@ -6552,7 +6627,7 @@ function recTourHtml(r){
     <button type="button" class="rc-volver" data-rec="" data-foco='.rc-card[data-rec="${escHtml(r.clave)}"]'>← Todos los recorridos</button>
     <h2 class="rc-t" id="rcTit" tabindex="-1">${escHtml(r.nombre)}</h2>
     <p class="rc-lema">${escHtml(r.frase)}</p>
-    ${r.intro ? `<p class="rc-intro">${escHtml(r.intro)}</p>` : ""}
+    ${r.intro ? `<div class="rc-intro-w${recIntroAbierta ? " abierto" : ""}"><p class="rc-intro">${escHtml(r.intro)}</p><button type="button" class="rc-intro-mas" aria-expanded="${recIntroAbierta}">${recIntroAbierta ? "leer menos" : "leer más"}</button></div>` : ""}
     <div class="rc-cifra"><span>${N} pasos en orden bíblico · ${cx.length} ${cx.length === 1 ? "conexión anotada" : "conexiones anotadas"} entre ellos</span>${recAcciones(r)}</div>
     <nav class="rc-pasos" aria-label="Los pasos del recorrido"><ol>${r.pasos.map((id, i) => { const t = nodeById[id], tt = fichaTitulo(t).t;
       return `<li><button type="button" class="rc-p${i === k ? " on" : ""}" data-paso="${i}" data-foco='.rc-p[data-paso="${i}"]'${i === k ? ' aria-current="step"' : ""} title="${escHtml(t.title + " · " + t.ref)}" aria-label="Paso ${i + 1} de ${N}: ${escHtml(tt)}, ${escHtml(t.ref)}"><b>${i + 1}</b> ${escHtml(t.ref)}${repite(t.ref) ? ` · ${escHtml(corto(tt))}` : ""}</button></li>`; }).join("")}</ol></nav>
@@ -6569,6 +6644,7 @@ function recTourHtml(r){
       ${nav(true)}
     </section></div>`;
 }
+let recIntroAbierta = false;   // ronda 39 (7): la introducción del recorrido, entera (en el teléfono arranca plegada)
 function recRender(){
   if (!recLayer) return;
   if (recDe(recClave) && restoFalta("recorridos", recRender)) return;   // ronda 36b: un recorrido abierto muestra los versículos
@@ -6580,6 +6656,8 @@ function recRender(){
   const on = r && recLayer.querySelector(".rc-p.on"), ol = on && on.closest("ol");
   if (ol && ol.scrollWidth > ol.clientWidth) ol.scrollLeft += on.getBoundingClientRect().left - ol.getBoundingClientRect().left - (ol.clientWidth - on.offsetWidth) / 2;
   if (r) recTiraSenal();
+  { const w = r && recLayer.querySelector(".rc-intro-w"), p = w && w.querySelector(".rc-intro");   // ronda 39 (7): «leer más» solo si se corta
+    if (p) w.classList.toggle("entra", !w.classList.contains("abierto") && p.scrollHeight <= p.clientHeight + 1); }
   // D-89: lugar abajo para que, al saltar de paso, la tira de los pasos pueda quedar arriba aunque el paso sea corto (si no, el
   // borde de arriba corta un renglón de la introducción); solo el que falta
   const tour = r && recLayer.querySelector(".rc-tour"), tira = tour && recLayer.querySelector(".rc-pasos");
@@ -6600,16 +6678,19 @@ function recFicha(id){
   lectorAbrir(r.pasos.map(i => nodeById[i]), r.nombre, nodeById[id]); fichaPantalla(false);
 }
 recLayer.addEventListener("click", e => {
+  const m = e.target.closest && e.target.closest(".rc-intro-mas");   // ronda 39 (7)
+  if (m){ recIntroAbierta = !recIntroAbierta; const w = m.parentElement; w.classList.toggle("abierto", recIntroAbierta); w.classList.remove("entra");
+    m.setAttribute("aria-expanded", recIntroAbierta); m.textContent = recIntroAbierta ? "leer menos" : "leer más"; return; }
   const b = e.target.closest && e.target.closest("[data-rec], [data-paso], [data-ficha]");
   if (!b || !recLayer.contains(b)) return;
   if (b.dataset.ficha){ recFicha(b.dataset.ficha); return; }
   const abre = "rec" in b.dataset;
-  if (abre){ recClave = b.dataset.rec || null; recPaso = 0; } else recPaso = +b.dataset.paso || 0;
+  if (abre){ recClave = b.dataset.rec || null; recPaso = 0; recIntroAbierta = false; } else recPaso = +b.dataset.paso || 0;
   recRender();
   if (abre) recLayer.scrollTop = 0;
   // D-89: al saltar, arriba quedan los pasos y la tarjeta (con el nombre del recorrido), sin un renglón cortado por el borde
   else { const s = recLayer.querySelector(".rc-paso"), t = recLayer.querySelector(".rc-pasos");
-    if (s && t && (s.getBoundingClientRect().top < recLayer.getBoundingClientRect().top || b.closest(".rc-nav-pie, .rc-cx"))) t.scrollIntoView({ block: "start" }); }
+    if (s && t && (s.getBoundingClientRect().top < recLayer.getBoundingClientRect().top || b.closest(".rc-nav-pie, .rc-cx") || (esTelefono() && b.classList.contains("rc-p")))) t.scrollIntoView({ block: "start" }); }   // ronda 39 (7): en el teléfono, un paso de la tira lleva a su tarjeta
   const f = recLayer.querySelector(b.dataset.foco || (recClave ? "#rcTit" : ".rc-card")); if (f) f.focus({ preventScroll: !!recClave });
   saveViewState(); urlSync(abre && !!recClave);   // abrir un recorrido es una entrada del historial; pasar de paso, no
 });
@@ -6696,7 +6777,7 @@ function conexBuscaHtml(base){
   // ronda 32 (D-106): el libro va en «Opciones» (conexLibroHtml); acá, el buscador
   conexLibroOpc = `<label class="cx-libro"><span>Libro</span><select id="cxLibro" onchange="conexLibroElegir(this.value)"><option value="">todos los libros</option>${orden.map(b => `<option value="${escHtml(b)}"${b === conexLibro ? " selected" : ""}>${escHtml(b)} (${libros[b] || 0})</option>`).join("")}</select></label>`;
   return `<div class="cx-busca" role="search">
-    <label class="cx-busca-q"><input id="cxBusca" type="search" aria-label="Buscar en las conexiones" placeholder="Buscar en las conexiones: un título, una referencia, una palabra de la nota" value="${escHtml(conexBusca)}" oninput="conexBuscar(this.value)" autocomplete="off"></label>
+    <label class="cx-busca-q"><input id="cxBusca" type="search" aria-label="Buscar en las conexiones" placeholder="Buscar título, cita o palabra…" value="${escHtml(conexBusca)}" oninput="conexBuscar(this.value)" autocomplete="off"></label>
     ${conexLibro || conexBusca.trim() ? `<button type="button" class="hbtn ghost" onclick="conexLibro = ''; conexBusca = ''; renderConex()">quitar</button>` : ""}</div>`;
 }
 let conexLibroOpc = "", conexOpcAbierta = false;   // ronda 32: el libro (en «Opciones») y si «Opciones» quedó abierta
@@ -6743,18 +6824,28 @@ function renderConex(){
     const rotA = cruza ? (r.src.testamento === "AT" ? "Antiguo Testamento" : "Nuevo Testamento") : "Origen";
     const rotB = cruza ? (r.dst.testamento === "AT" ? "Antiguo Testamento" : "Nuevo Testamento") : "Destino";
     const info = conexInfoDe(r.src.id, r.dst.id);
-    html += `<div class="cx-par${off ? " dim" : ""}">
+    const tipoC = info ? (info.provisional ? "provisional" : info.tipo === "YHWH→Cristo" ? "de YHWH a Cristo" : conexTipoEt(info.tipo).toLowerCase()) : "conexión";   // ronda 39 (8)
+    html += `<div class="cx-item${conexPar ? " abierta" : ""}"><button type="button" class="cx-comp${off ? " dim" : ""}" aria-expanded="${!!conexPar}"><span class="cx-c1">${escHtml(fichaTitulo(r.src).t)} <span class="cx-cr">(${escHtml(refCorta(r.src.ref))})</span></span><span class="cx-c2">→ ${escHtml(tipoC)} → ${escHtml(fichaTitulo(r.dst).t)} <span class="cx-cr">(${escHtml(refCorta(r.dst.ref))})</span></span></button><div class="cx-par${off ? " dim" : ""}">
       ${conexLado(r.src, rotA)}
       <div class="cx-puente"${info ? ` title="${escHtml(TIPOS_CONEXION[info.tipo] || "")}"` : ""}><span class="fl">→</span>${conexChip(info)}</div>
       ${conexLado(r.dst, rotB)}
       ${info && (info.nota || conexFuente(info)) ? `<div class="cx-nota-par">${info.nota ? escHtml(info.nota) : ""}${conexFuenteHtml(info)}</div>` : ""}
-    </div>`;
+    </div></div>`;
   });
   if (!rows.length) html += `<div class="cur-empty">${conexLibro || conexBusca.trim() ? `Ninguna conexión${conexLibro ? ` de ${escHtml(conexLibro)}` : ""}${conexBusca.trim() ? ` con «${escHtml(conexBusca.trim())}»` : ""}.` : "No hay conexiones anotadas en este CSV."}</div>`;
   else if (rows.some(r => (r.src.texto && r.src.version === "RVR1960") || (r.dst.texto && r.dst.version === "RVR1960")))
     html += `<div class="rvr-pie-osc" style="margin:22px auto 0;">${AVISO_RVR}</div>`;
   conexLayer.innerHTML = html;
 }
+// ronda 39 (8): la referencia corta («Gn 2:7», «1 Co 15:45»), con la primera abreviatura de cada libro en ABREV_LIBRO
+function refCorta(ref){
+  if (!refCorta.m){ refCorta.m = {}; Object.entries(ABREV_LIBRO).forEach(([k, v]) => { if (!(v in refCorta.m)) refCorta.m[v] = k.replace(/^(\d)(.)/, "$1 $2").replace(/(^|\s)(\p{L})/u, (_, a, c) => a + c.toUpperCase()); }); }
+  const m = /^(.+?)\s+(\d.*)$/.exec(ref || ""); return m && refCorta.m[m[1]] ? `${refCorta.m[m[1]]} ${m[2]}` : (ref || "");
+}
+conexLayer.addEventListener("click", e => {   // ronda 39 (8): en el teléfono, el par abre su tarjeta
+  const c = e.target.closest && e.target.closest(".cx-comp"); if (!c) return;
+  const it = c.parentElement, on = !it.classList.contains("abierta"); it.classList.toggle("abierta", on); c.setAttribute("aria-expanded", on);
+});
 function conexExportMd(){
   const rows = conexRows();
   // ronda 19 (F2): con el tipo y la nota de cada una; ronda 25 (D-50, 3): y de dónde sale
@@ -7865,6 +7956,14 @@ function bienvenidaVer(){
   }
   const il = document.getElementById("indexLayer"); if (il) il.focus({ preventScroll: true });
 }
+// ronda 39 (1): «Empezar por un recorrido»: cierra y lleva a la lista de los recorridos guiados
+function bienvenidaRecorridos(){
+  bienvenidaCerrar();
+  recClave = null;
+  document.getElementById("modeSelect").value = "recorridos";
+  setMode("recorridos"); syncHeader(); applyFilters(); saveViewState(); urlSync(true);
+  const r = document.getElementById("recLayer"); if (r){ r.scrollTop = 0; const t = r.querySelector(".rc-card"); if (t) t.focus({ preventScroll: true }); }
+}
 // «Más sobre este catálogo…»: abre el «Acerca de» y cierra la bienvenida
 function bienvenidaAcerca(){ bienvenidaCerrar(); acercaAbrir(); }
 document.addEventListener("keydown", (e) => {
@@ -8727,8 +8826,9 @@ function selRender(){
     ${perdidas ? `<p class="sel-aviso">${perdidas === 1 ? "Uno de tus títulos ya no está" : `${perdidas} de tus títulos ya no están`} en el catálogo. ${b("perdidas", "Sacarlos de la lista")}</p>` : ""}
     ${F.length ? `<div class="sel-acc" role="group" aria-label="Qué hacer con la lista">
       <span class="sel-acc-g">${b("leer", `Leer estos ${F.length}`, "", "niv-lleno")}${b("repasar", `Repasar estos ${F.length}`, "", "niv-borde")}</span>
-      <span class="sel-acc-g sel-llevar" role="group" aria-label="Llevar"><span class="sel-acc-et" aria-hidden="true">Llevar</span>${b("exportar", "Archivo para otro dispositivo")}${b("copiar", "Copiar")}${b("imprimir", "Imprimir")}${b("md", "Descargar como texto", ' title="Un archivo de texto (.md), que se abre con cualquier editor"')}${b("enlace", "Copiar enlace", grande ? ` disabled title="Con más de ${SEL_ENLACE_MAX} títulos, usá el archivo"` : "")}</span>
-      <span class="sel-acc-g sel-otras">${b("importar", "Traer un archivo", "", "niv-texto")}${b("vaciar", "Vaciar", "", "sel-vaciar")}</span></div>
+      <button type="button" class="sel-b niv-borde sel-menu-b" data-acc="menu" aria-expanded="false" aria-controls="selMenu">Llevar o compartir ▾</button>
+      <span class="sel-acc-g sel-llevar" id="selMenu" role="group" aria-label="Llevar"><span class="sel-acc-et" aria-hidden="true">Llevar</span>${b("exportar", "Archivo para otro dispositivo")}${b("copiar", "Copiar")}${b("imprimir", "Imprimir")}${b("md", "Descargar como texto", ' title="Un archivo de texto (.md), que se abre con cualquier editor"')}${b("enlace", "Copiar enlace", grande ? ` disabled title="Con más de ${SEL_ENLACE_MAX} títulos, usá el archivo"` : "")}${b("importar", "Traer un archivo", "", "sel-menu-solo")}</span>
+      <span class="sel-acc-g sel-otras">${b("importar", "Traer un archivo", "", "niv-texto sel-menu-no")}${b("vaciar", "Vaciar", "", "sel-vaciar")}</span></div>
       <p class="sel-nota-salidas">Lo que copiás, imprimís o descargás lleva el título, la referencia, ${F.length <= SEL_TEXTO_MAX ? "el versículo de la Reina-Valera 1960, " : ""}tu nota y el enlace a la ficha.${F.length > SEL_TEXTO_MAX ? ` ${SEL_SIN_TEXTO}` : ""} ${grande ? `El enlace sirve hasta ${SEL_ENLACE_MAX} títulos; para más, el archivo.` : "El enlace lleva los títulos, no tus notas."}</p>
       <ol class="sel-lista">${F.map((d, i) => selItemHtml(d, i, true, F.length)).join("")}</ol>`
     : `<div class="sel-vacia"><p>Todavía no guardaste ningún título. Se agregan:</p>
@@ -8745,6 +8845,7 @@ function selClick(e){
   const li = b.closest(".sel-i"), id = li ? li.dataset.id : null, acc = b.dataset.acc;
   const F = () => selVivos().map(x => nodeById[x.id]), R = () => (selRecibida || []).map(i => nodeById[i]);
   if (acc === "ficha") openPanel(nodeById[id]);
+  else if (acc === "menu"){ const m = document.getElementById("selMenu"), on = !m.classList.contains("abierto"); m.classList.toggle("abierto", on); b.setAttribute("aria-expanded", on); }   // ronda 39 (6)
   else if (acc === "sube" || acc === "baja"){
     const i = selItems.findIndex(x => x.id === id), j = i + (acc === "sube" ? -1 : 1);
     if (i < 0 || j < 0 || j >= selItems.length) return;
@@ -10150,7 +10251,7 @@ function buildAdvPanel(){
     </div>
     <div class="adv-group">
       <div class="adv-label">Texto libre</div>
-      <div class="adv-mini" style="margin-bottom:6px; color:var(--ink-3);">En el buscador de arriba también valen prefijos: <b>libro:</b> (o book:) <b>categoría:</b> (o cat:) <b>testamento:</b> <b>lectura:</b> (lexico · profecia · tipologia) <b>sujeto:</b> (cristo · yhwh · otro) <b>voz:</b> (dios · jesus-de-si · profeta…). Se combinan; sin valor traen las que no tienen dato.</div>
+      <details class="adv-avz"><summary>Búsqueda avanzada</summary><div class="adv-mini" style="margin-bottom:6px; color:var(--ink-3);">En el buscador de arriba también valen prefijos: <b>libro:</b> (o book:) <b>categoría:</b> (o cat:) <b>testamento:</b> <b>lectura:</b> (lexico · profecia · tipologia) <b>sujeto:</b> (cristo · yhwh · otro) <b>voz:</b> (dios · jesus-de-si · profeta…). Se combinan; sin valor traen las que no tienen dato.</div></details>
       <input id="advText" type="text" placeholder="ej. pastor, ποιμήν, poimen…">
       <div class="adv-fields">${fieldRows}</div>
     </div>
@@ -10163,8 +10264,8 @@ function buildAdvPanel(){
         <div class="adv-label">Testamento</div>
         <select id="advTest" aria-label="Testamento"><option value="">Ambos</option><option value="AT">Antiguo</option><option value="NT">Nuevo</option></select>
       </div>
-      <div>
-        <div class="adv-label">Libro <span class="adv-mini">(Ctrl/⌘ para varios)</span></div>
+      <div class="adv-sub">
+        <div class="adv-label">Libro <span class="adv-mini adv-ctrl">(Ctrl/⌘ para varios)</span></div>
         <select id="advBooks" multiple aria-label="Libro" size="5">${bookOpts}</select>
         <div id="advBookChips">${PERIOD_DEFS.map(per => { const bs = per.books.filter(b => ADV_BOOKS.includes(b)); return bs.length ? `<div class="adv-chip-period" style="border-color:${per.color}">${per.name}</div><div class="adv-chips">${bs.map(b => `<span class="adv-chip" data-book="${b}">${b}</span>`).join("")}</div>` : ""; }).join("")}</div>
       </div>
@@ -10208,6 +10309,7 @@ function buildAdvPanel(){
       </div>
       <div class="adv-mini" style="margin-top:6px; color:var(--ink-3);">Viven en este navegador (localStorage). Exportá antes de cambiar de equipo o limpiar el historial.</div>
     </div>
+    <div class="adv-ver"><button type="button" class="b b-fuerte" id="advVer" onclick="advToggle(false)">Ver los títulos</button></div>
     <div class="adv-foot"><button class="adv-clear" id="advExport" title="Exportar las fichas visibles como archivos de texto (.md), uno por ficha, en un .zip">exportar como texto</button></div>`;
   // las dos casillas históricas del header se mudan acá (mismos ids: el resto del código no cambia)
   const slot = document.getElementById("advFlagsSlot");
@@ -10236,7 +10338,10 @@ function buildAdvPanel(){
   document.getElementById("advBooks").addEventListener("change", (e) => { advFilter.books = new Set([...e.target.selectedOptions].map(o => o.value)); upd(); });
   p.querySelectorAll(".adv-chip[data-book]").forEach(ch => ch.addEventListener("click", () => { const b = ch.dataset.book; advFilter.books.has(b) ? advFilter.books.delete(b) : advFilter.books.add(b); upd(); }));
   // móvil: cada grupo se pliega tocando su título (el primero queda abierto)
-  p.querySelectorAll(".adv-group").forEach((g, i) => { if (i === 0 || g.classList.contains("adv-two")){ g.classList.add("open"); return; } const lb = g.querySelector(".adv-label"); if (lb) lb.addEventListener("click", (e) => { if (e.target.tagName === "A") return; g.classList.toggle("open"); }); });
+  // ronda 39 (3): en el teléfono las categorías también abiertas; «Libro», plegado dentro de su grupo; los prefijos, abiertos en la compu
+  p.querySelectorAll(".adv-sub > .adv-label").forEach(lb => lb.addEventListener("click", () => lb.parentElement.classList.toggle("open")));
+  { const avz = p.querySelector(".adv-avz"); if (avz && !esTelefono()) avz.open = true; }
+  p.querySelectorAll(".adv-group").forEach((g, i) => { if (i === 0 || g.classList.contains("adv-two") || g.querySelector(".adv-cats")){ g.classList.add("open"); return; } const lb = g.querySelector(".adv-label"); if (lb) lb.addEventListener("click", (e) => { if (e.target.tagName === "A") return; g.classList.toggle("open"); }); });
   p.querySelectorAll("input[data-verif]").forEach(cb => cb.addEventListener("change", () => { cb.checked ? advFilter.verif.add(cb.dataset.verif) : advFilter.verif.delete(cb.dataset.verif); upd(); }));
   document.getElementById("advNoTip").addEventListener("change", (e) => { advFilter.noTip = e.target.checked; upd(); });
   document.getElementById("advConexion").addEventListener("change", (e) => { advFilter.conexion = e.target.checked; upd(); });
@@ -10281,6 +10386,7 @@ function advSyncUI(){
   document.getElementById("advMarksInfo").textContent = `${marksCount()} marcado${marksCount() !== 1 ? "s" : ""} · ${marksNotesCount()} con nota`;
   const visible = rawNodes.filter(isVisible).length;
   document.getElementById("advCount").textContent = `${visible} de ${rawNodes.length}`;
+  document.getElementById("advVer").textContent = visible === 1 ? "Ver 1 título" : `Ver ${visible} títulos`;   // ronda 39 (3)
   document.getElementById("advExport").textContent = `exportar ${visible === 1 ? "1 ficha" : visible + " fichas"} como texto`;
   const n = advActiveCount();   // ronda 27: «Filtros (N)», los del panel; la búsqueda va aparte
   const btn = document.getElementById("advToggleBtn");
@@ -10508,6 +10614,24 @@ document.addEventListener("click", e => {   // en la captura: el encabezado de u
   else if (b.dataset.conj === "repasar") reviewAbrir(ids.map(i => nodeById[i]), o);
   else if (b.dataset.conj === "guardar") guardarIds(ids);
 }, true);
+// ronda 39 (9): «Buscar en este libro»: filtra solo las filas de ese libro (con lo que busca el buscador general, en cada título)
+function idxLibroFiltrar(book, q){
+  const nq = q.trim();
+  Object.entries(indexRowByNodeId).forEach(([id, r]) => { if (r.dataset.book === book) r.classList.toggle("idx-fuera-libro", !!nq && !generalMatch(nodeById[id], nq)); });
+}
+document.addEventListener("click", e => {   // en la captura, como las acciones: el encabezado no se pliega
+  const b = e.target.closest && e.target.closest(".idx-libro-b, .idx-libro-q"); if (!b) return;
+  e.stopPropagation();
+  if (!b.classList.contains("idx-libro-b")) return;
+  const h = b.closest(".idx-book-header"), w = h.querySelector(".idx-libro-busca"), q = w.querySelector("input"), on = w.hidden;
+  w.hidden = !on; b.setAttribute("aria-expanded", on);
+  if (on) q.focus(); else { q.value = ""; idxLibroFiltrar(Object.keys(indexBookHeaders).find(k => indexBookHeaders[k] === h), ""); }
+}, true);
+document.addEventListener("input", e => {
+  const q = e.target.closest && e.target.closest(".idx-libro-q"); if (!q) return;
+  const h = q.closest(".idx-book-header"), book = Object.keys(indexBookHeaders).find(k => indexBookHeaders[k] === h);
+  if (book) idxLibroFiltrar(book, q.value);
+});
 // en Por libro: el encabezado de cada libro desplegado, con lo que se ve de él
 function idxAccionesLibros(){
   const vis = {}; canonSorted.forEach(n => { if (isVisible(n)) (vis[n.book] = vis[n.book] || []).push(n.id); });
@@ -10518,7 +10642,14 @@ function idxAccionesLibros(){
     const ids = vis[book] || [], c = header.querySelector(".idx-count");
     if (c && !c.dataset.total) c.dataset.total = c.textContent;
     if (c) c.textContent = isFiltered() ? `${ids.length} de ${c.dataset.total}` : c.dataset.total;   // con filtro: «1 de 22 títulos»
-    s.innerHTML = !idxFolded.has(book) && ids.length ? accionesConjunto(ids, book, false) : "";
+    // ronda 39 (9): «Buscar en Salmos», en el renglón de «Leer estos N» (no suma alto); su campo, una vez por libro, debajo y a pedido
+    let q = header.querySelector(".idx-libro-busca");
+    if (!q){ q = document.createElement("span"); q.className = "idx-libro-busca"; q.hidden = true;
+      q.innerHTML = `<input type="search" class="idx-libro-q" placeholder="Buscar en ${escHtml(book)}…" aria-label="Buscar solo en ${escHtml(book)}">`;
+      header.appendChild(q); }
+    if (idxFolded.has(book) || !ids.length) q.hidden = true;
+    s.innerHTML = !idxFolded.has(book) && ids.length ? accionesConjunto(ids, book, false)
+      + `<button type="button" class="idx-libro-b" aria-expanded="${!q.hidden}">Buscar en ${escHtml(book)}</button>` : "";
   });
 }
 function idxApplyFold(){
@@ -10997,8 +11128,8 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document
 function ceder(){ return (globalThis.scheduler && typeof scheduler.yield === "function") ? scheduler.yield() : new Promise(r => setTimeout(r, 0)); }
 function bvPendiente(){
   const q = window.__bvPedido; window.__bvPedido = null;
-  const g = document.querySelector("#bienvenida .bv-go"); if (g){ g.disabled = false; g.textContent = "Ver los títulos"; }
-  if (q === "acerca") bienvenidaAcerca(); else if (q === "ver") bienvenidaVer();
+  document.querySelectorAll("#bienvenida .bv-go").forEach(g => { g.disabled = false; g.textContent = g.dataset.t; });
+  if (q === "acerca") bienvenidaAcerca(); else if (q === "ver") bienvenidaVer(); else if (q === "rec") bienvenidaRecorridos();
 }
 (async function arrancar(){
 await ceder();
