@@ -538,6 +538,11 @@
   .cx-tipos button.on{ background:var(--gold); color:#141005; border-color:var(--gold-texto); font-weight:600; }
   .ev-link{ cursor:pointer; border-bottom:1px solid var(--papel-linea); }
   .ev-link:hover{ border-bottom-color:var(--ink-2); }
+  /* ronda 38 (1): los bloques de la nota, con su rótulo como encabezado chico; «En otras fichas», al pie */
+  .nota-box .nb-b{ margin:10px 0 0; } .nota-box .nb-b:first-of-type{ margin-top:2px; }
+  .nota-box .nb-b p{ margin:2px 0 0; }
+  .nota-box .nb-rot{ display:block; font-size:var(--t-6); text-transform:uppercase; letter-spacing:.06em; font-weight:600; color:var(--ink-3); }
+  .nota-box .nb-pie{ margin:10px 0 0; padding-top:8px; border-top:1px solid var(--papel-linea); font-size:var(--t-5); color:var(--ink-2); }
   .nota-box{ border-left:3px solid var(--gold); background:rgba(201,162,39,0.10);
     border-radius:0 var(--r-card) var(--r-card) 0; padding:10px 14px;
     margin:0 0 10px; font-size:var(--t-5); line-height:1.55; color:#4a4326; }
@@ -1422,6 +1427,9 @@ body.light{ --accent-blue-ink:#34608B; }
   .ficha-nav .fn-pasos{ display:flex; align-items:center; gap:10px; margin-left:auto; }
   .ficha-nav button[disabled]{ opacity:.35; cursor:default; text-decoration:none; }
   .ficha-nav .ficha-link{ min-height:32px; }
+  /* ronda 38 (5): las flechas, con un contorno suave y del tamaño de la ✕ */
+  #panel .ficha-nav .fn-paso{ border:1px solid var(--papel-linea); border-radius:100px; padding:2px 12px; text-decoration-line:none; font-size:var(--t-4); line-height:1.2; }
+  #panel .ficha-nav .fn-paso:not([disabled]):hover{ border-color:var(--gold-texto); }
   /* ronda 22 */
   .idx-title{ white-space:normal; overflow:visible; text-overflow:clip; }
   .cx-tipo{ white-space:normal; max-width:100%; }
@@ -1430,6 +1438,10 @@ body.light{ --accent-blue-ink:#34608B; }
   #legend.completa #legendToggle{ display:none !important; }
   .catred-ayuda{ display:block; font-size:var(--t-5); color:var(--ink-2); line-height:1.45; font-weight:400; margin-top:2px; }   /* ronda 37 */
   .ficha-origen{ font-size:var(--t-5); color:var(--ink-3); margin:-2px 0 8px; }
+  .ficha-aviso-tb{ font-size:var(--t-5); color:var(--ink-2); margin:-2px 0 8px; }   /* ronda 38 (2) */
+  #panel .gl-verso{ font-size:var(--t-5); color:var(--ink-3); margin:-2px 0 10px; }   /* ronda 38 (3): las palabras del glosario del versículo */
+  #panel .gl-pal{ color:inherit; border-bottom:0; text-decoration:underline; text-decoration-color:var(--enlace-raya); text-decoration-thickness:1px; text-underline-offset:3px; }
+  #panel .gl-pal:hover, #panel .gl-pal:focus-visible{ text-decoration-thickness:2px; }
   /* ronda 21 */
   .ficha-trad{ margin:0 0 16px; font-size:var(--t-5); }
   .ficha-trad > summary{ cursor:pointer; color:var(--ink-3); }
@@ -2749,7 +2761,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v112-d013d8cf.js" data-resto="datos-v112-resto-f481cab0.js"></script>
+<script src="datos-v115-b3c6b370.js" data-resto="datos-v115-resto-d30bf1d8.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -9119,8 +9131,7 @@ function evidBloque(d){
     ? `<button type="button" class="ficha-link evid-ver" onclick="fichaOriginalAbrir()">${k === "lexico" ? "ver la palabra ↓" : "ver el texto original ↓"}</button>` : "";
   return `<section class="evid"><h3 class="evid-h">Cómo se relaciona con Jesús</h3>
     <div class="evid-marca"><span class="evid-ic" style="color:${q.c}" aria-hidden="true">${q.g}</span><span><b>${MARCA_NOMBRE[k]}</b>${suj ? ` · ${escHtml(suj)}` : ""}</span></div>
-    <p class="evid-expl">${marcaExplicacion(d)}</p>
-    ${g || ver ? `<p class="evid-acc">${g ? `<button type="button" class="ficha-link glosa-q" data-glosa="${g}" aria-expanded="false">${MARCA_PREGUNTA[k] || "¿qué significa?"}</button>` : ""}${ver}</p>` : ""}
+    ${g ? "" : `<p class="evid-expl">${marcaExplicacion(d)}</p>`}${g || ver ? `<p class="evid-acc">${g ? `<button type="button" class="ficha-link glosa-q" data-glosa="${g}" aria-expanded="false">${MARCA_PREGUNTA[k] || "¿qué significa?"}</button>` : ""}${ver}</p>` : ""}
     ${vozHtml(d)}
     ${fichaDios(d)}</section>`;
 }
@@ -9203,7 +9214,53 @@ function notasPartes(d){
   if (resto) partes.push({ tipo: cur, texto: resto });
   return partes;
 }
+// ronda 38 (3): el glosario al tocar la palabra: la primera aparición de cada entrada de la ficha (d.glosaM, del migrate), una vez
+let glosaUsadas = new Set();   // las de la ficha que se está armando (fichaRender la vacía)
+function glosaMarcar(html, d, campo){
+  (d.glosaM || []).forEach(([clave, c, w]) => {
+    if (c !== campo || glosaUsadas.has(clave) || !(glosarioDatos()[clave] || {}).texto) return;
+    const e = escHtml(w); let dentro = 0;
+    html = html.replace(/(<\/?([a-z]+)[^>]*>)|([^<]+)/gi, (m, tag, nombre, txt) => {
+      if (tag){ if (/^button$/i.test(nombre)) dentro += tag[1] === "/" ? -1 : 1; return m; }
+      if (dentro || glosaUsadas.has(clave)) return m;
+      const i = txt.indexOf(e); if (i < 0) return m;
+      glosaUsadas.add(clave);
+      return txt.slice(0, i) + `<button type="button" class="glosa-b gl-pal" data-glosa="${clave}" aria-expanded="false" title="Qué quiere decir: el glosario">${e}</button>` + txt.slice(i + e.length);
+    });
+  });
+  return html;
+}
+// en el versículo la palabra no se marca adentro (la entrada se abría en medio de la lectura): sus palabras van en un renglón
+// debajo, «Del versículo: gofer · calafatearás», y la entrada se abre ahí
+function glosaVerso(d){
+  const L = (d.glosaM || []).filter(([clave, c]) => c === "texto" && !glosaUsadas.has(clave) && (glosarioDatos()[clave] || {}).texto);
+  L.sort((x, y) => d.texto.indexOf(x[2]) - d.texto.indexOf(y[2]));   // en el orden del versículo
+  if (!L.length) return "";
+  L.forEach(([clave]) => glosaUsadas.add(clave));
+  return `<p class="gl-verso"><span>Del versículo:</span> ${L.map(([clave, c, w]) => `<button type="button" class="glosa-b gl-pal" data-glosa="${clave}" aria-expanded="false" title="Qué quiere decir: el glosario">${escHtml(w)}</button>`).join(" · ")}</p>`;
+}
+// ronda 38 (1, D-126): los doce rótulos, en el orden de D-126
+const NOTA_ROTULO = { origen_titulo: "El título", manuscritos: "Manuscritos", contexto: "Contexto", sobre_texto: "Sobre el texto", postura: "Postura",
+  objecion: "Objeción", alcance: "Alcance", palabra_original: "Palabra original", citas: "Citas y ecos", paralelos: "Paralelos", remision: "En otras fichas",
+  numeracion: "Numeración" };
+function notaMayuscula(s){ return s.replace(/^([\s«“"(¿¡]*)(\p{Ll})/u, (m, a, c) => a + c.toUpperCase()); }
+function notasBloques(d, enlazar){
+  const tb = textoBaseHtml(d); let tbPuesto = false;
+  const bloques = [], pie = [];
+  d.notasSeg.forEach(([clase, a, b]) => {
+    const t = notaMayuscula(d.notas.slice(a, b).trim()); if (!t) return;
+    // ronda 38 (3): las siglas (NA28, TR…), con su entrada propia del glosario (glosaMarcar), no la general de notaSiglas
+    const html = glosaMarcar(notaEnlaces(escHtml(esTaller() ? t : notaSinCodigos(t)), d, enlazar), d, "notas");
+    if (clase === "remision"){ pie.push(html); return; }
+    const conTb = (clase === "sobre_texto" || clase === "manuscritos") && tb && !tbPuesto; if (conTb) tbPuesto = true;
+    bloques.push(`<div class="nb-b nb-${clase}"><span class="nb-rot">${NOTA_ROTULO[clase] || "Nota"}</span><p>${html}</p>${conTb ? tb : ""}</div>`);
+  });
+  if (tb && !tbPuesto) bloques.push(`<div class="nb-b nb-sobre_texto"><span class="nb-rot">Sobre el texto</span>${tb}</div>`);
+  return bloques.length || pie.length ? `<div class="nota-box nb-bloques">${bloques.join("")}${pie.length ? `<p class="nb-pie">${pie.join(" ")}</p>` : ""}</div>` : "";
+}
 function notasBoxes(d, enlazar){
+  // ronda 38: con los cortes del build, si son de este texto (una copia con otra nota trae los de la original) y sin [REVISAR] ni [TIPOLOGIA]
+  if (d.notasSeg && d.notasLen === (d.notas || "").length && !/\[(REVISAR|TIPOLOGIA)\]/.test(d.notas || "")) return notasBloques(d, enlazar);
   const tb = textoBaseHtml(d); let tbPuesto = false;   // ronda 34: el texto base, en su recuadro «Sobre el texto»
   const cajas = notasPartes(d).map(p => {
     let html = notaEnlaces(escHtml(esTaller() ? p.texto : notaSinCodigos(p.texto)), d, enlazar);   // ronda 14: los «#N», enlaces; ronda 25: sin Strong en el estudio
@@ -9741,13 +9798,14 @@ function openPanel(d){
   if (!restoListo){ fichaEsperando(d, body, tit, dots); return; }   // ronda 36b
   body.innerHTML = `
     ${fichaNav(d)}
-    <h2>${escHtml(tit.t)}</h2>
+    <h2>${(glosaUsadas = new Set(), glosaMarcar(escHtml(tit.t), d, "title"))}</h2>
     ${tit.sub ? `<div class="ficha-sub">${escHtml(tit.sub)}</div>` : ""}
-    ${origenTexto(d.origen) ? `<div class="ficha-origen">${escHtml(origenTexto(d.origen))}</div>` : ""}
+    ${d.avisoTB && d.textoBase ? `<div class="ficha-aviso-tb">${escHtml(d.avisoTB)}</div>` : ""}
+    ${origenTexto(d.origen) && !(d.avisoTB && d.textoBase) ? `<div class="ficha-origen">${escHtml(origenTexto(d.origen))}</div>` : ""}
     <div class="ref">${escHtml(d.ref)} · ${d.testamento === "AT" ? "Antiguo Testamento" : "Nuevo Testamento"}</div>
-    ${d.texto ? `<div class="passage">“${escHtml(d.texto)}”</div>` : versoFuera(d)}
+    ${d.texto ? `<div class="passage">“${escHtml(d.texto)}”</div>${glosaVerso(d)}` : versoFuera(d)}
     ${fichaVersoLinea(d)}
-    ${d.descripcion ? `<p class="ficha-desc">${escHtml(d.descripcion)}</p>` : ""}
+    ${d.descripcion ? `<p class="ficha-desc">${glosaMarcar(escHtml(d.descripcion), d, "descripcion")}</p>` : ""}
     ${fichaGemelos(d)}
     ${fichaRecorridos(d)}
     <div class="ficha-cats">${dots}</div>
