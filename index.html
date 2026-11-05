@@ -3752,63 +3752,76 @@ function matchRefToNode(refString, excludeId){
   return candidates[0].node;
 }
 
+// ronda 40 (D-128): la capa del lienzo nace vacía, en su lugar entre las del SVG; los títulos, las conexiones y las fuerzas se arman
+// la primera vez que se abre una vista que lo usa (lienzoArmar, desde setMode). Al entrar al índice o con un enlace a una ficha, no.
 const canvasLayer = g.append("g").attr("id", "canvasLayer");
-const linkSel = canvasLayer.append("g").selectAll("path")
-  .data(rawLinks).join("path")
-  .attr("class", "typo-link");
-
-const nodeSel = canvasLayer.append("g").selectAll("g")
-  .data(rawNodes).join("g")
-  .attr("class", d => "node" + (d.revisar ? " revisar" : "") + (d.linked ? " linked" : "") +
-    (d.tipologia && !estaConectado(d) ? " tip-unlinked" : ""))
-  .call(d3.drag()
-    .on("start", (e,d) => { if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
-    .on("drag", (e,d) => { d.fx=e.x; d.fy=e.y; })
-    .on("end", (e,d) => { if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
-  .on("click", (e,d) => { e.stopPropagation(); openPanel(d); })
-  .on("mouseenter", (e,d) => {
-    if (layoutMode === "matriz") return;
-    const connectedIds = new Set([d.id]);
-    rawLinks.forEach(l => {
-      const sId = l.source.id || l.source, tId = l.target.id || l.target;
-      if (sId === d.id) connectedIds.add(tId);
-      if (tId === d.id) connectedIds.add(sId);
-    });
-    if (connectedIds.size === 1){ nodeSel.classed("hoverdim", false); linkSel.classed("hoverdim", false); }
-    else {
-      nodeSel.classed("hoverdim", n => !connectedIds.has(n.id));
-      linkSel.classed("hoverdim", l => {
-        const sId = l.source.id || l.source, tId = l.target.id || l.target;
-        return sId !== d.id && tId !== d.id;
-      });
-    }
-  })
-  .on("mouseleave", () => {
-    nodeSel.classed("hoverdim", false);
-    linkSel.classed("hoverdim", false);
-  });
-
-nodeSel.append("circle")
-  .attr("r", d => d.tipologia ? 5.5 : 4)
-  .attr("fill", d => catColors[d.cat] || catColors["Sin categoría"]);
-
-nodeSel.append("text").attr("x", 6).attr("y", 3).text(d => d.title);
-
+let linkSel = d3.selectAll([]), nodeSel = d3.selectAll([]), sim = d3.forceSimulation([]).stop(), lienzoHecho = false;
 function anchorX(d){ return multiCatAnchor(d).x; }
 function anchorY(d){ return multiCatAnchor(d).y; }
 function xStrength(){ return 0.12; }
 function yStrength(){ return 0.12; }
 function collideRadius(){ return 7; }
+function lienzoArmar(){
+  if (lienzoHecho) return;
+  lienzoHecho = true;
+  linkSel = canvasLayer.append("g").selectAll("path")
+    .data(rawLinks).join("path")
+    .attr("class", "typo-link");
 
-const sim = d3.forceSimulation(rawNodes)
-  .force("charge", d3.forceManyBody().strength(-18))
-  .force("collide", d3.forceCollide(collideRadius()))
-  .force("x", d3.forceX(anchorX).strength(xStrength()))
-  .force("y", d3.forceY(anchorY).strength(yStrength()))
-  .force("link", d3.forceLink(rawLinks).id(d => d.id).distance(140).strength(0.05))
-  .alphaDecay(0.02)
-  .on("tick", renderTick)
-  .stop();   // ronda 33: nace frenada (setMode la arranca en los lienzos)
+  nodeSel = canvasLayer.append("g").selectAll("g")
+    .data(rawNodes).join("g")
+    .attr("class", d => "node" + (d.revisar ? " revisar" : "") + (d.linked ? " linked" : "") +
+      (d.tipologia && !estaConectado(d) ? " tip-unlinked" : ""))
+    .call(d3.drag()
+      .on("start", (e,d) => { if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+      .on("drag", (e,d) => { d.fx=e.x; d.fy=e.y; })
+      .on("end", (e,d) => { if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+    .on("click", (e,d) => { e.stopPropagation(); openPanel(d); })
+    .on("mouseenter", (e,d) => {
+      if (layoutMode === "matriz") return;
+      const connectedIds = new Set([d.id]);
+      rawLinks.forEach(l => {
+        const sId = l.source.id || l.source, tId = l.target.id || l.target;
+        if (sId === d.id) connectedIds.add(tId);
+        if (tId === d.id) connectedIds.add(sId);
+      });
+      if (connectedIds.size === 1){ nodeSel.classed("hoverdim", false); linkSel.classed("hoverdim", false); }
+      else {
+        nodeSel.classed("hoverdim", n => !connectedIds.has(n.id));
+        linkSel.classed("hoverdim", l => {
+          const sId = l.source.id || l.source, tId = l.target.id || l.target;
+          return sId !== d.id && tId !== d.id;
+        });
+      }
+    })
+    .on("mouseleave", () => {
+      nodeSel.classed("hoverdim", false);
+      linkSel.classed("hoverdim", false);
+    });
+
+  nodeSel.append("circle")
+    .attr("r", d => d.tipologia ? 5.5 : 4)
+    .attr("fill", d => catColors[d.cat] || catColors["Sin categoría"]);
+
+  nodeSel.append("text").attr("x", 6).attr("y", 3).text(d => d.title);
+
+  sim = d3.forceSimulation(rawNodes)
+    .force("charge", d3.forceManyBody().strength(-18))
+    .force("collide", d3.forceCollide(collideRadius()))
+    .force("x", d3.forceX(anchorX).strength(xStrength()))
+    .force("y", d3.forceY(anchorY).strength(yStrength()))
+    .force("link", d3.forceLink(rawLinks).id(d => d.id).distance(140).strength(0.05))
+    .alphaDecay(0.02)
+    .on("tick", renderTick)
+    .stop();   // ronda 33: nace frenada (setMode la arranca en los lienzos)
+  // lo que pasó antes de armarlo: los filtros, la ficha abierta y las marcas
+  nodeSel.classed("dim", d => !isVisible(d)).classed("marked", n => isMarked(n.id));
+  linkSel.classed("dim", l => { const s = nodeById[l.source.id || l.source], t = nodeById[l.target.id || l.target];
+    return !s.cats.some(c => activeCats.has(c)) || !t.cats.some(c => activeCats.has(c)); });
+  const abierta = document.getElementById("panel").classList.contains("open") && lastPanelId;
+  if (abierta){ nodeSel.classed("selected", n => n.id === abierta);
+    linkSel.classed("highlight", l => (l.source.id || l.source) === abierta || (l.target.id || l.target) === abierta); }
+}
 
 function renderTick(){
   nodeSel.attr("transform", d => `translate(${d.x},${d.y})`);
@@ -8114,6 +8127,7 @@ function setMode(mode){
   if (isCuracion) renderCuracionQueue();
   if (isNube) nubeEnter();
 
+  if (isCanvas) lienzoArmar();   // ronda 40 (D-128): la primera vez, arma el lienzo
   canvasLayer.style("display", isCanvas ? null : "none");
   linkSel.style("display", "none");
   matrixLayer.style("display", isMatrix ? null : "none");
