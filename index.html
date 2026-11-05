@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Jesús en la Biblia — Títulos, nombres y figuras de Cristo</title>
 <meta name="description" content="Cada título con su versículo, su palabra en hebreo o griego y, cuando las tiene, sus conexiones con el resto de la Escritura.">
 <meta property="og:type" content="website">
@@ -374,6 +375,10 @@
   #selLayer .sel-b.sel-vaciar{ border-color:transparent; color:var(--ink-3); text-decoration:underline; text-underline-offset:3px; }
   #selLayer .sel-nota{ width:100%; box-sizing:border-box; background:transparent; color:var(--parchment); border:1px solid var(--line-dim); border-radius:8px; padding:6px 8px; font:inherit; font-size:var(--t-5); resize:vertical; }
   #selLayer .sel-nota:focus{ border-color:var(--gold-texto); outline:none; }
+  #selLayer .sel-priv-b, .ac .ac-borrar{ font:inherit; color:var(--gold-texto); background:none; border:0; padding:0; text-decoration:underline; text-decoration-color:var(--enlace-raya); text-underline-offset:3px; cursor:pointer; }
+  .ac .ac-borrar{ border:1px solid var(--papel-linea); border-radius:100px; padding:6px 14px; text-decoration:none; }
+  .ac .ac-priv-fecha{ font-size:var(--t-5); color:var(--ink-3); }
+  .mark-priv{ margin:4px 0 0; font-size:var(--t-5); color:var(--ink-3); }
   #selLayer .sel-vacia{ font-size:var(--t-5); color:var(--parchment); line-height:1.6; }
   #selLayer .sel-vacia ul{ margin:4px 0 12px; padding-left:20px; color:var(--parchment-dim); }
   #selLayer .sel-recibida{ border:1px solid var(--gold); border-radius:12px; padding:14px 16px; }
@@ -607,7 +612,20 @@
   .cx-opc-c, #grafoEnf .en-opc-c{ position:absolute; z-index:9; top:calc(100% + 6px); right:0; width:max-content; max-width:min(620px, calc(100vw - 32px));
     display:flex; flex-direction:column; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--night); border:1px solid var(--line-dim);
     border-radius:10px; box-shadow:0 10px 30px var(--panel-shadow); }
-  .cx-opc-c .cx-tabs, .cx-opc-c .cx-tipos{ margin:0; flex-wrap:wrap; } .cx-opc-c .cx-meta{ margin:0; font-size:var(--t-5); color:var(--parchment-dim); }
+  .cx-opc-c .cx-tabs, .cx-opc-c .cx-tipos{ margin:0; flex-wrap:wrap; }
+  /* ronda 41 (D-129): los tipos a la vista (Conexiones y el primer paso de Entre Testamentos); en el teléfono, una fila que se desliza */
+  .cx-tipos-vista{ margin:2px 0 14px; } .cx-tipos button:disabled{ opacity:.45; cursor:default; }
+  @media (max-width:719px){ .cx-tipos-vista, .en-tipos{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+    .cx-tipos-vista::-webkit-scrollbar, .en-tipos::-webkit-scrollbar{ display:none; } .cx-tipos-vista button, .en-tipos button{ flex:none; white-space:nowrap; } }
+  #grafoEnf .en-paso{ max-width:1080px; margin:10px auto 6px; padding:0 16px; }
+  #grafoEnf .en-paso p{ margin:0 0 6px; font-size:var(--t-4); line-height:1.45; color:var(--ink-2); }
+  #grafoEnf .en-paso .en-paso-c{ font-size:var(--t-5); color:var(--ink-3); }
+  #grafoEnf .en-tipos{ margin:6px 0 4px; }
+  #grafoEnf .capas-auto{ display:inline-flex; flex-wrap:wrap; align-items:center; gap:6px; padding:3px 6px 3px 10px; border-left:1px solid var(--papel-linea); }
+  #grafoEnf .capas-auto-t{ font-size:var(--t-6); line-height:1; letter-spacing:.4px; text-transform:uppercase; color:var(--ink-3); flex-basis:100%; }
+  /* en la compu, el rótulo va sobre el grupo, sin sumar alto: la fila de arriba sigue en un renglón (test_ronda15 B5) */
+  @media (min-width:720px){ #grafoEnf .en-fijo{ padding-top:16px; } #grafoEnf .capas-auto{ position:relative; padding:0 0 0 10px; }
+    #grafoEnf .capas-auto-t{ position:absolute; left:10px; top:-14px; white-space:nowrap; } } .cx-opc-c .cx-meta{ margin:0; font-size:var(--t-5); color:var(--parchment-dim); }
   .cx-libro{ display:flex; gap:8px; align-items:center; font-size:var(--t-5); }
   .cx-libro select{ font:inherit; font-size:var(--t-5); min-height:34px; border-radius:var(--r-btn); border:1px solid var(--line-dim);
     background:var(--select-bg); color:var(--parchment); padding:4px 10px; }   /* lo que tenía en .cx-busca */
@@ -647,10 +665,11 @@
     border-bottom:1px solid var(--papel-linea); font-size:var(--t-5); color:var(--ink-2); }
   .cx-puente .fl{ color:#7A5E11; font-size:var(--t-3); line-height:1; }
   @media (min-width:861px){
-    .cx-par{ display:grid; grid-template-columns:1fr 104px 1fr; align-items:stretch; }
+    .cx-par{ display:grid; grid-template-columns:1fr 136px 1fr; align-items:stretch; }   /* ronda 41 (3): cabe «cumplimiento» (era 104) */
     .cx-lado + .cx-lado{ border-top:none; border-left:1px solid var(--papel-linea); }
     .cx-puente{ border:none; border-left:1px solid var(--papel-linea); border-right:1px solid var(--papel-linea);
-      flex-direction:column; justify-content:center; text-align:center; gap:4px; }
+      flex-direction:column; justify-content:center; text-align:center; gap:4px; padding:8px 10px; }
+    .cx-puente .cx-tipo{ max-width:100%; white-space:normal; overflow-wrap:anywhere; }
   }
   .rvr-pie{ font-size:var(--t-5); line-height:1.45; color:var(--ink-3);   /* ronda 35: 11 px (era 9,5) */
     margin:-14px 0 16px; max-width:52ch; }
@@ -2575,6 +2594,8 @@ body.light{ --accent-blue-ink:#34608B; }
           <button type="button" role="menuitem" onclick="hdrMenuCerrar(); acercaAbrir()">Acerca de</button>
           <button type="button" role="menuitem" onclick="hdrMenuCerrar(); acercaIr('acNovedadesT')">Novedades</button>
           <button type="button" role="menuitem" onclick="hdrMenuCerrar(); acercaIr('acCitaT')">Cómo citar</button>
+          <button type="button" role="menuitem" onclick="hdrMenuCerrar(); acercaIr('acPrivT')">Privacidad</button>
+          <button type="button" role="menuitem" class="hm-borrar" onclick="hdrMenuCerrar(); borrarGuardado()">Borrar todo lo guardado en este navegador</button>
         </div></span>
       <span class="hdr-extra"><span id="hdrFold" hidden></span><div id="stats" hidden></div></span>
     </div>
@@ -2704,6 +2725,16 @@ body.light{ --accent-blue-ink:#34608B; }
   <p>La clasificación, las descripciones, las notas y las conexiones de este catálogo se publican con licencia <a href="https://creativecommons.org/licenses/by/4.0/deed.es" target="_blank" rel="noopener license">Creative Commons Atribución 4.0 Internacional (CC BY 4.0)</a>: se pueden copiar, adaptar y compartir, citando la fuente. La licencia no alcanza al texto bíblico de la Reina-Valera 1960, que conserva sus propios derechos (ver «De dónde sale»). Los datos de STEP Bible se usan con su propia licencia CC BY 4.0.</p>
   <p>El hebreo y el griego se ven con las letras Noto Serif Hebrew y Noto Serif (Copyright 2022 The Noto Project Authors), recortadas a los signos que usa este sitio, con la licencia <a href="letras/OFL.txt" target="_blank" rel="noopener license">SIL Open Font License 1.1</a>.</p>
 
+  <!-- ronda 41 (D-130): el texto de Curación, paquetes/A7-privacidad.md (208f9d73), tal cual -->
+  <h3 id="acPrivT">Privacidad</h3>
+  <p>Este sitio no tiene cuentas, formularios, publicidad, estadísticas ni cookies, y no carga nada de otros sitios.</p>
+  <p><b>Lo que se guarda en tu navegador.</b> Para recordar lo que hiciste, tu navegador guarda Mi selección, con sus notas, el modo claro u oscuro, la última vista y los filtros, si ya viste la bienvenida y algunas preferencias de la pantalla. Nada de eso sale de tu equipo ni le llega al autor. Se pierde si cambiás de navegador o borrás sus datos. Para llevarlo a otro, usá «Archivo para otro dispositivo». En una computadora compartida, quien la use después puede verlo. Para borrarlo todo, usá «Borrar todo lo guardado en este navegador», que antes te ofrece exportar. El enlace que copiás desde Mi selección lleva los títulos, no tus notas.</p>
+  <p><b>Las visitas.</b> El sitio está alojado en GitHub Pages, que registra la dirección IP de cada visita por razones de seguridad, según su documentación. El autor no tiene acceso a esos registros.</p>
+  <p>Los enlaces a otros sitios, como BibleGateway o STEP Bible, se abren solo si los tocás, y ahí rigen las condiciones de cada uno.</p>
+  <p>Si escribís a <a href="mailto:proyectojesusenlabiblia@gmail.com">proyectojesusenlabiblia@gmail.com</a>, tu mensaje se usa solo para responderte: no se comparte ni se suma a ninguna lista.</p>
+  <p class="ac-priv-fecha">Última actualización: noviembre de 2026.</p>
+  <p><button type="button" class="hbtn ghost ac-borrar" onclick="borrarGuardado()">Borrar todo lo guardado en este navegador</button></p>
+
   <h3>Comentarios y correcciones</h3>
   <p>Si encontrás un error —una referencia que no corresponde, una palabra mal leída, una figura sin su objeción—, escribime:
     <a id="acContacto" href="mailto:proyectojesusenlabiblia@gmail.com">proyectojesusenlabiblia@gmail.com</a>
@@ -2761,7 +2792,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v115-b3c6b370.js" data-resto="datos-v115-resto-d30bf1d8.js"></script>
+<script src="datos-v119-f71cb2e4.js" data-resto="datos-v119-resto-8cc71258.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -3013,6 +3044,9 @@ function conexInfoDe(a, b){
   const enlazados = (A && (A.conectaCon || []).includes(b)) || (B && (B.conectaCon || []).includes(a));
   return enlazados ? { tipo: "", fuente: "", nota: "", provisional: true } : null;
 }
+// ronda 41 (D-129, 1): el orden de los filtros y su nombre con mayúscula
+const CONEX_ORDEN = ["cita", "alusión", "figura", "cumplimiento", "YHWH→Cristo", "continuidad"];
+function conexTipoNombre(t){ const s = t === "provisional" ? "provisional" : conexTipoEt(t); return s.charAt(0).toUpperCase() + s.slice(1); }
 function conexTipoEt(tipo){ return tipo === "YHWH→Cristo" ? "YHWH → Cristo" : tipo; }
 function conexTipoTexto(i){ return i.provisional ? CONEX_PROVISIONAL : conexTipoEt(i.tipo); }
 // ronda 19: el chip es un botón; tocarlo muestra debajo su definición (sin mouse). conDef = false: un chip quieto, para
@@ -5217,7 +5251,7 @@ function redEncuadrar(){
 let reOn = false, reSel = null, reCapas = { anotada: true, palabra: false, comun: false }, reG = null, reActual = null, reTelDe = null;
 const reCache = {};
 const RE_NOMBRES = 50;   // los nombres a la vista al entrar: los más conectados (al acercar, más)
-const RE_PASOS = 300, RE_DECAE = 0.02, RE_RENGLON = 18, RE_PASOS_SUELTOS = 180;   // los pasos y el decaimiento de la ronda 14; el renglón de los nombres
+const RE_PASOS = 300, RE_DECAE = 0.02, RE_RENGLON = 20, RE_PASOS_SUELTOS = 180;   // los pasos y el decaimiento de la ronda 14; el renglón de los nombres
 const RE_FUENTE = "'Source Sans 3',sans-serif";   // ronda 37: los nombres de la red entera, en la sans
 function reRad(d){ return 3.5 + Math.sqrt(d.grado) * 1.8; }   // del tamaño de sus vínculos
 function reClave(){ return (reCapas.anotada ? "a" : "") + (reCapas.palabra ? "p" : "") + (reCapas.comun ? "c" : ""); }
@@ -5661,7 +5695,38 @@ const ENTRE_UMBRAL_REF = 12;
 const entreCuentas = {};
 function entreContar(){ CAPAS.forEach(c => { entreCuentas[c.k] = grafoEdgesAll.filter(e => cruzaTest(e) && enCapa(e, c.k)).length; }); }
 entreContar();
-function entreCapaVis(e, conRef){ const c = CAPAS.find(c => entreCapas[c.k] && (c.k !== "ref" || conRef) && enCapa(e, c.k)); return c ? c.k : null; }
+function entreCapaVis(e, conRef){ const c = CAPAS.find(c => entreCapas[c.k] && (c.k !== "ref" || conRef) && enCapa(e, c.k) && (c.k !== "anotada" || entreTipoPasa(e))); return c ? c.k : null; }
+// ronda 41 (D-129, 4): el primer paso. De entrada, solo las citas (entreTipos; null = todos los tipos); los otros se suman y «Todos»
+// está a la vista. La línea de arriba dice lo que muestra el dibujo con cifras de los datos: las anotadas entre Testamentos, los dos
+// libros del Antiguo que más dan y los cuatro del Nuevo que más reciben.
+const ENTRE_TIPOS = ["cita", "alusión", "figura", "cumplimiento", "YHWH→Cristo"];
+const ENTRE_TIPO_NOMBRE = { "cita": "Citas", "alusión": "Alusiones", "figura": "Figuras", "cumplimiento": "Cumplimientos", "YHWH→Cristo": "YHWH → Cristo" };
+let entreTipos = ["cita"];
+function entreTipoDe(e){ const i = conexInfoDe(e.a, e.b) || conexInfoDe(e.b, e.a); return i && !i.provisional ? i.tipo : ""; }
+function entreTipoPasa(e){ return !entreTipos || entreTipos.includes(entreTipoDe(e)); }
+function entreCifras(){
+  if (entreCifras.c) return entreCifras.c;
+  const A = grafoEdgesAll.filter(e => e.rel.curada && cruzaTest(e)), at = {}, nt = {}, tipos = {};
+  A.forEach(e => { [e.a, e.b].forEach(id => { const n = nodeById[id], o = n.testamento === "AT" ? at : nt; o[n.book] = (o[n.book] || 0) + 1; });
+    const t = entreTipoDe(e); tipos[t] = (tipos[t] || 0) + 1; });
+  const top = (o, k) => Object.entries(o).sort((x, y) => y[1] - x[1] || CANON_ALL.indexOf(x[0]) - CANON_ALL.indexOf(y[0])).slice(0, k);
+  const da = top(at, 2), re = top(nt, 4);   // D-132: los del Antiguo, en el orden de la Biblia; los del Nuevo, por cuánto reciben
+  return entreCifras.c = { total: A.length, tipos, da: da.map(x => x[0]).sort((x, y) => CANON_ALL.indexOf(x) - CANON_ALL.indexOf(y)), daN: da.reduce((s, x) => s + x[1], 0), re: re.map(x => x[0]), reN: re.reduce((s, x) => s + x[1], 0) };
+}
+// «Salmos e Isaías»: la «y» pasa a «e» delante del sonido i
+function entreY(L){ if (L.length < 2) return L.join(""); const u = L[L.length - 1]; return L.slice(0, -1).join(", ") + (/^h?i(?![aeouáéó])/i.test(u) ? " e " : " y ") + u; }
+const ENTRE_CUANTOS = ["", "Un", "Dos", "Tres", "Cuatro", "Cinco"];
+function entrePasoHtml(){
+  if (!entreCapas.anotada) return "";
+  const C = entreCifras(); if (!C.total) return "";
+  const b = (k, txt, on) => `<button type="button" class="${on ? "on" : ""}" data-tipo="${k}" aria-pressed="${on}">${escHtml(txt)}</button>`;
+  // D-132 (Ezequiel eligió la variante C): la cantidad de libros, sus nombres y las cifras, de los datos; en «Por libros», sin el
+  // renglón de las citas, para que el dibujo entre entero en la pantalla (test_ronda22 F1)
+  const n = C.da.length, uno = n === 1;
+  return `<div class="en-paso"><p class="en-paso-l">${ENTRE_CUANTOS[n] || n} ${uno ? "libro" : "libros"}, ${escHtml(entreY(C.da))}, ${uno ? "da" : "dan"} ${C.daN} de las ${C.total} conexiones anotadas entre Testamentos. Del otro lado, ${escHtml(entreY(C.re))} ${C.re.length === 1 ? "recibe" : "reciben"} ${C.reN}.</p>
+    ${entreNivel === "libros" ? "" : `<p class="en-paso-c">Empezá por las citas, donde el Nuevo Testamento reproduce el texto del Antiguo; después sumá las alusiones, las figuras y los demás tipos.</p>`}
+    <div class="cx-tipos en-tipos" role="group" aria-label="Qué tipos de conexión se ven">${b("todos", `Todos (${C.total})`, !entreTipos)}${ENTRE_TIPOS.filter(t => C.tipos[t]).map(t => b(t, `${ENTRE_TIPO_NOMBRE[t]} (${C.tipos[t]})`, !!entreTipos && entreTipos.includes(t))).join("")}</div></div>`;   // «Todos», primero: a la vista también en el teléfono
+}
 function entreEnFiltro(e){
   const f = entreFiltro; if (!f) return true;
   const A = nodeById[e.a].book, B = nodeById[e.b].book;
@@ -5687,7 +5752,7 @@ function entreContBoton(){
 }
 function entreAbrir(opts){
   opts = opts || {};
-  if (opts.soloAnotadas) entreCapas = { anotada: true, palabra: false, comun: false, ref: false };
+  if (opts.soloAnotadas){ entreCapas = { anotada: true, palabra: false, comun: false, ref: false }; entreTipos = null; }   // ronda 41: desde Conexiones, todos los tipos
   if (opts.nivel) entreNivel = opts.nivel;
   entreFiltro = opts.filtro || null;
   if (document.getElementById("panel").classList.contains("open")) closePanel();
@@ -5697,6 +5762,7 @@ function entreAbrir(opts){
 }
 function entreGoTo(id){
   grafoEnfSel = id && nodeById[id] ? id : null;
+  if (grafoEnfSel) entreTipos = null;   // ronda 41: desde una ficha, todos sus vínculos
   if (grafoEnfSel) entreDesde = nodeById[grafoEnfSel].testamento;   // en el teléfono, la lista desde su Testamento
   entreAbrir({ nivel: "titulos" });
   if (grafoEnfSel) entreIrA(grafoEnfSel);
@@ -5714,7 +5780,9 @@ function entreCabHtml(extra){
   const seg = (v, t) => `<button data-n="${v}" class="${entreNivel === v ? "on" : ""}" aria-pressed="${entreNivel === v}">${t}</button>`;
   const ayudaRef = entreNivel === "titulos" && !entreFiltro ? " (se ven por libros)" : "";
   const tel = innerWidth < 720, porTit = entreNivel === "titulos";
-  const capas = `<div class="capas" role="group" aria-label="Capas">${CAPAS.map(c => `<button type="button" class="capa-b${entreCapas[c.k] ? " on" : ""}" data-capa="${c.k}" aria-pressed="${!!entreCapas[c.k]}" title="${escHtml(c.nombre + ": " + c.ayuda + (c.k === "ref" ? ayudaRef : ""))}">${capaMuestra(c.k)}<span>${c.nombre}</span> <b>${entreCuentas[c.k]}</b></button>`).join("")}</div>`;
+  // ronda 41 (D-129, 2): las tres automáticas, juntas bajo su rótulo y aparte de las anotadas
+  const capaB = c => `<button type="button" class="capa-b${entreCapas[c.k] ? " on" : ""}" data-capa="${c.k}" aria-pressed="${!!entreCapas[c.k]}" title="${escHtml(c.nombre + ": " + c.ayuda + (c.k === "ref" ? ayudaRef : ""))}">${capaMuestra(c.k)}<span>${c.nombre}</span> <b>${entreCuentas[c.k]}</b></button>`;
+  const capas = `<div class="capas" role="group" aria-label="Capas">${capaB(CAPA.anotada)}<span class="capas-auto" role="group" aria-label="Coincidencias automáticas, sin explicar"><span class="capas-auto-t">Coincidencias automáticas, sin explicar</span>${CAPAS.filter(c => c.k !== "anotada").map(capaB).join("")}</span></div>`;
   const nOp = (grafoEnfOrden !== "par" ? 1 : 0) + (entreContinuidad ? 1 : 0) + (tel ? CAPAS.filter(c => !!entreCapas[c.k] !== (c.k === "anotada")).length : 0);
   return `<div class="en-fijo"><div class="en-cab1"><span class="ge-seg en-nivel" role="group" aria-label="Cómo verlo">${seg("titulos", "Por títulos")}${seg("libros", "Por libros")}</span>
       ${tel ? "" : capas}
@@ -5726,6 +5794,7 @@ function entreCabHtml(extra){
       ${capasAyudaHtml()}
       </div></details></div></div>
     ${entreFiltro ? `<div class="en-filtro"><span class="fc">${escHtml(entreFiltro.nombre)}<button class="fc-x en-quitar" title="Ver todos los libros" aria-label="Quitar el filtro ${escHtml(entreFiltro.nombre)}">✕</button></span><button type="button" class="en-a-libros">← Por libros</button></div>` : ""}
+    ${entrePasoHtml()}
     ${entreAviso ? `<p class="en-aviso" role="status">${entreAviso}</p>` : ""}`;
 }
 function entreCabEventos(){
@@ -5742,6 +5811,12 @@ function entreCabEventos(){
   const q = grafoEnf.querySelector(".en-quitar"); if (q) q.addEventListener("click", () => { entreFiltro = null; entreRender(); });
   const l = grafoEnf.querySelector(".en-a-libros"); if (l) l.addEventListener("click", () => { entreFiltro = null; entreNivel = "libros"; entreRender(); });
   grafoEnf.querySelectorAll(".en-cont").forEach(b => b.addEventListener("click", () => { entreContinuidad = !entreContinuidad; entreRender(); saveViewState(); }));
+  grafoEnf.querySelectorAll(".en-tipos button").forEach(b => b.addEventListener("click", () => {   // ronda 41: sumar o sacar un tipo; «Todos»
+    const k = b.dataset.tipo, C = entreCifras(), hay = ENTRE_TIPOS.filter(t => C.tipos[t]);
+    if (k === "todos") entreTipos = null;
+    else { const S = new Set(entreTipos || hay); if (entreTipos && S.has(k)) S.delete(k); else if (!entreTipos) { S.clear(); S.add(k); } else S.add(k);
+      entreTipos = !S.size ? ["cita"] : hay.every(t => S.has(t)) ? null : hay.filter(t => S.has(t)); }
+    entreRender(); }));
   // ronda 24 (E25): la fila de los controles queda fija al bajar; la cabecera de las columnas va debajo de ella, y lo que se
   // lleva a la vista (un libro, un título) queda debajo de las dos (E23)
   requestAnimationFrame(() => { const f = grafoEnf.querySelector(".en-fijo"), c = grafoEnf.querySelector(".ge-cab");
@@ -6819,24 +6894,26 @@ function renderConex(){
   const clases = Object.keys(TIPOS_CONEXION).concat("provisional").filter(t => rowsTab.some(r => tipoDe(r) === t));
   if (conexClase !== "todos" && !clases.includes(conexClase)) conexClase = "todos";
   const rows = conexClase === "todos" ? rowsTab : rowsTab.filter(r => tipoDe(r) === conexClase);
-  const filtroTipos = clases.length ? `<div class="cx-tipos" role="group" aria-label="Tipo de conexión"><span>Tipo:</span>${[["todos", `todos (${rowsTab.length})`]].concat(clases.map(t => [t, `${conexTipoEt(t)} (${rowsTab.filter(r => tipoDe(r) === t).length})`]))
-    .map(([k, txt]) => `<button type="button" class="${conexClase === k ? "on" : ""}" aria-pressed="${conexClase === k}" title="${escHtml(TIPOS_CONEXION[k] || (k === "provisional" ? CONEX_PROVISIONAL : ""))}" onclick='conexClaseElegir(${JSON.stringify(k)})'>${escHtml(txt)}</button>`).join("")}</div>` : "";
+  // ronda 41 (D-129, 1): a la vista debajo del buscador, en el orden del pedido y con su número (sin ninguna, apagado)
+  const filtroTipos = `<div class="cx-tipos cx-tipos-vista" role="group" aria-label="Tipo de conexión">${[["todos", `Todas (${rowsTab.length})`]].concat(CONEX_ORDEN.concat(clases.includes("provisional") ? ["provisional"] : []).map(t => { const n = rowsTab.filter(r => tipoDe(r) === t).length; return [t, `${conexTipoNombre(t)} (${n})`, n]; }))
+    .map(([k, txt, n]) => `<button type="button" class="${conexClase === k ? "on" : ""}" data-tipo="${escHtml(k)}" aria-pressed="${conexClase === k}"${n === 0 && conexClase !== k ? " disabled" : ""} title="${escHtml(TIPOS_CONEXION[k] || (k === "provisional" ? CONEX_PROVISIONAL : ""))}" onclick='conexClaseElegir(${JSON.stringify(k)})'>${escHtml(txt)}</button>`).join("")}</div>`;
   const tabs = `<div class="cx-tabs" role="tablist">${[["todas", `Todas (${todas.length})`]].concat(tipos.map(t => [t, `${t} (${todas.filter(r => conexTipoDe(r) === t).length})`]))
     .map(([k, txt]) => `<button type="button" role="tab" class="cx-tab${conexTipo === k ? " on" : ""}" aria-selected="${conexTipo === k}" onclick='conexElegir(${JSON.stringify(k)})'>${txt}</button>`).join("")}</div>`;
   const visRows = rows.filter(r => isVisible(r.src) || isVisible(r.dst));
   const srcs = new Set(rows.map(r => r.src.id)), dsts = new Set(rows.map(r => r.dst.id));
   // ronda 32 (D-106): una fila —Lista o «Por libros, en Entre Testamentos», el buscador, la cuenta y «Opciones»: el libro, las pestañas,
   // el tipo, las cifras y «exportar como texto»—; el título, solo en la línea de la vista; «ver Entre Testamentos», una vez
-  const nOp = (conexLibro ? 1 : 0) + (conexTipo !== "todas" ? 1 : 0) + (conexClase !== "todos" ? 1 : 0);
+  const nOp = (conexLibro ? 1 : 0) + (conexTipo !== "todas" ? 1 : 0);   // ronda 41: el tipo, ya a la vista
   const cifras = `${srcs.size} orígenes · ${dsts.size} destinos · ${new Set([...srcs, ...dsts]).size} títulos enlazados`;
   const busca = conexBuscaHtml(base);
   let html = `<div class="cx-fila">${conexModosHtml()}${busca}
     <span class="cx-cuenta" title="${cifras}">${rows.length}${conexLibro || conexBusca.trim() ? ` de ${base.length}` : ""} ${rows.length === 1 ? "conexión" : "conexiones"}</span>
     <details class="cx-opc"${conexOpcAbierta ? " open" : ""} ontoggle="conexOpcAbierta = this.open"><summary>Opciones${nOp ? `<span class="cx-opc-n"> · ${nOp}</span>` : ""}</summary><div class="cx-opc-c">
-      ${conexLibroOpc}${tabs}${filtroTipos}
+      ${conexLibroOpc}${tabs}
       <p class="cx-meta">${cifras}</p>
       <button class="hbtn ghost" onclick="conexExportMd()" title="Un archivo de texto (.md), que se abre con cualquier editor">exportar como texto</button>
     </div></details></div>
+  ${filtroTipos}
   ${conexPar ? `<div class="cx-par-filtro"><span class="fc">${escHtml(conexPar.nombre)}<button class="fc-x" title="Quitar este filtro" aria-label="Quitar el filtro ${escHtml(conexPar.nombre)}" onclick="conexQuitarPar()">✕</button></span>${conexPar.par ? "" : `<button type="button" class="cx-a-libros" onclick="entreAbrir({ nivel: 'libros', soloAnotadas: true })">← Por libros</button>`}</div>` : ""}
   ${conexClase !== "todos" && (TIPOS_CONEXION[conexClase] || conexClase === "provisional") ? `<p class="cx-tipo-def cx-tipo-def-filtro" role="note"><b>${escHtml(conexClase === "provisional" ? "provisional" : conexTipoEt(conexClase))}:</b> ${escHtml(TIPOS_CONEXION[conexClase] || CONEX_PROVISIONAL_DEF)}</p>` : ""}
   ${isFiltered() ? `<div class="cx-filtro-cuenta"><b>${visRows.length} de ${rows.length}</b> coinciden con el filtro${visRows.length < rows.length ? ` · <button type="button" class="cx-mostrar" onclick="conexMostrarTodas = !conexMostrarTodas; renderConex()">${conexMostrarTodas ? "ocultar las demás" : `mostrar las demás (${rows.length - visRows.length})`}</button>` : ""}</div>` : ""}
@@ -8817,6 +8894,7 @@ function selAviso(texto, conVer){
   t.innerHTML = `<span>${escHtml(texto)}</span>${conVer && layoutMode !== "seleccion" ? ` <button type="button" onclick="selIr()">Ver Mi selección</button>` : ""}`;
   t.classList.add("on"); clearTimeout(selAvisoTimer); selAvisoTimer = setTimeout(() => t.classList.remove("on"), 4500);
 }
+function selAvisoNotas(){ if (selVivos().some(x => (x.nota || "").trim())) selAviso(PRIV_EXPORTA); }   // ronda 41 (D-130)
 function selIr(){ closePanel(); document.getElementById("modeSelect").value = "seleccion"; setMode("seleccion"); syncHeader(); applyFilters(); urlSync(); }
 function selNotaDe(id){ const x = selItems.find(x => x.id === String(id)); return x ? x.nota.trim() : ""; }
 function selFichaUrl(id){ return SITIO_URL + "t/" + id + ".html"; }
@@ -8848,6 +8926,7 @@ function selRender(){
   L.innerHTML = `${recibida}<section class="sel-propia" aria-label="Mi selección">
     <h2 class="sel-t sel-sin-t"><span class="sel-oculto">Mi selección: </span><span class="sel-n">${selPlural(F.length)}</span></h2>
     <p class="sel-d">Se guarda en este navegador; para tenerla en otro, usá «Archivo para otro dispositivo».</p>
+    ${F.length ? `<p class="sel-d sel-priv">${escHtml(PRIV_NOTAS)} <button type="button" class="sel-priv-b" onclick="acercaIr('acPrivT')">Privacidad</button></p>` : ""}
     ${selGuardable ? "" : `<p class="sel-aviso" role="alert">Este navegador no deja guardar: la lista dura mientras la página esté abierta. Para no perderla, descargá el archivo.</p>`}
     ${perdidas ? `<p class="sel-aviso">${perdidas === 1 ? "Uno de tus títulos ya no está" : `${perdidas} de tus títulos ya no están`} en el catálogo. ${b("perdidas", "Sacarlos de la lista")}</p>` : ""}
     ${F.length ? `<div class="sel-acc" role="group" aria-label="Qué hacer con la lista">
@@ -8884,8 +8963,8 @@ function selClick(e){
   else if (acc === "repasar") reviewAbrir(F(), "Mi selección");
   else if (acc === "copiar") selCopiar();
   else if (acc === "imprimir") selImprimir();
-  else if (acc === "md") expDownload(new Blob([selMd()], { type: "text/markdown;charset=utf-8" }), `mi-seleccion-${new Date().toISOString().slice(0, 10)}.md`);
-  else if (acc === "exportar") selExportar();
+  else if (acc === "md"){ expDownload(new Blob([selMd()], { type: "text/markdown;charset=utf-8" }), `mi-seleccion-${new Date().toISOString().slice(0, 10)}.md`); selAvisoNotas(); }
+  else if (acc === "exportar"){ selExportar(); selAvisoNotas(); }
   else if (acc === "importar") document.getElementById("selArchivo").click();
   else if (acc === "enlace") selEnlace();
   else if (acc === "vaciar"){
@@ -10509,6 +10588,17 @@ document.addEventListener("click", e => { const m = document.getElementById("hdr
   if (m && !m.hidden && !e.target.closest(".hdr-menu-w")) hdrMenuCerrar(); });
 document.addEventListener("keydown", e => { const m = document.getElementById("hdrMenu");
   if (e.key === "Escape" && m && !m.hidden){ hdrMenuCerrar(); document.getElementById("hdrMore").focus(); e.stopImmediatePropagation(); } }, true);
+// ronda 41 (D-130): borrar lo guardado en este navegador: solo las claves del catálogo (jeb-), con el archivo de Mi selección antes
+// si hay algo en ella; después, el sitio como recién abierto (sin el # de la vista)
+const PRIV_NOTAS = 'Tus notas quedan solo en este navegador.', PRIV_EXPORTA = 'Este archivo incluye tus notas: revisalo antes de compartirlo.';
+function borrarGuardado(){
+  let claves = []; try { claves = Object.keys(localStorage).filter(k => k.startsWith("jeb-")); } catch (e) {}
+  if (!confirm("¿Borrar todo lo guardado en este navegador? Se borran Mi selección con sus notas, el modo claro u oscuro, la última vista, los filtros y las demás preferencias de este sitio. No se puede deshacer.")) return;
+  const exporta = selVivos().length && confirm(`Antes de borrar, ¿descargás el archivo de Mi selección (${selPlural(selVivos().length)}), para traerla después?`);
+  if (exporta) selExportar();
+  // con el archivo, un momento antes de recargar (si no, el navegador puede cortar la descarga); se borra justo antes de recargar
+  setTimeout(() => { claves.forEach(k => { try { localStorage.removeItem(k); } catch (e) {} }); location.replace(location.pathname); }, exporta ? 800 : 0);
+}
 function acercaIr(id){
   acercaAbrir();
   setTimeout(() => { const el = document.getElementById(id); if (el) el.scrollIntoView({ block: "start", behavior: movSuave() }); }, 60);
@@ -10616,6 +10706,7 @@ function renderMarkSection(d){
     <label>Marca y nota personal <span id="markSaved-${d.id}" class="mark-saved"></span></label>
     <button id="markBtn-${d.id}" class="mark-btn${isMarked(d.id) ? " on" : ""}" onclick='markToggle(${JSON.stringify(d.id)})'>${isMarked(d.id) ? "★ marcado" : "☆ marcar"}</button>
     <textarea class="mark-note" placeholder="Tu nota sobre este título (se guarda sola en este navegador)…" oninput='markSetNote(${JSON.stringify(d.id)}, this.value)'>${markNote(d.id).replace(/&/g, "&amp;").replace(/</g, "&lt;")}</textarea>
+    <p class="mark-priv">${escHtml(PRIV_NOTAS)}</p>
   </div>`;
 }
 // ---- exportar / importar
