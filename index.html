@@ -613,6 +613,8 @@
     display:flex; flex-direction:column; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--night); border:1px solid var(--line-dim);
     border-radius:10px; box-shadow:0 10px 30px var(--panel-shadow); }
   .cx-opc-c .cx-tabs, .cx-opc-c .cx-tipos{ margin:0; flex-wrap:wrap; }
+  /* ronda 42 (5): los títulos que coinciden, primero; una raya los separa de los demás */
+  #indexLayer .idx-primero{ padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--papel-linea); }
   /* ronda 41 (D-129): los tipos a la vista (Conexiones y el primer paso de Entre Testamentos); en el teléfono, una fila que se desliza */
   .cx-tipos-vista{ margin:2px 0 14px; } .cx-tipos button:disabled{ opacity:.45; cursor:default; }
   @media (max-width:719px){ .cx-tipos-vista, .en-tipos{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
@@ -2792,7 +2794,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v119-f71cb2e4.js" data-resto="datos-v119-resto-8cc71258.js"></script>
+<script src="datos-v121-52c241f8.js" data-resto="datos-v121-resto-3ffa5391.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -3375,8 +3377,8 @@ function buscaTramos(s, qs){
 }
 // lo buscado que es texto: no un prefijo (libro:, cat:…), un código Strong ni una referencia
 function buscaPalabras(){
-  return currentFilterState.tokens.map(t => t.phrase !== undefined ? t.phrase
-    : t.word && !t.word.includes(":") && !/^[hg]0*\d+[a-z]?$/.test(t.word) ? t.word : null).filter(Boolean);
+  return currentFilterState.tokens.flatMap(t => t.alts ? t.alts : t.phrase !== undefined ? [t.phrase]   // ronda 42: con las equivalencias
+    : t.word && !t.word.includes(":") && !/^[hg]0*\d+[a-z]?$/.test(t.word) ? [t.word] : []).filter(Boolean);
 }
 function marcarTexto(s, tramos){
   const T = []; tramos.forEach(t => { const u = T[T.length - 1]; if (u && t[0] <= u[1]) u[1] = Math.max(u[1], t[1]); else T.push(t.slice()); });
@@ -3408,7 +3410,8 @@ function idxFrase(d){
 function idxDonde(d){
   const out = [];
   currentFilterState.tokens.forEach(t => {
-    const w = t.phrase !== undefined ? buscaDonde(d, t.phrase)
+    const w = t.alts ? (t.alts.some(a => buscaTit(d).includes(a)) ? null : buscaDonde(d, t.alts.find(a => d.__busca.includes(a)) || t.alts[0]))   // ronda 42: donde coincide la que coincide
+      : t.phrase !== undefined ? buscaDonde(d, t.phrase)
       : t.word && /^[hg]0*\d+[a-z]?$/.test(t.word) ? "por el código Strong"
       : t.word && !t.word.includes(":") ? buscaDonde(d, t.word) : null;
     if (w && !out.includes(w)) out.push(w);
@@ -3419,9 +3422,28 @@ function idxDonde(d){
 // llama desde applyFilters() y al entrar a la vista índice. Si un libro
 // se queda sin ninguna fila visible, se oculta también su encabezado
 // (si no, quedaría flotando sin nada debajo).
+// ronda 42 (5): con texto buscado, las filas cuyo título coincide van primero, en un bloque arriba (las mismas filas: vuelven a su
+// lugar en la búsqueda siguiente); las demás, por libro como siempre
+function idxEnTitulo(d){
+  const T = currentFilterState.tokens.filter(t => t.alts || t.phrase !== undefined); if (!T.length) return false;
+  const tit = buscaTit(d);
+  return T.every(t => t.alts ? t.alts.some(a => tit.includes(a)) : tit.includes(buscaNorm(t.phrase)));
+}
+function idxPrimeroDevolver(){
+  const B = document.getElementById("idxPrimero"); if (!B) return;
+  [...B.querySelectorAll(".idx-row")].forEach(r => { if (r.__lugar){ r.__lugar.replaceWith(r); r.__lugar = null; } });
+  B.hidden = true;
+}
+function idxPrimeroPoner(filas){
+  let B = document.getElementById("idxPrimero");
+  if (!B){ B = document.createElement("div"); B.id = "idxPrimero"; B.className = "idx-primero"; const h = document.querySelector("#indexLayer .idx-book-header"); h.parentNode.insertBefore(B, h); }
+  filas.forEach(r => { r.__lugar = document.createComment(""); r.replaceWith(r.__lugar); B.appendChild(r); });
+  B.hidden = !filas.length;
+}
 function renderIndexFilter(){
+  idxPrimeroDevolver();   // ronda 42
   let anyVisible = false;
-  const bookHasVisible = {};
+  const bookHasVisible = {}, primero = [], hayTexto = currentFilterState.tokens.some(t => t.alts || t.phrase !== undefined);
   const qs = buscaPalabras();   // ronda 25: lo buscado se marca en el título y en la frase
   rawNodes.forEach(n => {
     const row = indexRowByNodeId[n.id];
@@ -3442,8 +3464,12 @@ function renderIndexFilter(){
       if (!frase){ frase = document.createElement("div"); frase.className = "idx-frase"; row.appendChild(frase); }
       frase.innerHTML = fr.html;
     } else if (frase) frase.remove();
-    if (visible) { anyVisible = true; bookHasVisible[n.book] = true; }
+    if (visible){ anyVisible = true; if (hayTexto && idxEnTitulo(n)) primero.push([row, n.book, n.canonIdx]); else bookHasVisible[n.book] = true; }
   });
+  // ronda 42: el bloque de arriba, si hay de los dos grupos (si todos coinciden en el título, o ninguno, el orden es el de siempre)
+  const visibles = rawNodes.filter(n => indexRowByNodeId[n.id] && isVisible(n)).length;
+  if (primero.length && primero.length < visibles) idxPrimeroPoner(primero.sort((x, y) => x[2] - y[2]).map(x => x[0]));   // en el orden de la Biblia
+  else primero.forEach(x => { bookHasVisible[x[1]] = true; });
   const filtrado = isFiltered();
   Object.entries(indexBookHeaders).forEach(([book, header]) => {
     const vacio = idxLibrosVacios.has(book);
@@ -8439,7 +8465,8 @@ function libroDe(s){
 }
 function refQuery(raw){
   // ronda 29 (D-88): también rangos: «Juan 1:1-18», «Salmos 22-24», «Juan 1:14-2:3»
-  const m = /^\s*(\d?\s*[a-záéíóúñü]+)\.?\s*(\d+)(?:\s*[:.,]\s*(\d+))?(?:\s*[-–]\s*(\d+)(?:\s*[:.,]\s*(\d+))?)?\s*$/i.exec(raw);
+  // ronda 42 (4): también con espacios («juan 1 1», «filipenses 2 6-11»)
+  const m = /^\s*(\d?\s*[a-záéíóúñü]+)\.?\s*(\d+)(?:(?:\s*[:.,]\s*|\s+)(\d+))?(?:\s*[-–]\s*(\d+)(?:\s*[:.,]\s*(\d+))?)?\s*$/i.exec(raw);
   const libro = m && libroDe(m[1]);
   if (!libro) return null;
   const q = { libro, cap: +m[2], ver: m[3] ? +m[3] : null };
@@ -8468,7 +8495,118 @@ function refCoincide(d, q){
   const a = q.cap * 1000 + q.ver;
   return a >= t.c1 * 1000 + t.v1 && a <= t.c2 * 1000 + t.v2;
 }
+// ════ ronda 42 (D-124): el buscador — la tabla de equivalencias, las palabras chicas, un error de tipeo y las referencias ════
+const BUSCA_CHICAS = new Set(["de", "del", "la", "las", "el", "los", "lo", "en", "a", "al", "y", "e", "o", "u", "que", "por", "sus", "su",
+  "un", "una", "unos", "unas", "con", "para", "se", "mi", "me"]);
+const BUSCA_SIN_TIPEO = new Set(["siloe"]);   // Siloé (Jn 9:7) no es Siloh (#10) ni «silo»: la coordinación, fila 73 de la prueba
+const BUSCA_MARCA = { anuncio: "profecia", figura: "tipologia" };
+let buscaEq = null, buscaVoc = null;
+function buscaLimpia(s){ return buscaNorm(s).replace(/[¿?¡!,;«»"“”()\[\]]/g, " ").replace(/\s+/g, " ").trim(); }
+function buscaTabla(){
+  if (buscaEq) return buscaEq;
+  buscaEq = { frases: {}, palabras: new Set(), max: 1 };
+  ((typeof matrixData !== "undefined" && matrixData.busquedaEquiv) || []).forEach(([e, c, t]) => {
+    const k = buscaLimpia(e); if (!k) return;
+    const x = buscaEq.frases[k] = buscaEq.frases[k] || { tipo: t, cats: [] };
+    if (c && !x.cats.includes(c)) x.cats.push(c);
+    k.split(" ").forEach(w => buscaEq.palabras.add(w)); buscaEq.max = Math.max(buscaEq.max, k.split(" ").length);
+  });
+  return buscaEq;
+}
+// las palabras de los datos, con cuántas veces aparecen (para el error de tipeo); se rehace cuando llega el resto
+function buscaVocab(){
+  if (buscaVoc && buscaVoc.resto === restoListo) return buscaVoc;
+  const f = new Map();
+  rawNodes.forEach(d => { generalMatch(d, ""); d.__busca.split(/[^0-9a-zñα-ωא-ת]+/).forEach(w => { if (w.length > 1) f.set(w, (f.get(w) || 0) + 1); }); });
+  BUSCA_CHICAS.forEach(w => { if (!f.has(w)) f.set(w, 1); });
+  return buscaVoc = { f, resto: restoListo };
+}
+function buscaHay(w){ return rawNodes.some(d => generalMatch(d, w)); }
+function buscaTit(d){ return d.__tit || (d.__tit = buscaNorm(d.title)); }   // el título normalizado (no cambia en la sesión)
+function buscaUnaLetra(a, b){   // a una letra: cambiada, de más o de menos
+  if (a === b || Math.abs(a.length - b.length) > 1) return false;
+  let i = 0; while (i < a.length && a[i] === b[i]) i++;
+  if (a.length === b.length) return a.slice(i + 1) === b.slice(i + 1);
+  return a.length > b.length ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
+}
+// una palabra hecha de otras que aparecen, en sus partes (las menos posibles): de 3 letras o más o palabras chicas («buen pastor»,
+// «de la»; no «rey» + «ez»)
+function buscaPartir(w){
+  const E = buscaTabla(), V = buscaVocab().f, hay = x => (x.length > 2 || BUSCA_CHICAS.has(x)) && (V.has(x) || E.palabras.has(x)), mejor = [null];
+  (function partir(i, P){
+    if (i === w.length){ if (P.length > 1 && (!mejor[0] || P.length < mejor[0].length)) mejor[0] = P.slice(); return; }
+    for (let j = w.length; j > i + 1; j--){ const p = w.slice(i, j); if (hay(p)){ P.push(p); partir(j, P); P.pop(); } }
+  })(0, []);
+  return mejor[0];
+}
+// una palabra que no aparece: separada en palabras que sí («buenpastor») o, con 5 letras o más, la que está a una letra
+function buscaArreglar(w){
+  const E = buscaTabla();
+  if (w.length < 4 || /\d/.test(w) || BUSCA_CHICAS.has(w) || BUSCA_SIN_TIPEO.has(w) || E.palabras.has(w) || buscaHay(w)) return w;
+  // las partes, de 3 letras o más o palabras chicas («buen pastor», «de la»; no «rey» + «ez»)
+  const V = buscaVocab().f, partes = buscaPartir(w);
+  if (partes) return partes.join(" ");
+  if (w.length < 5) return w;
+  const tabla = [...E.palabras].filter(x => buscaUnaLetra(w, x));
+  if (tabla.length) return tabla[0];
+  let elegida = null, n = 0;
+  V.forEach((k, x) => { if (k > n && buscaUnaLetra(w, x)){ elegida = x; n = k; } });
+  return elegida || w;
+}
+// si así no aparece nada: las palabras que se pueden partir, en sus partes («dela», que está dentro de «delante»: «de la»); y cada
+// palabra de 3 letras o más suma las que están a una letra («hombres» → «hombre», «jacobo» → «jacob», «diod» → «dios», «soi» → «soy»)
+function buscaAmpliar(R){
+  const nada = T => !rawNodes.some(d => T.every(t => tokenMatches(d, t)));
+  if (!R.some(t => t.suelta) || !nada(R)) return R;
+  let S = R.flatMap(t => { const p = t.suelta && !BUSCA_SIN_TIPEO.has(t.word) ? buscaPartir(t.word) : null;
+    return p ? p.filter(x => !BUSCA_CHICAS.has(x)).map(x => ({ word: x, alts: [x], suelta: true })) : [t]; });
+  if (!nada(S)) return S;
+  const V = buscaVocab().f, suma = (T, vale) => T.map(t => !t.suelta || !vale(t.word) || BUSCA_SIN_TIPEO.has(t.word) ? t
+    : { ...t, alts: t.alts.concat([...V.keys()].filter(x => buscaUnaLetra(t.word, x))) });
+  // primero las de 5 letras o más; si todavía nada, las cortas que no aparecen en ningún título («diod», «soi»; no «rosa»)
+  const S5 = suma(S, w => w.length >= 5);
+  return nada(S5) ? suma(S5, w => w.length >= 3 && w.length < 5 && !buscaHay(w)) : S5;
+}
+// lo que escribió el lector → las condiciones de la búsqueda (cada una con «word», como las de siempre)
+function buscaConsulta(raw){
+  const especiales = [], W = [];
+  tokenizeQuery(raw).forEach(t => {
+    if (t.phrase !== undefined || /^[a-záéíóúñü]+:/.test(t.word) || /^[hg]0*\d+[a-z]?$/.test(t.word)) especiales.push(t);
+    else buscaLimpia(t.word).split(" ").filter(Boolean).forEach(w => W.push(w));
+  });
+  const P = []; W.forEach(w => buscaArreglar(w).split(" ").forEach(x => P.push(x)));
+  const E = buscaTabla(), S = [];
+  for (let i = 0; i < P.length;){
+    let hecho = false;
+    for (let L = Math.min(E.max, P.length - i); L >= 1 && !hecho; L--){
+      const k = P.slice(i, i + L).join(" "), x = E.frases[k]; if (!x) continue;
+      if (x.tipo === "referencia"){
+        const sig = P[i + L], v = x.cats[0] || "";
+        const vale = sig && (/^\d+$/.test(v) ? !!(libroDe(sig) || libroDe(v + sig)) : (!!libroDe(v) && /^\d/.test(sig)));
+        if (!vale) continue;
+        S.push({ k: "ref", w: buscaLimpia(v) });
+      } else if (x.tipo === "marca") S.push({ k: "marca", lectura: BUSCA_MARCA[buscaLimpia(x.cats[0] || "")] || "", w: k });
+      else if (x.tipo === "vacia") S.push({ k: "vacia", w: k });
+      else S.push({ k: "alts", w: k, alts: [k].concat(x.cats.map(buscaLimpia).filter(c => c && c !== k)) });
+      i += L; hecho = true;
+    }
+    if (!hecho){ S.push({ k: "txt", w: P[i] }); i++; }
+  }
+  // una referencia, si todo lo que queda (sin lo que se deja de lado) lo es: «isaías 53», «1 corintios 15»
+  const cuenta = S.filter(s => s.k !== "vacia" && !(s.k === "txt" && BUSCA_CHICAS.has(s.w)));
+  if (cuenta.some(s => /\d/.test(s.w)) && cuenta.every(s => s.k === "ref" || s.k === "txt")){
+    const q = refQuery(cuenta.map(s => s.w).join(" "));
+    if (q) return especiales.concat([{ ref: q }]);
+  }
+  const marcas = [...new Set(S.filter(s => s.k === "marca" && s.lectura).map(s => s.lectura))].map(l => ({ word: "lectura:" + l }));
+  let texto = S.filter(s => s.k === "alts" || s.k === "txt" || s.k === "ref");
+  const llenas = texto.filter(s => !(s.k === "txt" && BUSCA_CHICAS.has(s.w)));
+  if (llenas.length || marcas.length || especiales.length) texto = llenas;   // las palabras chicas, fuera si queda otra cosa
+  if (!texto.length && !marcas.length && !especiales.length) texto = S.filter(s => s.k === "vacia").map(s => ({ k: "txt", w: s.w }));   // solo «qué significa»
+  return buscaAmpliar(especiales.concat(marcas, texto.map(s => ({ word: s.w, alts: s.alts || [s.w], ...(s.k === "txt" ? { suelta: true } : {}) }))));
+}
 function tokenMatches(d, token){
+  if (token.alts){ if (d.__busca === undefined) generalMatch(d, ""); return token.alts.some(a => d.__busca.includes(a)); }   // ronda 42: la palabra o cualquiera de sus equivalencias (ya normalizadas)
   if (token.phrase !== undefined) return generalMatch(d, token.phrase);
   if (token.ref) return refCoincide(d, token.ref);
   const w = token.word;
@@ -8526,7 +8664,7 @@ function applyFilters(){
   const onlyRev = document.getElementById("onlyRevisar").checked;
   // ronda 13: si lo escrito es una referencia («Is 9:6», «Juan 3»), se busca por referencia
   const rq = raw ? refQuery(raw) : null;
-  const tokens = rq ? [{ ref: rq }] : raw ? tokenizeQuery(raw) : [];
+  const tokens = rq ? [{ ref: rq }] : raw ? buscaConsulta(raw) : [];   // ronda 42: la tabla, las palabras chicas, el tipeo
   currentFilterState = { tokens, onlyTip, onlyRev };
   if (raw && !restoListo) restoCuando("buscar", applyFilters);   // ronda 36b: busca otra vez con los versículos
 
