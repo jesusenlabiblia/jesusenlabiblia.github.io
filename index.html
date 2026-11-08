@@ -2486,6 +2486,14 @@ body.light{ --accent-blue-ink:#34608B; }
   body:not(.light) #panel .cat-tag{ color:var(--ink-1); }
   body:not(.light) .sur-papel .cx-tipo{ background:transparent; color:#E8C468; border-color:var(--papel-linea); }
   .idx-book-header.vacio .idx-count{ font-size:var(--t-5); }   /* ronda 37: la frase del libro sin títulos, a 13 px */
+  /* ronda 43 (D-134): la línea del libro vacío, debajo de su nombre; en el Mapa, dentro del recuadro */
+  .idx-book-header .idx-vacio-linea{ flex:0 0 100%; margin-top:2px; font-family:'Source Sans 3', sans-serif; font-size:var(--t-5);
+    font-weight:400; font-style:normal; line-height:1.5; color:var(--parchment-dim); }
+  .idx-book-header .idx-vacio-linea > span{ display:block; max-width:72ch; }   /* el renglón entero debajo del nombre; el texto, a lo sumo 72ch */
+  /* con su línea, el encabezado del libro vacío es más alto que los otros: fijo arriba, asomaba debajo del encabezado del libro
+     siguiente. No queda fijo (no tiene filas que nombrar) y pasa por debajo del que está fijo */
+  .idx-book-header.vacio{ position:relative; z-index:1; }
+  #mapaLayer .mp-card.vacia .mp-linea{ margin-top:6px; font-size:var(--t-5); line-height:1.45; color:var(--parchment-dim); }
   /* ronda 37 (4): Entre Testamentos, las líneas en reposo en gris (3:1) y doradas al tocarlas */
   :root{ --linea-reposo:#6E7391; } body.light{ --linea-reposo:#857F69; }
   #grafoEnf path.ge-h.capa-l, #grafoEnf .capa-b .capa-l{ stroke:var(--linea-reposo); opacity:1; }
@@ -2794,7 +2802,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v121-52c241f8.js" data-resto="datos-v121-resto-3ffa5391.js"></script>
+<script src="datos-v122-176aadea.js" data-resto="datos-v122-resto-70679c83.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -3260,6 +3268,11 @@ const indexBookHeaders = {};
 // todos y en orden): el índice los recorre enteros, con o sin títulos cargados.
 const CANON_ALL = PERIOD_DEFS.flatMap(p => p.books);
 const idxLibrosVacios = new Set();
+// ronda 43 (D-134): la línea de un libro sin títulos (datos/libros-vacios.tsv, en matrixData.librosVacios); solo si no tiene ninguno
+function libroVacioLinea(b){
+  const t = typeof matrixData !== "undefined" && matrixData.librosVacios && matrixData.librosVacios[b];
+  return t && !canonSorted.some(n => n.book === b) ? t : "";
+}
 // ronda 20: las secciones del salto del índice (primer y último libro de cada una)
 const IDX_SECCIONES = [["Pentateuco", "Génesis", "Deuteronomio"], ["Históricos", "Josué", "Ester"], ["Poéticos", "Job", "Cantares"],
   ["Profetas", "Isaías", "Malaquías"], ["Evangelios", "Mateo", "Juan"], ["Hechos", "Hechos", "Hechos"], ["Cartas", "Romanos", "Judas"], ["Apocalipsis", "Apocalipsis", "Apocalipsis"]];
@@ -3318,7 +3331,7 @@ function idxArmar(){
     header.className = "idx-book-header" + (filas.length ? "" : " vacio");
     header.innerHTML = filas.length
       ? `${book}<span class="idx-count">${filas.length} título${filas.length!==1?'s':''}</span>`
-      : `${book}<span class="idx-count">sin título en el catálogo</span>`;
+      : `${book}<span class="idx-count">sin título en el catálogo</span>${libroVacioLinea(book) ? `<span class="idx-vacio-linea"><span>${escHtml(libroVacioLinea(book))}</span></span>` : ""}`;   // ronda 43
     indexLayer.appendChild(header);
     indexBookHeaders[book] = header;
     if (!filas.length) idxLibrosVacios.add(book);
@@ -6358,7 +6371,7 @@ function mapaGridHtml(){
   const D = mapaDatos();
   const tarjeta = L => {
     const n = L.titulos.length;
-    if (!n) return `<div class="mp-card vacia"><span class="mp-nom">${escHtml(L.book)}</span><span class="mp-cant">Sin títulos en este catálogo</span></div>`;
+    if (!n) return `<div class="mp-card vacia"><span class="mp-nom">${escHtml(L.book)}</span><span class="mp-cant">Sin títulos en este catálogo</span>${libroVacioLinea(L.book) ? `<span class="mp-linea">${escHtml(libroVacioLinea(L.book))}</span>` : ""}</div>`;   // ronda 43
     const en = L.titulos.filter(mapaPasa).length, cant = mapaFiltrando() ? `${en} de ${n}` : grafoPlural(n, "título", "títulos");
     return `<button type="button" class="mp-card${mapaFiltrando() && !en ? " sin" : ""}" data-libro="${escHtml(L.book)}" aria-label="${escHtml(L.book)}: ${cant}"><span class="mp-nom">${escHtml(L.book)}</span><span class="mp-cant">${cant}</span><span class="mp-sq" aria-hidden="true">${L.titulos.map(t => `<i style="background:${mapaColor(t.cat)}"${mapaPasa(t) ? "" : ' class="fuera"'}></i>`).join("")}</span></button>`;
   };
