@@ -151,12 +151,6 @@
   .pill .n{ color:var(--ink-3); font-size:var(--t-6); }
 
   svg{ display:block; width:100%; height:100%; }
-  .node circle{ stroke:rgba(0,0,0,0.4); stroke-width:0.6px; transition:opacity 0.2s; cursor:pointer; }
-  .node text{ font-family:'Source Sans 3', sans-serif; font-size:var(--t-5); fill:var(--parchment);
-    pointer-events:none; opacity:0; transition:opacity 0.2s; }
-  .node.dim circle{ opacity:0.08; }
-  .node.dim text{ opacity:0 !important; }
-  .node.hoverdim circle{ opacity:0.1; }
   .lex-root, .lex-title{ cursor:pointer; }
   .lex-root circle{ transition:opacity 0.2s; }
   .lex-title circle{ transition:opacity 0.2s; }
@@ -180,12 +174,6 @@
   .lex-root.selected circle{ stroke:var(--gold-bright); stroke-width:3px; filter:url(#goldGlow); }
   .lex-title.selected circle{ stroke:var(--gold-bright); stroke-width:2px; filter:url(#goldGlow); }
   .lex-root.selected text, .lex-title.selected text{ font-size:var(--t-5) !important; fill:var(--gold-bright); }
-  .node.hoverdim text{ opacity:0 !important; }
-  .typo-link.hoverdim{ opacity:0.04; }
-  .node.selected circle{ stroke:var(--gold-bright); stroke-width:2px; filter:url(#goldGlow); }
-  .node.selected text{ opacity:1 !important; font-size:var(--t-5); fill:var(--gold-bright); }
-  svg.zoomed .node text{ opacity:0.85; }
-  .node.revisar circle{ stroke:var(--danger); stroke-width:1.5px; stroke-dasharray:1.5 1; }
   #indexLayer::-webkit-scrollbar{ width:10px; }
   #indexLayer{ padding-top:0 !important; } #indexLayer > :first-child{ margin-top:10px; }   /* ronda 35 */
   #indexLayer::-webkit-scrollbar-thumb{ background:var(--line-dim); border-radius:5px; }
@@ -446,7 +434,6 @@
     font-family:'Cormorant Garamond', serif; font-size:var(--t-3);  font-weight:500; }
   #indexEmpty{ display:none; text-align:center; padding:60px 20px; color:var(--parchment-dim);
     font-family:'Cormorant Garamond', serif; font-size:var(--t-3);  font-weight:500; }
-  .node.tip-unlinked circle{ stroke:var(--amber); stroke-width:1.8px; }
   .cell.clickable{ cursor:pointer; }
   .row-label.dim, .col-label.dim{ opacity:0.15; }
   .cell.dim{ opacity:0.08; }
@@ -457,12 +444,7 @@
   select option{ background:var(--select-bg); color:var(--parchment); }
   select optgroup{ background:var(--select-bg); color:var(--gold-bright); font-style:normal; }   /* ronda 29a (D-95): en Windows salían blancos */
   .cell.clickable:hover{ stroke:var(--gold-bright); stroke-width:1px; }
-  .node.linked circle{ stroke:var(--gold-bright); stroke-width:1.5px; }
 
-  .typo-link{ fill:none; stroke:var(--gold-bright); stroke-width:1px; stroke-dasharray:1 3.5;
-    opacity:0.55; pointer-events:none; transition:opacity 0.2s; }
-  .typo-link.dim{ opacity:0.06; }
-  .typo-link.highlight{ opacity:0.95; stroke-width:1.6px; }
 
   #panel{ position:absolute; top:0; right:0; height:100%; width:var(--ficha-w);
     background:var(--panel-bg); color:var(--ink-1); transform:translateX(100%);
@@ -1323,7 +1305,6 @@
   .exp-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:12px; }
   /* marcado personal */
   .idx-row.marked .idx-title::before{ content:"★ "; color:var(--gold-bright); }
-  .node.marked circle{ stroke:var(--gold-bright); stroke-width:1.8px; }
 /* el azul de acento está pensado para líneas: como texto en tema claro, sobre el fondo
    del lienzo, daba 4,15:1. Tinta propia para el signo ↗, más oscura solo en claro */
 :root{ --accent-blue-ink:var(--accent-blue); }
@@ -2802,7 +2783,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v122-176aadea.js" data-resto="datos-v122-resto-70679c83.js"></script>
+<script src="datos-v123-08dbdcb1.js" data-resto="datos-v123-resto-b985501a.js"></script>
 <script src="d3.min.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
@@ -3195,16 +3176,8 @@ svg.append("defs").html(`
 `);
 const g = svg.append("g");
 
-const BASE_FONT = 13, BASE_R = 4, BASE_R_TIP = 5.5;
 const zoomBehavior = d3.zoom().scaleExtent([0.05, 8]).on("zoom", (e) => {
   g.attr("transform", e.transform);
-  const k = e.transform.k;
-  // contra-escalamos texto y círculos para que el tamaño en pantalla
-  // se mantenga legible: así al acercar el zoom lo que crece es el
-  // espacio ENTRE nodos, no el texto, y dejan de superponerse.
-  nodeSel.selectAll("text").style("font-size", (BASE_FONT / k) + "px");
-  nodeSel.selectAll("circle").attr("r", d => (d.tipologia ? BASE_R_TIP : BASE_R) / k);
-  svg.classed("zoomed", k > 1.15);
   if (rotActiva) rotPedir();   // ronda 30b: los nombres de las dos redes, por importancia y sin pisarse
 });
 svg.call(zoomBehavior);
@@ -3221,9 +3194,7 @@ function fitView(x0, y0, x1, y1, pad, reserve){
   svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity.translate(tx, ty).scale(k));
 }
 
-// anclas de categoría: las 15 categorías completas (antes solo las que
-// eran categoría PRIMARIA de algún título, lo que dejaba 3 categorías
-// -Kénosis, Nombres YHWH, Escatología- sin cluster propio).
+// orden fijo de las 15 categorías, también las secundarias.
 const CATS_ORDER = ["Deidad y naturaleza divina","Redención y salvación","Pastoral y cuidado","Realeza y reino",
 "Profecía y revelación","Juicio y justicia","Filiación y relación personal","Resurrección y vida eterna",
 "Sacerdocio y mediación","Sufrimiento y pasión","Sabiduría y enseñanza","Creación y sustento del universo",
@@ -3234,26 +3205,6 @@ const catsWithNodes = CATS_ORDER;
 const titleTextCounts = {};
 rawNodes.forEach(n => { titleTextCounts[n.title] = (titleTextCounts[n.title]||0) + 1; });
 const duplicateTitleCount = Object.values(titleTextCounts).filter(c => c > 1).length;
-const R = Math.min(width, height) * 0.35;
-const catAnchor = {};
-const centerY = height/2 + 25; // baja el centro para no chocar con el header
-CATS_ORDER.forEach((c, i) => {
-  const angle = (i / CATS_ORDER.length) * 2 * Math.PI - Math.PI / 2;
-  catAnchor[c] = { x: width/2 + R*Math.cos(angle), y: centerY + R*Math.sin(angle) };
-});
-
-// ancla multi-foco: si un título tiene varias categorías, se lo atrae
-// al centroide de TODAS ellas (matemáticamente equivalente a sumar una
-// fuerza hacia cada categoría con la misma fuerza total), en vez de
-// forzarlo a orbitar solo su primera categoría listada.
-function multiCatAnchor(d){
-  const pts = d.cats.map(c => catAnchor[c]).filter(Boolean);
-  if (!pts.length) return catAnchor[d.cat] || { x: width/2, y: centerY };
-  const x = pts.reduce((s,p) => s+p.x, 0) / pts.length;
-  const y = pts.reduce((s,p) => s+p.y, 0) / pts.length;
-  return { x, y };
-}
-
 const canonMax = Math.max(...rawNodes.map(n => n.canonIdx));
 const canonSorted = [...rawNodes].sort((a,b) => a.canonIdx - b.canonIdx);
 
@@ -3823,95 +3774,6 @@ function matchRefToNode(refString, excludeId){
   const sourceIdx = source ? source.canonIdx : 0;
   candidates.sort((a,b) => Math.abs(a.node.canonIdx - sourceIdx) - Math.abs(b.node.canonIdx - sourceIdx));
   return candidates[0].node;
-}
-
-// ronda 40 (D-128): la capa del lienzo nace vacía, en su lugar entre las del SVG; los títulos, las conexiones y las fuerzas se arman
-// la primera vez que se abre una vista que lo usa (lienzoArmar, desde setMode). Al entrar al índice o con un enlace a una ficha, no.
-const canvasLayer = g.append("g").attr("id", "canvasLayer");
-let linkSel = d3.selectAll([]), nodeSel = d3.selectAll([]), sim = d3.forceSimulation([]).stop(), lienzoHecho = false;
-function anchorX(d){ return multiCatAnchor(d).x; }
-function anchorY(d){ return multiCatAnchor(d).y; }
-function xStrength(){ return 0.12; }
-function yStrength(){ return 0.12; }
-function collideRadius(){ return 7; }
-function lienzoArmar(){
-  if (lienzoHecho) return;
-  lienzoHecho = true;
-  linkSel = canvasLayer.append("g").selectAll("path")
-    .data(rawLinks).join("path")
-    .attr("class", "typo-link");
-
-  nodeSel = canvasLayer.append("g").selectAll("g")
-    .data(rawNodes).join("g")
-    .attr("class", d => "node" + (d.revisar ? " revisar" : "") + (d.linked ? " linked" : "") +
-      (d.tipologia && !estaConectado(d) ? " tip-unlinked" : ""))
-    .call(d3.drag()
-      .on("start", (e,d) => { if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
-      .on("drag", (e,d) => { d.fx=e.x; d.fy=e.y; })
-      .on("end", (e,d) => { if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
-    .on("click", (e,d) => { e.stopPropagation(); openPanel(d); })
-    .on("mouseenter", (e,d) => {
-      if (layoutMode === "matriz") return;
-      const connectedIds = new Set([d.id]);
-      rawLinks.forEach(l => {
-        const sId = l.source.id || l.source, tId = l.target.id || l.target;
-        if (sId === d.id) connectedIds.add(tId);
-        if (tId === d.id) connectedIds.add(sId);
-      });
-      if (connectedIds.size === 1){ nodeSel.classed("hoverdim", false); linkSel.classed("hoverdim", false); }
-      else {
-        nodeSel.classed("hoverdim", n => !connectedIds.has(n.id));
-        linkSel.classed("hoverdim", l => {
-          const sId = l.source.id || l.source, tId = l.target.id || l.target;
-          return sId !== d.id && tId !== d.id;
-        });
-      }
-    })
-    .on("mouseleave", () => {
-      nodeSel.classed("hoverdim", false);
-      linkSel.classed("hoverdim", false);
-    });
-
-  nodeSel.append("circle")
-    .attr("r", d => d.tipologia ? 5.5 : 4)
-    .attr("fill", d => catColors[d.cat] || catColors["Sin categoría"]);
-
-  nodeSel.append("text").attr("x", 6).attr("y", 3).text(d => d.title);
-
-  sim = d3.forceSimulation(rawNodes)
-    .force("charge", d3.forceManyBody().strength(-18))
-    .force("collide", d3.forceCollide(collideRadius()))
-    .force("x", d3.forceX(anchorX).strength(xStrength()))
-    .force("y", d3.forceY(anchorY).strength(yStrength()))
-    .force("link", d3.forceLink(rawLinks).id(d => d.id).distance(140).strength(0.05))
-    .alphaDecay(0.02)
-    .on("tick", renderTick)
-    .stop();   // ronda 33: nace frenada (setMode la arranca en los lienzos)
-  // lo que pasó antes de armarlo: los filtros, la ficha abierta y las marcas
-  nodeSel.classed("dim", d => !isVisible(d)).classed("marked", n => isMarked(n.id));
-  linkSel.classed("dim", l => { const s = nodeById[l.source.id || l.source], t = nodeById[l.target.id || l.target];
-    return !s.cats.some(c => activeCats.has(c)) || !t.cats.some(c => activeCats.has(c)); });
-  const abierta = document.getElementById("panel").classList.contains("open") && lastPanelId;
-  if (abierta){ nodeSel.classed("selected", n => n.id === abierta);
-    linkSel.classed("highlight", l => (l.source.id || l.source) === abierta || (l.target.id || l.target) === abierta); }
-}
-
-function renderTick(){
-  nodeSel.attr("transform", d => `translate(${d.x},${d.y})`);
-  linkSel.attr("d", l => {
-    const s = l.source, t = l.target;
-    const dx = t.x - s.x, dy = t.y - s.y;
-    const dr = Math.sqrt(dx*dx + dy*dy) * 1.3;
-    return `M${s.x},${s.y}A${dr},${dr} 0 0,1 ${t.x},${t.y}`;
-  });
-}
-
-// avanza la simulación varios pasos de golpe (sin animar) para que al
-// entrar a un modo nuevo el layout ya se vea asentado, en vez de una
-// bola de puntos que recién se separa a los pocos segundos.
-function fastForwardSim(steps){
-  for (let i = 0; i < steps; i++) sim.tick();
-  renderTick();
 }
 
 // ---------- Modo matriz (libro × categoría) ----------
@@ -4600,7 +4462,6 @@ function lexFichaHtml(code, par){
 function openPalabra(code, par){
   if (!strongToTitles[code]) return;
   cargarFuentesOriginal();
-  nodeSel.classed("selected", false); linkSel.classed("highlight", false);
   // ronda 20 (F7): la palabra entra en la pila de «volver» si de acá se abre una ficha
   if (!fichaVolviendo) fichaPila = [];
   fichaVolviendo = false; lastPanelId = null;
@@ -8210,10 +8071,8 @@ function setMode(mode){
   const isCand = mode === "candidatos";
   const isSel = mode === "seleccion";   // ronda 25
   const isRec = mode === "recorridos";   // ronda 28b
-  const isCanvas = !isMatrix && !isCinetica && !isRadar && !isLexica && !isStats && !isIndice && !isCuracion && !isNube && !isGrafo && !isTiempo && !isCadenas && !isConex && !isCatred && !isCand && !isEntre && !isSel && !isRec;
-  // ronda de carga (E): las vistas HTML tapan el SVG del lienzo entero, y sus capas ocultas igual cuestan estilos y diseño
-  // (en SVG, display:none no los ahorra): se esconde entero; antes que nada, para que las vistas del lienzo lo midan visible
-  document.getElementById("canvas").style.display = (isCanvas || isMatrix || isCinetica || isRadar || isLexica || isNube || isGrafo) ? "" : "none";
+  // Las vistas HTML esconden el SVG. Las vistas que dibujan lo miden visible.
+  document.getElementById("canvas").style.display = (isMatrix || isCinetica || isRadar || isLexica || isNube || isGrafo) ? "" : "none";
   zoomBehavior.scaleExtent([0.05, 8]);
   zoomBehavior.translateExtent([[-Infinity, -Infinity], [Infinity, Infinity]]);
 
@@ -8243,9 +8102,6 @@ function setMode(mode){
   if (isCuracion) renderCuracionQueue();
   if (isNube) nubeEnter();
 
-  if (isCanvas) lienzoArmar();   // ronda 40 (D-128): la primera vez, arma el lienzo
-  canvasLayer.style("display", isCanvas ? null : "none");
-  linkSel.style("display", "none");
   matrixLayer.style("display", isMatrix ? null : "none");
   matrixLayer.transition().duration(200).style("opacity", isMatrix ? 1 : 0);
   cineticaLayer.style("display", isCinetica ? null : "none");
@@ -8262,16 +8118,7 @@ function setMode(mode){
   document.getElementById("radarBookB").style.display = isRadar ? "inline-block" : "none";
   document.getElementById("radarRelativeLabel").style.display = isRadar ? "flex" : "none";
   document.getElementById("radarSimilar").style.display = isRadar ? "inline-block" : "none";
-  document.getElementById("legend").style.display = (isCanvas || isNube) ? null : "none";
-  if (isCanvas){
-    sim.force("x", d3.forceX(anchorX).strength(xStrength()));
-    sim.force("y", d3.forceY(anchorY).strength(yStrength()));
-    sim.force("collide", d3.forceCollide(collideRadius()));
-    sim.alpha(1).restart();
-    fastForwardSim(180); // asienta el layout antes de mostrarlo, en vez de animarlo desde una bola compacta
-  } else {
-    sim.stop(); // el canvas principal no gasta ciclos en índice, matriz, grafo, etc.
-  }
+  document.getElementById("legend").style.display = isNube ? null : "none";
   if (isLexica) lexRender(); else lexRedOcultar();   // ronda 29: HTML, sin simulación; ronda 30: «Red», solo en esta vista
   if (isGrafo){ redTel = grafoTel(); renderGrafo(); } else reOcultar();   // ronda 30
   if (isEntre) entreRender();
@@ -8684,11 +8531,6 @@ function applyFilters(){
   legend.classed("off", d => !activeCats.has(d.id));
   if (reOn && reActual && reActual.listo){ reMarcar(); if (grafoTel()) rePanel(); }   // ronda 30: la red entera atenúa los temas apagados
   if (lexRedVisible()) lexRedFiltrar();   // ronda 30b: también la red léxica
-  nodeSel.classed("dim", d => !isVisible(d));
-  linkSel.classed("dim", l => {
-    const s = nodeById[l.source.id || l.source], t = nodeById[l.target.id || l.target];
-    return !s.cats.some(c => activeCats.has(c)) || !t.cats.some(c => activeCats.has(c));
-  });
 
   const visibleCount = rawNodes.filter(isVisible).length;
   document.getElementById("stats").textContent = isFiltered()
@@ -8888,7 +8730,6 @@ function promoteToConecta(sourceId, targetId){
   cadIndexar(); conexTiposNodo = null;
   if (layoutMode === "cadenas") renderCadenas();
   if (layoutMode === "conexiones") renderConex();
-  nodeSel.classed("tip-unlinked", d => d.tipologia && !estaConectado(d));
   openPanel(source); // refresca el panel para mostrar el nuevo estado
 }
 function savePromotions(){
@@ -10031,8 +9872,6 @@ function openPanel(d){
   lastPanelId = d.id; urlSync(true, d.id);
   document.title = `${d.title} (${d.ref}) · Jesús en la Biblia`;
   if (typeof idxHighlight === "function") idxHighlight(d.id);
-  nodeSel.classed("selected", n => n.id === d.id);
-  linkSel.classed("highlight", l => (l.source.id || l.source) === d.id || (l.target.id || l.target) === d.id);
   const body = document.getElementById("panel-body");
   const tit = fichaTitulo(d), sel = selTiene(d.id), pantalla = document.getElementById("panel").classList.contains("pantalla");
   const dots = d.cats.map(c => `<span class="cat-dot" style="--cb:${catBg[c]||catBg['Sin categoría']}">${c}</span>`).join("");
@@ -10248,7 +10087,7 @@ function fichaCerrar(){
 }
 function closePanel(){ fichaPila = []; fichaListaAbierta = null; fichaPantalla(false); lectorCerrar(); const abierta = document.getElementById("panel").classList.contains("open"); document.getElementById("panel").classList.remove("open");
   if (abierta && filtroPausa) filtroReanudar();   // ronda 19 (F12): al cerrar la ficha, el filtro en pausa vuelve
-  document.title = TITULO_SITIO; if (abierta) urlSync(); { const ls = document.getElementById("lexSide"); if (ls) ls.style.right = ""; } if (palabraAbierta){ palabraAbierta = null; lexMarcar(null); } if (typeof tiempoHighlight === "function") tiempoHighlight(null); nodeSel.classed("selected", false); linkSel.classed("highlight", false); }
+  document.title = TITULO_SITIO; if (abierta) urlSync(); { const ls = document.getElementById("lexSide"); if (ls) ls.style.right = ""; } if (palabraAbierta){ palabraAbierta = null; lexMarcar(null); } if (typeof tiempoHighlight === "function") tiempoHighlight(null); }
 
 // ronda 37 (8, la K de Codex): el foco con la ficha abierta
 const FICHA_DETRAS = ["header", "#canvas", "#legend", "#hint", "#zoomControls", "#indexLayer", "#conexLayer", "#catredLayer", "#selLayer",
@@ -10299,8 +10138,6 @@ document.getElementById("panel").addEventListener("keydown", e => {   // el Tab 
   else if (!e.shiftKey && (i === -1 || i === L.length - 1)){ e.preventDefault(); L[0].focus(); }
 });
 function openCellPanel(book, cat, titles){
-  nodeSel.classed("selected", false);
-  linkSel.classed("highlight", false);
   const body = document.getElementById("panel-body");
   const items = titles.map(t => `
     <div style="margin-bottom:12px; cursor:pointer;" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>
@@ -10847,7 +10684,6 @@ function marksRefresh(id, keepPanel){
   const btn = document.getElementById("markBtn-" + id);
   if (btn){ btn.textContent = isMarked(id) ? "★ marcado" : "☆ marcar"; btn.classList.toggle("on", isMarked(id)); }
   const st = document.getElementById("markSaved-" + id); if (st){ st.textContent = "guardado"; setTimeout(() => { if (st.textContent === "guardado") st.textContent = ""; }, 1500); }
-  nodeSel.classed("marked", n => isMarked(n.id));
   if (typeof advSyncUI === "function") advSyncUI();
   if (advFilter.marked) applyFilters();
 }
