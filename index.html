@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Jesús en la Biblia — Títulos, nombres y figuras de Cristo</title>
-<meta name="description" content="Cada título con su versículo, su palabra en hebreo o griego y, cuando las tiene, sus conexiones con el resto de la Escritura.">
+<meta name="description" content="Catálogo gratuito de 787 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis, con su versículo, la palabra en hebreo o griego y recorridos guiados.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jesusenlabiblia.github.io/">
 <meta property="og:image" content="https://jesusenlabiblia.github.io/og-image.png">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="Jesús en la Biblia">
 <meta property="og:title" content="Jesús en la Biblia — Títulos, nombres y figuras de Cristo">
-<meta property="og:description" content="Cada título con su versículo, su palabra en hebreo o griego y, cuando las tiene, sus conexiones con el resto de la Escritura.">
+<meta property="og:description" content="Catálogo gratuito de 787 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis, con su versículo, la palabra en hebreo o griego y recorridos guiados.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0E1229">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%230E1229'/%3E%3Ctext%20x='32'%20y='46'%20text-anchor='middle'%20font-family='Georgia%2Cserif'%20font-size='42'%20font-style='italic'%20fill='%23E8C468'%3EJ%3C/text%3E%3C/svg%3E">
@@ -25,7 +25,6 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preload" href="letras/source-sans-3-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="letras/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="d3.min.js" as="script">
 <style>
   /* ronda 36 (D-116): las letras del texto, del sitio (build/letras_texto.py; OFL) */
   @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 600;font-display:swap;src:url(letras/cormorant-garamond-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
@@ -151,6 +150,16 @@
   .pill .n{ color:var(--ink-3); font-size:var(--t-6); }
 
   svg{ display:block; width:100%; height:100%; }
+  #dibujoAviso{ position:fixed; z-index:6; top:calc(var(--header-h) + 12px); left:50%;
+    transform:translateX(-50%); width:max-content; max-width:calc(100% - 24px); box-sizing:border-box;
+    padding:10px 14px; border:1px solid var(--line-dim); border-radius:10px;
+    background:var(--night); color:var(--ink-1); }
+  .dibujo-voz{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  #dibujoReintentar[hidden]{ display:none; }
+  #dibujoReintentar{ margin-left:12px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); border-radius:100px; padding:6px 14px;
+    color:var(--gold-bright); font-family:inherit; cursor:pointer; transition:background 0.15s; }
+  #dibujoReintentar:hover{ background:rgba(201,162,39,0.28); }
+  @media (max-width: 720px){ #dibujoAviso{ top:auto; bottom:calc(72px + env(safe-area-inset-bottom, 0px)); } }
   .lex-root, .lex-title{ cursor:pointer; }
   .lex-root circle{ transition:opacity 0.2s; }
   .lex-title circle{ transition:opacity 0.2s; }
@@ -1405,6 +1414,7 @@ body.light{ --accent-blue-ink:#34608B; }
   /* ronda 7: listas del «Acerca de» y el enlace de la bienvenida */
   #acercaDe .ac-lista{ margin:0 0 12px; padding-left:20px; font-size:var(--t-5); line-height:1.65; }
   #acercaDe .ac-lista li{ margin:0 0 6px; }
+  #acercaDe .ac-numeros b{ font-variant-numeric:tabular-nums; }
   #acercaDe ul.ac-fuente{ font-size:var(--t-5); line-height:1.6; }
   #bienvenida .bv-mas{ display:block; margin-top:14px; background:none; border:0; padding:6px 0;
     min-height:44px; text-align:left; font-family:inherit; font-size:var(--t-5); line-height:1.5;
@@ -2634,7 +2644,26 @@ body.light{ --accent-blue-ink:#34608B; }
       <button id="nubeResetBtn" onclick="nubeResetPositions()" class="hbtn" style="display:none;">Reiniciar posiciones</button>
     </div>
   </header>
-  <svg id="canvas"></svg>
+  <svg id="canvas" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id="goldGlow" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="3.2" result="blur"></feGaussianBlur>
+        <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+      </filter>
+    </defs>
+    <g id="dibujoCapas">
+      <g id="matrixLayer" style="display:none;opacity:0"></g>
+      <g id="cineticaLayer" style="display:none"></g>
+      <g id="radarLayer" style="display:none"></g>
+      <g id="grafoLayer" style="display:none"><g class="red"></g></g>
+      <g id="statsLayer" style="display:none"></g>
+      <g id="nubeLayer" style="display:none"></g>
+    </g>
+  </svg>
+  <div id="dibujoAviso" hidden><span id="dibujoMensaje" aria-hidden="true"></span>
+    <button class="b" id="dibujoReintentar" type="button" hidden>Reintentar dibujo</button>
+  </div>
+  <span id="dibujoVoz" class="dibujo-voz" role="status" aria-live="polite"></span>
   <div id="legend"></div>
   <div id="hint">787 títulos reales. Zoom para leer etiquetas.</div>
   <div id="zoomControls" style="position:absolute; bottom:var(--zoom-bottom,100px); right:24px; z-index:5; display:flex; flex-direction:var(--zoom-dir,column); gap:6px;">
@@ -2676,7 +2705,14 @@ body.light{ --accent-blue-ink:#34608B; }
   <h2 id="acTitulo">Acerca de este catálogo</h2>
 
   <h3>Qué es esto</h3>
-  <p>Un proyecto personal de estudio: un catálogo de títulos, nombres y figuras de Cristo en la Escritura, de Génesis a Apocalipsis.</p>
+  <p>Un proyecto personal de estudio, gratuito y sin publicidad: un catálogo de los títulos, nombres y figuras de Cristo en la Escritura, de Génesis a Apocalipsis.</p>
+  <p>Entra un título cuando el versículo dice de Jesús quién es, cómo es, qué hace o hizo, qué sufrió o qué es para los suyos; también los anuncios y las figuras que la lectura cristiana ve en él, y los títulos que la Escritura le da a Dios.</p>
+  <p>Cada ficha muestra lo que dice el versículo y cómo se lo lee, sin predicar: cuando la lectura se discute, la nota da también la objeción.</p>
+
+  <!-- ronda 46 (D-137): las cifras las pone acercaNumeros() al abrir, de los datos de la versión -->
+  <h3 id="acNumerosT">El catálogo en números</h3>
+  <p>En esta versión, el catálogo tiene:</p>
+  <ul class="ac-lista ac-numeros" id="acNumeros"></ul>
 
   <h3>Cómo se lee cada ficha</h3>
   <p>Cada entrada toma su nombre de las palabras del versículo. A veces es un título o un nombre («Príncipe de Paz»); otras veces, lo que el texto dice que Dios hace o hará («Dará Gracia y Gloria»).</p>
@@ -2733,8 +2769,8 @@ body.light{ --accent-blue-ink:#34608B; }
 </div></div>
 <div id="bienvenida" role="dialog" aria-modal="true" aria-labelledby="bvTitulo"><div class="bv sur-papel" tabindex="-1">
   <h2 id="bvTitulo">Jesús en la <em>Biblia</em></h2>
-  <p>Títulos, nombres y figuras de Cristo de Génesis a Apocalipsis, cada uno con su versículo y, cuando las tiene, sus conexiones con el resto de la Escritura.</p>
-  <p>Cada ficha dice cómo se relaciona con Jesús: si está en el texto, si es un anuncio o si es una figura.</p>
+  <p>Un catálogo de 787 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis. Cada uno trae su versículo y la palabra en hebreo o griego y, cuando las tiene, notas y conexiones con el resto de la Escritura.</p>
+  <p>Cada ficha dice cómo se relaciona con Jesús: si el versículo le da ese nombre, si es un título que la Escritura le da a Dios, o si la lectura cristiana lo ve como un anuncio o como una figura.</p>
   <div class="bv-puertas"><button class="bv-go" data-q="rec" data-t="Empezar por un recorrido" onclick="bvTocar('rec')">Empezar por un recorrido</button><button class="bv-go bv-sec" data-q="ver" data-t="Ver los títulos" onclick="bvTocar('ver')">Ver los títulos</button></div>
   <button class="bv-mas" type="button" onclick="bvTocar('acerca')">Más sobre este catálogo: quién lo hace, de dónde sale el texto y qué falta&nbsp;→</button>
 </div></div>
@@ -2783,8 +2819,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v123-08dbdcb1.js" data-resto="datos-v123-resto-b985501a.js"></script>
-<script src="d3.min.js"></script>
+<script src="datos-v128-496f621c.js" data-resto="datos-v128-resto-e62a293c.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
 // y se recuerda en este navegador (localStorage funciona porque este archivo
@@ -2806,8 +2841,7 @@ window.addEventListener("error", (e) => {
 // ronda 15: «reducir movimiento». Si la persona lo pidió (prefers-reduced-motion: reduce), las transiciones de d3
 // duran 0 y las redes de fuerzas (el mapa, la red léxica, la red de un título) se acomodan de una vez y se dibujan
 // quietas: al crearse y al recalentarse. Arrastrar un punto (alphaTarget > 0) sigue igual: lo mueve la persona.
-(function movimientoReducido(){
-  if (typeof d3 === "undefined") return;
+function movimientoReducido(){
   if (d3.transition && d3.transition.prototype){
     const dur = d3.transition.prototype.duration;
     d3.transition.prototype.duration = function(v){ return arguments.length && menosMovimiento() ? dur.call(this, 0) : dur.apply(this, arguments); };
@@ -2830,7 +2864,7 @@ window.addEventListener("error", (e) => {
       return s;
     };
   }
-})();
+}
 (function initTheme(){
   const saved = localStorage.getItem('jeb-theme');
   const btn = document.getElementById('themeToggle');
@@ -3162,27 +3196,103 @@ const allCats = Object.keys(catColors);
 
 // mutables: los reescribe onViewportResize() junto con el viewBox (ver B4)
 let width = window.innerWidth, height = window.innerHeight;
-const svg = d3.select("#canvas")
-  .attr("viewBox", `0 0 ${width} ${height}`)
-  .attr("preserveAspectRatio", "xMidYMid meet");
-svg.append("defs").html(`
-  <filter id="goldGlow" x="-100%" y="-100%" width="300%" height="300%">
-    <feGaussianBlur stdDeviation="3.2" result="blur"/>
-    <feMerge>
-      <feMergeNode in="blur"/>
-      <feMergeNode in="SourceGraphic"/>
-    </feMerge>
-  </filter>
-`);
-const g = svg.append("g");
+const dibujoSvg = document.getElementById("canvas");
+dibujoSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+let svg, g, zoomBehavior, matrixLayer, cineticaLayer, radarLayer, grafoLayer, statsLayer, nubeLayer, redG;
+let dibujoPendiente = null, dibujoAjuste = null, dibujoDescarga = null, dibujoFallo = false;
+const dibujoAviso = document.getElementById("dibujoAviso");
+const dibujoMensaje = document.getElementById("dibujoMensaje");
+const dibujoReintentar = document.getElementById("dibujoReintentar");
+const dibujoVoz = document.getElementById("dibujoVoz");   // ronda 45
 
-const zoomBehavior = d3.zoom().scaleExtent([0.05, 8]).on("zoom", (e) => {
-  g.attr("transform", e.transform);
-  if (rotActiva) rotPedir();   // ronda 30b: los nombres de las dos redes, por importancia y sin pisarse
-});
-svg.call(zoomBehavior);
+function dibujoIniciar(){
+  movimientoReducido();
+  svg = d3.select(dibujoSvg);
+  g = svg.select("#dibujoCapas");
+  matrixLayer = g.select("#matrixLayer");
+  cineticaLayer = g.select("#cineticaLayer");
+  radarLayer = g.select("#radarLayer");
+  grafoLayer = g.select("#grafoLayer");
+  statsLayer = g.select("#statsLayer");
+  nubeLayer = g.select("#nubeLayer");
+  redG = grafoLayer.select(".red");
+  zoomBehavior = d3.zoom().scaleExtent([0.05, 8]).on("zoom", (e) => {
+    g.attr("transform", e.transform);
+    if (rotActiva) rotPedir();
+  });
+  svg.call(zoomBehavior);
+  dibujoMatrizOpacidad(layoutMode === "matriz");
+}
+function dibujoMatrizOpacidad(visible){
+  if (matrixLayer) matrixLayer.transition().duration(200).style("opacity", visible ? 1 : 0);
+}
+function dibujoEstado(){
+  dibujoAviso.hidden = !dibujoPendiente;
+  dibujoMensaje.textContent = dibujoFallo ? "No se pudo cargar el dibujo." : "Cargando el dibujo…";
+  dibujoReintentar.hidden = !dibujoFallo;
+  // ronda 45: lo mismo, para el lector de pantalla (vacío cuando no hay aviso; solo se escribe si cambia, para no repetirlo)
+  const voz = dibujoPendiente ? dibujoMensaje.textContent : "";
+  if (dibujoVoz.textContent !== voz) dibujoVoz.textContent = voz;
+}
+function dibujoCancelar(){
+  dibujoPendiente = null;
+  dibujoAjuste = null;
+  dibujoFallo = false;
+  dibujoEstado();
+}
+function dibujoCargar(){
+  if (zoomBehavior) return Promise.resolve(true);
+  if (dibujoDescarga) return dibujoDescarga;
+  dibujoFallo = false;
+  dibujoEstado();
+  dibujoDescarga = new Promise(resolve => {
+    const script = document.createElement("script");
+    script.src = "d3.min.js";
+    function fallo(){
+      script.remove();
+      dibujoDescarga = null;
+      dibujoFallo = !!dibujoPendiente;
+      dibujoEstado();
+      resolve(false);
+    }
+    script.onerror = fallo;
+    script.onload = () => {
+      if (!window.d3 || typeof d3.zoom !== "function"){ fallo(); return; }
+      dibujoIniciar();
+      dibujoDescarga = null;
+      const dibujar = dibujoPendiente, ajustar = dibujoAjuste;
+      dibujoCancelar();
+      resolve(true);
+      if (dibujar) dibujar();
+      if (ajustar) ajustar();
+    };
+    document.head.append(script);
+  });
+  return dibujoDescarga;
+}
+function dibujoPedir(dibujar){
+  if (zoomBehavior) return false;
+  dibujoPendiente = dibujar;
+  if (!dibujoFallo) dibujoCargar();
+  dibujoEstado();
+  return true;
+}
+dibujoReintentar.addEventListener("click", dibujoCargar);
+// ronda 45: la precarga. Con la página ya tocable, d3 baja en segundo plano: con requestIdleCallback (a lo sumo 1,2 s después) y,
+// donde no existe, con un setTimeout de 1,2 s. Con el ahorro de datos del lector (navigator.connection.saveData), no: baja solo
+// cuando una vista lo pide. Una vista que lo pide mientras baja espera esa misma descarga (dibujoCargar devuelve la promesa en
+// curso). Si la precarga falla, no avisa nada: la próxima vista que dibuje lo vuelve a pedir, con su aviso.
+let dibujoPrecarga = null;   // cómo quedó: "ahorro", "idle" o "timeout" (lo leen los tests)
+function dibujoPrecargar(){
+  const c = navigator.connection;
+  if (c && c.saveData){ dibujoPrecarga = "ahorro"; return; }
+  const ir = () => { if (!zoomBehavior) dibujoCargar(); };
+  if (typeof requestIdleCallback === "function"){ dibujoPrecarga = "idle"; requestIdleCallback(ir, { timeout: 1200 }); }
+  else { dibujoPrecarga = "timeout"; setTimeout(ir, 1200); }
+}
 
 function fitView(x0, y0, x1, y1, pad, reserve){
+  if (!zoomBehavior) { dibujoAjuste = () => fitView(x0, y0, x1, y1, pad, reserve); return; }
   pad = pad || 40;
   reserve = reserve || {};
   const topR = reserve.top || 0, leftR = reserve.left || 0;
@@ -3780,7 +3890,6 @@ function matchRefToNode(refString, excludeId){
 const matrixData = datosLeer("matrix", "matrix-data");
 
 
-const matrixLayer = g.append("g").attr("id", "matrixLayer").style("opacity", 0).style("display", "none");
 
 let matrixBBox = null;
 let matrixRowLabelSel, matrixColLabelSel, matrixCellSel;
@@ -3840,6 +3949,7 @@ function matrizTinta(d, maxVal){
   }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
 })();
 function buildMatrix(){
+  if (dibujoPedir(() => { buildMatrix(); matrizEncuadrar(); })) return;
   matrixLayer.selectAll("*").remove();
   const M = matrixCurrent();
   const isPct = matrixOpts.value === "pct", isPeriod = matrixOpts.group === "period";
@@ -3961,7 +4071,6 @@ function matrixSetOpt(k, v){
 
 
 // ---------- Modo Cinética de la Revelación (área apilada sobre el eje canónico) ----------
-const cineticaLayer = g.append("g").attr("id", "cineticaLayer").style("display", "none");
 const CINETICA_BINS = 40;
 const cineticaLeft = 90, cineticaRight = width - 60, cineticaTop = 140, cineticaBottom = height - 60;
 const cineticaBBox = [cineticaLeft - 30, cineticaTop - 60, cineticaRight + 20, cineticaBottom + 20];
@@ -4055,11 +4164,11 @@ function cineticaArmar(){
 }
 
 // ---------- Modo Huellas Digitales (radar comparando dos libros) ----------
-const radarLayer = g.append("g").attr("id", "radarLayer").style("display", "none");
 const RADAR_A_COLOR = "var(--gold-bright)", RADAR_B_COLOR = "var(--accent-blue)";
 let radarBookA = "Salmos", radarBookB = "Isaías"; // libros con más títulos, buen punto de partida
 
 function drawRadarChart(bookA, bookB){
+  if (dibujoPedir(() => { drawRadarChart(bookA, bookB); fadeRadarAxes(); })) return;
   radarLayer.selectAll("*").remove();
   const cx = width/2, cy = height/2 + 30, R = Math.min(width, height) * 0.30;
   const n = CATS_ORDER.length;
@@ -4137,6 +4246,7 @@ function drawRadarChart(bookA, bookB){
 // no toca los polígonos: los datos reales del libro no cambian, solo se
 // destaca visualmente qué ejes te interesan mirar ahora.
 function fadeRadarAxes(){
+  if (!radarLayer) return;
   radarLayer.selectAll(".radar-axis-label")
     .style("opacity", function(){ return activeCats.has(this.getAttribute("data-cat")) ? 1 : 0.15; });
 }
@@ -4322,7 +4432,7 @@ function lexCuerpo(){
   // ronda 30: «Red», el dibujo de fuerzas en el lienzo; el panel queda en la barra
   document.getElementById("lexSide").classList.toggle("en-red", modo === "red");
   if (modo === "red"){
-    el.innerHTML = lexRed && lexRed.listo ? "" : `<p class="lx-zd lx-red-armando" aria-live="polite">Armando la red…</p>`;   // ronda 31: la explicación, en «Cómo usar»
+    el.innerHTML = !zoomBehavior || (lexRed && lexRed.listo) ? "" : `<p class="lx-zd lx-red-armando" aria-live="polite">Armando la red…</p>`;   // ronda 31: la explicación, en «Cómo usar»
     if (lexRedVisible()) lexRedFiltrar(); else lexRedMostrar();
     return;
   }
@@ -4698,6 +4808,7 @@ function lexRedEncender(id){
 }
 let lexRedBarraObs = null;
 function lexRedMostrar(){
+  if (dibujoPedir(lexCuerpo)) return;
   const R = lexRedArmar(); R.capa.style("display", null);
   const ls = document.getElementById("lexSide");
   if (!lexRedBarraObs && ls && window.ResizeObserver){ lexRedBarraObs = new ResizeObserver(() => { if (rotActiva === lexRed){ svg.style("clip-path", `inset(${Math.round(lexRedArea().clip)}px 0px 0px 0px)`); rotPedir(); } }); lexRedBarraObs.observe(ls); }
@@ -4712,6 +4823,7 @@ function lexRedMostrar(){
   requestAnimationFrame(lexRedEncuadrar);   // después de que la barra se acomode
 }
 function lexRedOcultar(){
+  if (layoutMode === "lexica") dibujoCancelar();
   if (lexRed){ lexRed.capa.style("display", "none"); rotSoltar(lexRed); }
   document.getElementById("legend").classList.remove("sobre-red");
   const rl = document.getElementById("lexRedLey"); if (rl) rl.remove();   // ronda 31
@@ -4756,7 +4868,6 @@ function openRootPanel(code, lang, titles){ openPalabra(code); }
 // Click en un nodo: lo centra, abre su ficha y expande sus vecinos hasta la
 // profundidad elegida (1, 2 o 3 saltos). Sin foco muestra la vista general
 // (todos los títulos con al menos una arista).
-const grafoLayer = g.append("g").attr("id", "grafoLayer").style("display", "none");
 
 // Cada par de títulos tiene UNA arista con TODAS sus relaciones (una pareja
 // puede ser a la vez conexión anotada, referencia cruzada y puente LXX):
@@ -4942,7 +5053,6 @@ let redDibujoTel = false;   // ronda 24 (D16): en el teléfono, el dibujo se ve 
 let redTel = null, redSel = null, redExp = new Set(), redGruposAbiertos = new Set(), redDatos = null;
 const RED = { compu: { tope: 24, umbralRef: 12, fila: 26, filaCapa: 24, D: 190, sangria: 26, tope2: 8, tope2t: 40 },
               tel:   { tope: 10, umbralRef: 4,  fila: 44, filaCapa: 28, D: 34,  sangria: 22, tope2: 5, tope2t: 16 } };
-const redG = grafoLayer.append("g").attr("class", "red");
 function redCfg(){ return grafoTel() ? RED.tel : RED.compu; }
 // los hijos de un vecino, a dos saltos: solo por anotadas y la misma palabra, sin los que ya están
 function redHijos(padre, usados){
@@ -5122,13 +5232,13 @@ function redGrupo(clave){
   if (redGruposAbiertos.has(clave)) redGruposAbiertos.delete(clave); else redGruposAbiertos.add(clave);
   redDibujar(); redEncuadrar();
 }
-function redOcultar(){ redG.selectAll("*").remove(); redDatos = null; const l = document.getElementById("redLista"); l.classList.remove("on"); l.innerHTML = ""; }
+function redOcultar(){ redG?.selectAll("*").remove(); redDatos = null; const l = document.getElementById("redLista"); l.classList.remove("on"); l.innerHTML = ""; }
 // el encuadre: entra todo si se puede, sin achicar la letra de más; si no entra, arriba y se desplaza
-function redEncuadrar(){
+function redEncuadrar(altoCabecera = headerH()){
   if (!redDatos || layoutMode !== "grafo") return;
   const b = redG.node().getBBox(); if (!b.width) return;
   const tel = grafoTel(), lista = document.getElementById("redLista");
-  const top = headerH() + 14, pad = tel ? 10 : 24;
+  const top = altoCabecera + 14, pad = tel ? 10 : 24;
   const derecha = !tel && lista.classList.contains("on") ? lista.offsetWidth + 12 : 0;
   const abajo = tel && lista.classList.contains("on") ? Math.max(0, height - lista.getBoundingClientRect().top) + 6 : 0;
   const availW = width - derecha - pad * 2, availH = height - top - abajo - pad;
@@ -5277,7 +5387,7 @@ function reMostrar(){
 }
 function reOcultar(){
   if (reG) reG.style("display", "none");
-  if (rotActiva && rotActiva.esRe) rotSoltar(rotActiva); else if (!rotActiva) svg.style("clip-path", null);
+  if (rotActiva && rotActiva.esRe) rotSoltar(rotActiva); else if (!rotActiva) dibujoSvg.style.removeProperty("clip-path");
   const p = document.getElementById("redEntera"); if (p){ p.classList.remove("on"); p.innerHTML = ""; }
   if (layoutMode === "grafo") document.getElementById("legend").style.display = "none";   // la red de un título, sin leyenda (como siempre)
 }
@@ -5500,9 +5610,9 @@ document.getElementById("redLista").addEventListener("mouseover", e => { const f
 document.getElementById("redLista").addEventListener("mouseleave", () => redMarcar(redSel));
 document.getElementById("redLista").addEventListener("focusin", e => { const f = e.target.closest(".rl-f"); if (f) redMarcar(f.dataset.id); });
 
-function renderGrafo(){
+function renderGrafo(altoCabecera = headerH()){
   // ronda 23: sin simulación; el dibujo tiene posiciones fijas y la lista va al costado
-  if (reOn){ reMostrar(); syncHeader(); return; }   // ronda 30: la red entera
+  if (reOn){ if (!dibujoPedir(renderGrafo)) { reMostrar(); syncHeader(); } return; }   // ronda 30: la red entera
   if (restoFalta("grafo", renderGrafo)) return;   // ronda 36b: la red de un título, con los tipos y las notas de sus vínculos
   reOcultar();
   grafoEnfOcultar();
@@ -5512,6 +5622,7 @@ function renderGrafo(){
     grafoElegirMostrar({ aislado: true, titulo: t }); syncHeader(); return;
   }
   grafoElegirOcultar();
+  if (dibujoPedir(() => renderGrafo(altoCabecera))) return;
   if (redSel && !(grafoVecinos[grafoFocusId] || []).some(v => v.id === redSel)) redSel = null;
   // ronda 24: en el teléfono, la lista primero; el dibujo con «Ver el dibujo» (y la lista queda abajo, chica)
   const tel = grafoTel(), dibujo = !tel || redDibujoTel;
@@ -5519,7 +5630,7 @@ function renderGrafo(){
   document.getElementById("redLista").classList.toggle("mini", tel && redDibujoTel);
   redListaRender();
   redDibujar();
-  if (dibujo) redEncuadrar();
+  if (dibujo) redEncuadrar(altoCabecera);
   syncHeader();
 }
 function grafoFocus(id, opts){
@@ -6910,6 +7021,7 @@ const CAT_AYUDA = {
   "Nombres compuestos de YHWH": "Nombres de Dios formados con YHWH, el nombre que la RVR1960 traduce «Jehová». Están porque el Nuevo Testamento aplica a Jesús lo que el Antiguo dice del Señor.",
 };
 function renderCatred(){
+  if (dibujoPedir(renderCatred)) return;
   // ronda 28a (D-70): arriba el mapa de los temas; debajo, la lista de lo elegido (sus títulos por libro, con la fila de Por
   // libro); al final, todos los temas y todos los cruces. La capa entera se desplaza.
   const { vis, count, pair } = catredData();
@@ -7310,8 +7422,6 @@ function dashExportMd(){
 }
 
 // ---------- Modo Estadísticas (SVG viejo: reemplazado por el tablero HTML; se conserva la capa vacía) ----------
-const statsLayer = g.append("g").attr("id", "statsLayer").style("display", "none");
-const nubeLayer = g.append("g").attr("id", "nubeLayer").style("display", "none");
 
 // ---------- Vista "nube": JESÚS al centro, los títulos como bloques
 // arrastrables alrededor, colocados con el mismo algoritmo de espiral que
@@ -7414,7 +7524,7 @@ function nubeSavePositions() {
 function nubeResetPositions() {
   if (!confirm("¿Reiniciar todas las posiciones de la nube a la disposición automática? Se pierde lo que hayas movido a mano en este navegador.")) return;
   try { localStorage.removeItem('jeb-nube-positions'); } catch (e) {}
-  nubeLayer.selectAll("*").remove();
+  nubeLayer?.selectAll("*").remove();
   nubeBuilt = false;
   nubeEnter();
 }
@@ -7426,6 +7536,7 @@ function nubeResetPositions() {
 // —uno para aplicar el estilo, otro para pintarlo— y recién ahí se arma.
 // Si la nube ya está armada la entrada es instantánea y no se muestra nada.
 function nubeEnter(){
+  if (dibujoPedir(nubeEnter)) return;
   if (nubeBuilt){ fitNubeView(); return; }
   const ind = document.getElementById("nubeLoading");
   ind.classList.add("on");
@@ -7537,7 +7648,8 @@ function refitCurrentView(){
   switch (layoutMode){
     case "tiempo":      break;   // ronda 26: el mapa es HTML y se acomoda solo
     case "nube":        if (nubeBuilt) fitNubeView(); break;
-    case "grafo":       if (reOn){ if (reTelDe !== grafoTel()) reMostrar(); else reEncuadrar(); break; }   // ronda 30
+    case "grafo":       if (!zoomBehavior) break;
+                        if (reOn){ if (reTelDe !== grafoTel()) reMostrar(); else reEncuadrar(); break; }   // ronda 30
                         if (redDatos){ if (redTel !== grafoTel()){ redTel = grafoTel(); renderGrafo(); } else fitGrafoView(); } break;
     case "entre":       if (entreTel !== (innerWidth < 720)) entreRender(); break;
     case "lexica":      if (lexicaStarted && document.querySelector('#lexSide .lx-tab[data-m="dibujo"]') !== null === esTelefono()) lexRender(); else if (lexRedVisible()) lexRedEncuadrar(); break;   // ronda 29: compu ↔ teléfono; ronda 30
@@ -7554,8 +7666,8 @@ function onViewportResize(){
   // (matriz: etiquetas de libro cortas) no alcanzan con re-encuadrarse.
   const crossedMobile = (w < 720) !== (width < 720);
   width = w; height = hg;
-  svg.attr("viewBox", `0 0 ${width} ${height}`);
-  zoomBehavior.translateExtent([[-Infinity, -Infinity], [Infinity, Infinity]]);
+  dibujoSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  zoomBehavior?.translateExtent([[-Infinity, -Infinity], [Infinity, Infinity]]);
   if (crossedMobile && layoutMode === "matriz") buildMatrix();
   refitCurrentView();
 }
@@ -7866,15 +7978,48 @@ function aplicarModo(){
   syncHeader();
 }
 // ── ronda 4 · Acerca de ── (textos de la ronda 7)
-// Sin cifras del catálogo. Lo único calculado es qué libros no tienen títulos: el canon
-// contra los datos, al abrir. El día que entra el primer título de un libro, el párrafo
-// cambia solo.
+// Lo calculado se calcula al abrir, contra los datos: qué libros no tienen títulos (el canon contra los datos; el día que entra el
+// primer título de un libro, el párrafo cambia solo) y, desde la ronda 46, «El catálogo en números».
+// ronda 46 (D-137): los libros vacíos con línea en libros-vacios.tsv (matrixData.librosVacios) no son un pendiente: la frase de
+// Curación (A7-tradiciones-entrada-propuesta.md §4.1). Uno vacío sin línea, la frase de siempre.
+function acercaLista(xs){ return xs.length === 1 ? xs[0] : xs.slice(0, -1).join(", ") + " y " + xs[xs.length - 1]; }
 function acercaFalta(){
   const con = new Set(rawNodes.map(n => n.book));
   const vacios = CANON_ALL.filter(b => !con.has(b));
   if (!vacios.length) return `Hay títulos en los ${CANON_ALL.length} libros.`;
-  const lista = vacios.length === 1 ? vacios[0] : vacios.slice(0, -1).join(", ") + " y " + vacios[vacios.length - 1];
-  return `Todavía no hay títulos en ${lista}. Aparecen igual en el índice, con cero títulos: lo que falta está a la vista.`;
+  const lineas = (typeof matrixData !== "undefined" && matrixData.librosVacios) || {};
+  const conLinea = vacios.filter(b => lineas[b]), sinLinea = vacios.filter(b => !lineas[b]);
+  const partes = [];
+  if (conLinea.length === 1) partes.push(`${conLinea[0]} no tiene títulos, y no es algo pendiente: no le da a Jesús un título propio ni dice de Dios una frase que el catálogo recoja. En «Por libro» y en el Mapa se dice por qué.`);
+  else if (conLinea.length) partes.push(`${acercaLista(conLinea)} no tienen títulos, y no es algo pendiente: ninguno le da a Jesús un título propio ni dice de Dios una frase que el catálogo recoja. En «Por libro» y en el Mapa, cada uno dice por qué.`);
+  if (sinLinea.length) partes.push(`Todavía no hay títulos en ${acercaLista(sinLinea)}. Aparecen igual en el índice, con cero títulos: lo que falta está a la vista.`);
+  if (conLinea.length) partes.push("Si falta un título que debería estar, se puede avisar por el correo del final.");
+  return partes.join(" ");
+}
+// ronda 46 (D-137): «El catálogo en números». La marca, con la regla del sitio: «En el texto» es lexico que no habla de Dios; los
+// títulos de Dios, lexico con sujeto yhwh (los que llevan «Por qué hay títulos de Dios»); figura, tipologia; anuncio, profecia.
+// Las conexiones son las anotadas: cada par una vez.
+function acercaNumeros(){
+  const N = rawNodes, at = N.filter(n => n.testamento === "AT").length;
+  const marca = { texto: 0, dios: 0, figura: 0, anuncio: 0, sin: 0 };
+  N.forEach(n => {
+    const k = n.tipoLectura || "";
+    if (k === "lexico") marca[n.sujetoPasaje === "yhwh" ? "dios" : "texto"]++;
+    else if (k === "tipologia") marca.figura++;
+    else if (k === "profecia") marca.anuncio++;
+    else marca.sin++;
+  });
+  const pares = new Set();
+  N.forEach(n => (n.conectaCon || []).forEach(t => pares.add(+n.id < +t ? n.id + "-" + t : t + "-" + n.id)));
+  const rec = ((typeof matrixData !== "undefined" && matrixData.recorridos) || []).length;
+  const c = (k, uno, varios) => `<b>${k}</b> ${k === 1 ? uno : varios}`;
+  const marcas = [c(marca.texto, "en el texto", "en el texto"), c(marca.dios, "título de Dios", "títulos de Dios"),
+                  c(marca.figura, "figura", "figuras"), c(marca.anuncio, "anuncio", "anuncios")];
+  if (marca.sin) marcas.push(c(marca.sin, "sin marca anotada", "sin marca anotada"));
+  return [`${c(N.length, "título", "títulos")}: ${at} del Antiguo Testamento y ${N.length - at} del Nuevo.`,
+          `Por su marca: ${acercaLista(marcas)}.`,
+          `${c(rec, "recorrido guiado", "recorridos guiados")} y ${c(pares.size, "conexión anotada", "conexiones anotadas")}.`]
+    .map(t => `<li>${t}</li>`).join("");
 }
 // ronda 13: «Cómo citar». La versión y la fecha las pone el migrate en matrix-data (del nombre del
 // CSV y del CHANGELOG de Datos). ronda 15b: AUTOR es el nombre del proyecto, no el de una persona: autor corporativo,
@@ -7920,6 +8065,7 @@ function acercaNovedades(){
 function acercaAbrir(){
   const a = document.getElementById("acercaDe");
   document.getElementById("acFalta").textContent = acercaFalta();
+  document.getElementById("acNumeros").innerHTML = acercaNumeros();   // ronda 46
   document.getElementById("acCita").textContent = acercaCita();
   acercaNovedades();   // ronda 21
   // AVISO_RVR es uno solo y ya empieza con «Texto bíblico:»; acá va bajo esa misma etiqueta
@@ -8049,6 +8195,7 @@ function ensureModeOption(mode){
   grp.style.display = null; grp.appendChild(new Option(HIDDEN_MODE_LABELS[mode] || mode, mode));
 }
 function setMode(mode){
+  if (mode !== layoutMode) dibujoCancelar();
   ensureModeOption(mode);
   if (mode !== layoutMode && document.getElementById("advPanel").style.display === "block") advToggle(false);   // ronda 22
   layoutMode = mode;
@@ -8073,8 +8220,8 @@ function setMode(mode){
   const isRec = mode === "recorridos";   // ronda 28b
   // Las vistas HTML esconden el SVG. Las vistas que dibujan lo miden visible.
   document.getElementById("canvas").style.display = (isMatrix || isCinetica || isRadar || isLexica || isNube || isGrafo) ? "" : "none";
-  zoomBehavior.scaleExtent([0.05, 8]);
-  zoomBehavior.translateExtent([[-Infinity, -Infinity], [Infinity, Infinity]]);
+  zoomBehavior?.scaleExtent([0.05, 8]);
+  zoomBehavior?.translateExtent([[-Infinity, -Infinity], [Infinity, Infinity]]);
 
   indexLayer.style.display = isIndice ? "block" : "none";
   curacionLayer.style.display = isCuracion ? "block" : "none";
@@ -8088,7 +8235,7 @@ function setMode(mode){
   catredLayer.style.display = isCatred ? "block" : "none";
   document.getElementById("selLayer").style.display = isSel ? "block" : "none"; if (isSel) selRender();   // ronda 25
   document.getElementById("catredMin").style.display = isCatred ? "inline-block" : "none";
-  if (isCatred) setTimeout(renderCatred, 0);
+  if (isCatred) setTimeout(() => { if (layoutMode === "categorias") renderCatred(); }, 0);
   candLayer.style.display = isCand ? "block" : "none";
   if (isCand) candRender();
   ["candMin", "candOnlyCrossLabel", "candShowDiscLabel"].forEach(id => document.getElementById(id).style.display = isCand ? (id === "candMin" ? "inline-block" : "flex") : "none");
@@ -8102,14 +8249,13 @@ function setMode(mode){
   if (isCuracion) renderCuracionQueue();
   if (isNube) nubeEnter();
 
-  matrixLayer.style("display", isMatrix ? null : "none");
-  matrixLayer.transition().duration(200).style("opacity", isMatrix ? 1 : 0);
-  cineticaLayer.style("display", isCinetica ? null : "none");
-  radarLayer.style("display", isRadar ? null : "none");
+  document.getElementById("matrixLayer").style.display = isMatrix ? "" : "none";
+  dibujoMatrizOpacidad(isMatrix);
+  document.getElementById("cineticaLayer").style.display = isCinetica ? "" : "none";
+  document.getElementById("radarLayer").style.display = isRadar ? "" : "none";
   document.getElementById("lexSide").style.display = isLexica ? "block" : "none";
-  statsLayer.style("display", "none");
-  nubeLayer.style("display", isNube ? null : "none");
-  grafoLayer.style("display", isGrafo ? null : "none");
+  document.getElementById("nubeLayer").style.display = isNube ? "" : "none";
+  document.getElementById("grafoLayer").style.display = isGrafo ? "" : "none";
   // ronda 22: las casillas de taller de la red (sin curar, LXX, la vista en columnas), solo en el taller
   if (!isGrafo) redOcultar();
   if (!isEntre) grafoEnfOcultar();
@@ -8146,7 +8292,7 @@ function setMode(mode){
     // vista en HTML aparte, no usa el zoom del SVG
   } else if (mode === "nube"){
     // ya se encuadró explícitamente con fitNubeView() más arriba
-  } else {
+  } else if (zoomBehavior) {
     svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
   }
 }
@@ -8223,13 +8369,24 @@ const legendData = catsWithNodes
   });
 
 const activeCats = new Set(catsWithNodes);
-const legend = d3.select("#legend").selectAll(".pill").data(legendData).join("div")
-  .attr("class","pill")
-  .on("click", (e,d) => { activeCats.has(d.id) ? activeCats.delete(d.id) : activeCats.add(d.id); applyFilters(); });
-legend.append("div").attr("class","dot").style("background", d=>d.color);
-legend.append("span").text(d => d.label);
-legend.append("span").attr("class","n").text(d => ` ${d.n}`);
-legend.attr("title", d => catTexto(d.id) || CAT_AYUDA[d.id] || null);   // ronda 22: la misma ayuda de «Por categoría»
+const legend = legendData.map(d => {
+  const pill = document.createElement("div");
+  pill.className = "pill";
+  pill.addEventListener("click", () => { activeCats.has(d.id) ? activeCats.delete(d.id) : activeCats.add(d.id); applyFilters(); });
+  const dot = document.createElement("div");
+  dot.className = "dot";
+  dot.style.background = d.color;
+  const label = document.createElement("span");
+  label.textContent = d.label;
+  const n = document.createElement("span");
+  n.className = "n";
+  n.textContent = " " + d.n;
+  const ayuda = catTexto(d.id) || CAT_AYUDA[d.id];
+  if (ayuda) pill.title = ayuda;
+  pill.append(dot, label, n);
+  document.getElementById("legend").append(pill);
+  return pill;
+});
 // colapsable: por defecto muestra las 6 categorías más numerosas; el resto
 // detrás de "+9". Las mismas categorías están completas en el panel Filtros.
 (function legendCollapse(){
@@ -8253,6 +8410,7 @@ legend.attr("title", d => catTexto(d.id) || CAT_AYUDA[d.id] || null);   // ronda
 // las demás vistas); las inactivas simplemente no aportan capa al apilado,
 // en vez de dejar un hueco — un re-stack real, no un tachado visual.
 function updateCineticaFilter(){
+  if (dibujoPedir(updateCineticaFilter)) return;
   cineticaConstruir();   // ronda 33
   if (!cineticaBinDataPrimary) return;
   const totalMode = document.getElementById("cineticaTotal").checked;
@@ -8528,7 +8686,7 @@ function applyFilters(){
   currentFilterState = { tokens, onlyTip, onlyRev };
   if (raw && !restoListo) restoCuando("buscar", applyFilters);   // ronda 36b: busca otra vez con los versículos
 
-  legend.classed("off", d => !activeCats.has(d.id));
+  legend.forEach((pill, i) => pill.classList.toggle("off", !activeCats.has(legendData[i].id)));
   if (reOn && reActual && reActual.listo){ reMarcar(); if (grafoTel()) rePanel(); }   // ronda 30: la red entera atenúa los temas apagados
   if (lexRedVisible()) lexRedFiltrar();   // ronda 30b: también la red léxica
 
@@ -10242,12 +10400,15 @@ function reviewShowSummary(){
   (f || summary.querySelector('[data-fin="volver"]')).focus();
 }
 document.getElementById("zoomIn").addEventListener("click", () => {
+  if (!zoomBehavior) return;
   svg.transition().duration(250).call(zoomBehavior.scaleBy, 1.4);
 });
 document.getElementById("zoomOut").addEventListener("click", () => {
+  if (!zoomBehavior) return;
   svg.transition().duration(250).call(zoomBehavior.scaleBy, 1/1.4);
 });
 document.getElementById("zoomFit").addEventListener("click", () => {
+  if (!zoomBehavior) return;
   if (layoutMode === "matriz"){
     matrizEncuadrar();
   } else if (layoutMode === "cinetica"){
@@ -10264,7 +10425,7 @@ document.getElementById("zoomFit").addEventListener("click", () => {
 });
 
 // click en el fondo del canvas (no en un nodo/celda) cierra el panel abierto; en la red entera, además suelta el elegido (33b)
-svg.on("click", () => { closePanel(); if (reOn && reSel && layoutMode === "grafo") reSoltar(); });
+dibujoSvg.addEventListener("click", () => { closePanel(); if (reOn && reSel && layoutMode === "grafo") reSoltar(); });
 
 // Escape cierra lo que esté abierto: primero el modo repaso o lectura, si no el panel
 document.addEventListener("keydown", (e) => {
@@ -11367,6 +11528,7 @@ arrancando = false; syncHeader();   // ronda de carga (B): la primera medida, un
 if (layoutMode === "indice" && idxCursorId && indexRowByNodeId[idxCursorId]) indexRowByNodeId[idxCursorId].scrollIntoView({ block: "nearest" });
 window.__arranqueListo = true;
 bvPendiente();
+dibujoPrecargar();   // ronda 45
 if (restoBajado) setTimeout(restoCompletar, 0);   // ronda 36b
 })();
 </script>
