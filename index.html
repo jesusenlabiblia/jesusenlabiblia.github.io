@@ -2819,7 +2819,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v128-496f621c.js" data-resto="datos-v128-resto-e62a293c.js"></script>
+<script src="datos-v130-94d14973.js" data-resto="datos-v130-resto-e4c412cd.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
 // y se recuerda en este navegador (localStorage funciona porque este archivo
@@ -8017,7 +8017,7 @@ function acercaNumeros(){
                   c(marca.figura, "figura", "figuras"), c(marca.anuncio, "anuncio", "anuncios")];
   if (marca.sin) marcas.push(c(marca.sin, "sin marca anotada", "sin marca anotada"));
   return [`${c(N.length, "título", "títulos")}: ${at} del Antiguo Testamento y ${N.length - at} del Nuevo.`,
-          `Por su marca: ${acercaLista(marcas)}.`,
+          `Según cómo se relacionan con Jesús: ${acercaLista(marcas)}.`,   // ronda 47: las marcas de las tarjetas son tres
           `${c(rec, "recorrido guiado", "recorridos guiados")} y ${c(pares.size, "conexión anotada", "conexiones anotadas")}.`]
     .map(t => `<li>${t}</li>`).join("");
 }
