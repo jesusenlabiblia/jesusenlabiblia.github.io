@@ -2819,7 +2819,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v139-f104c1d7.js" data-resto="datos-v139-resto-55d7405d.js"></script>
+<script src="datos-v140-3065f612.js" data-resto="datos-v140-resto-bea7c340.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
 // y se recuerda en este navegador (localStorage funciona porque este archivo
@@ -4923,7 +4923,7 @@ function grafoEdgeTooltip(e){
   if (e.rel.curada){ const i = conexInfoDe(e.a, e.b); parts.push("— conexión anotada" + (i ? ": " + conexTipoTexto(i) + (i.nota ? "\n   " + i.nota : "") + (conexFuente(i) ? "\n   Fuente: " + conexFuente(i).termino : "") : "")); }
   e.rel.lxx.forEach(pair => parts.push(`α la misma palabra en la traducción griega: ${parLXXTexto(pair)}${grafoLXXPairCount[pair] > GRAFO_LXX_RARE_MAX ? " (la comparten " + (grafoLXXPairCount[pair] / 2) + " parejas de títulos)" : ""}`));
   (e.rel.familia || []).forEach(pair => parts.push(`α de la misma familia: ${parLXXTexto(pair)}${familiaGriegoTxt(e, pair) ? " · " + familiaGriegoTxt(e, pair) : ""}`));   // ronda 23 (c)
-  if (e.rel.ref) parts.push("↗ referencia marginal de la Biblia");
+  if (e.rel.ref) parts.push("↗ referencia de la Biblia (de la Reina-Valera o de una ficha que cita el pasaje)");   // ronda 49
   if (e.rel.mismo) parts.push("≡ mismo pasaje");
   return `${nodeById[e.a].title} — ${nodeById[e.b].title}\n` + parts.join("\n");
 }
@@ -4940,7 +4940,7 @@ const CAPAS = [
   { k: "comun", nombre: "Palabras muy repetidas", por: ["una palabra muy repetida", "palabras muy repetidas"],
     ayuda: "la misma palabra en más de cuatro parejas de títulos (por ejemplo «Salvador», «gloria», «David»); va aparte para que el dibujo no se tape" },
   { k: "ref", nombre: "Referencias de la Biblia", por: ["referencia de la Biblia", "referencias de la Biblia"],
-    ayuda: "referencias al margen de la Biblia que caen en otro título del catálogo; sin nota" },
+    ayuda: "referencias de la Reina-Valera, o de una ficha que cita el pasaje, que caen en otro título del catálogo; sin nota" },
 ];
 const CAPA = {}; CAPAS.forEach((c, i) => { c.i = i; CAPA[c.k] = c; });
 function palabras(e){ return e.rel.lxx.length + (e.rel.familia || []).length; }
@@ -5488,6 +5488,9 @@ function reCentrar(id){
   // en el teléfono, si con todos los nombres la letra quedaría chica (menos de 0,85), en el dibujo va solo el del elegido y sus
   // vecinos se leen en la lista de abajo («Se conecta con»). Se mide con todos los nombres a la vista.
   if (G) G.classList.remove("solo-sel");
+  // ronda 49: el nombre del elegido, en la altura que le dio reEtiquetas (sobre la columna de los vecinos) hasta que se sepa si van solos
+  const sl = G && G.querySelector(".re-etq-sel");
+  if (sl){ if (sl.dataset.y0 == null) sl.dataset.y0 = sl.getAttribute("y"); sl.setAttribute("y", sl.dataset.y0); }
   let b = id === reSel && G && G.childNodes.length ? G.getBBox() : null, t;
   if (b && grafoTel()){
     const kTodos = Math.min(tope, A.w / (b.width + 24), A.h / (b.height + 24));
@@ -5495,7 +5498,12 @@ function reCentrar(id){
       G.classList.add("solo-sel");
       const P = [d, ...[...(D.vec[id] || [])].map(v => D.nodos.find(n => n.id === v)).filter(Boolean)];
       const xs = P.map(n => n.x), ys = P.map(n => n.y);
-      b = { x: Math.min(...xs), y: Math.min(...ys) - 30, width: Math.max(...xs) - Math.min(...xs), height: Math.max(...ys) - Math.min(...ys) + 30 };
+      // ronda 49: solo, el nombre va justo arriba de su punto (como en «Su red») y el encuadre cuenta su caja entera (alto y ancho:
+      // los nombres largos, centrados en su punto, se salían de costado)
+      if (sl) sl.setAttribute("y", (d.y - D.rad(d) - 8).toFixed(1));
+      const n = sl ? sl.getBBox() : { x: d.x, y: d.y - 30, width: 0, height: 0 };
+      const x0 = Math.min(...xs, n.x), x1 = Math.max(...xs, n.x + n.width), y0 = Math.min(Math.min(...ys) - 30, n.y);
+      b = { x: x0, y: y0, width: x1 - x0, height: Math.max(...ys) - y0 };
     }
   }
   if (b){
@@ -8958,7 +8966,7 @@ function renderRefsCruzadas(d, soloLista){   // ronda 27: soloLista, la lista pa
   const rotulo = taller
     ? `Referencias cruzadas sin curar (${d.refsCruzadas.length}${d.origenRefs ? " · " + d.origenRefs : ""}) — ${matchedCount} coinciden con otro título del proyecto${ambiguousCount ? `, ${ambiguousCount} con más de uno` : ""}
       ${purelyReciprocal ? '<br><span style="color:#a3403c;">⚠ origen 100% recíproco — el menos confiable de los tres (no viene de una nota marginal directa)</span>' : ""}`
-    : `Referencias de la Reina-Valera (${d.refsCruzadas.length}) <span class="lx-sum-n">· todas las del margen</span>`;
+    : `Referencias de la Reina-Valera y de las fichas que citan este pasaje (${d.refsCruzadas.length})`;   // ronda 49
   if (soloLista) return (taller ? `<p class="lx-intro">${rotulo}</p>` : "") + `<div class="fx-ref-l">${items}</div>`;
   return `<details data-plegable="refs" style="margin-top:4px; margin-bottom:20px;">
     <summary style="cursor:pointer; font-size:var(--t-5); color:var(--ink-3); letter-spacing:0.2px;">
@@ -10145,7 +10153,7 @@ function fichaOtrosTitulos(d){
   return out;
 }
 // ronda 27 (E, 24): «Para estudiar más», cerrado: el texto original, las palabras en común por la traducción griega y las
-// referencias (dos listas: las fichas del catálogo y todo el margen de la Reina-Valera), cada una cerrada
+// referencias (dos listas: las fichas del catálogo y las de la Reina-Valera con las fichas que citan el pasaje), cada una cerrada
 function fichaPalabras(d){
   // ronda 23: un título por fila y una sola vez, en la capa más firme; ronda 24 (C8): también las conexiones anotadas que
   // además comparten una palabra (en la conexión ya no se dice)
@@ -10157,10 +10165,10 @@ function fichaReferencias(d){
   const taller = esTaller(), internas = vinculosDe(d.id).ref.map(v => nodeById[v.id]).filter(Boolean), rc = (d.refsCruzadas || []).length;
   if (!internas.length && !rc) return "";
   const link = t => `<button type="button" class="fx-t" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>${qualityIcon(t)} <span class="fx-t-n">${escHtml(t.title)}</span> <span class="lx-rf">${escHtml(t.ref)}</span></button>`;
-  const cuenta = [internas.length ? `${internas.length} ${internas.length === 1 ? "ficha" : "fichas"} del catálogo` : "", rc ? `${rc} del margen` : ""].filter(Boolean).join(" · ");
+  const cuenta = [internas.length ? `${internas.length} ${internas.length === 1 ? "ficha" : "fichas"} del catálogo` : "", rc ? `${rc} de la Biblia` : ""].filter(Boolean).join(" · ");   // ronda 49: no todas son del margen
   return `<details data-plegable="refs" class="fx-refs"><summary>Las referencias <span class="lx-sum-n">· ${cuenta}</span></summary>
     ${internas.length ? `<div class="fx-ref-g"><div class="lx-g-t">${taller ? "Citado en el proyecto" : "Fichas del catálogo"} (${internas.length})</div><p class="lx-intro">Títulos de este catálogo que están entre sus referencias.</p>${fichaListaRecortada(internas, link)}</div>` : ""}
-    ${rc ? `<div class="fx-ref-g"><div class="lx-g-t">${taller ? "Referencias cruzadas sin curar" : "Todas las referencias del margen de la Reina-Valera"} (${rc})</div>${renderRefsCruzadas(d, true)}</div>` : ""}
+    ${rc ? `<div class="fx-ref-g"><div class="lx-g-t">${taller ? "Referencias cruzadas sin curar" : "Referencias de la Reina-Valera y de las fichas que citan este pasaje"} (${rc})</div>${renderRefsCruzadas(d, true)}</div>` : ""}
   </details>`;
 }
 function fichaEstudiar(d){
