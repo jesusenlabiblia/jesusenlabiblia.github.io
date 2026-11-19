@@ -2026,7 +2026,8 @@ body.light{ --accent-blue-ink:#34608B; }
   .lexside-n{ font-family:'Source Sans 3', sans-serif; font-size:var(--t-5); color:var(--gold-bright); }
   @media (max-width: 1100px){ #lexSide .lx-zonas{ grid-template-columns:1fr 1fr; } #lexSide .lx-zc{ grid-column:1 / -1; order:-1; } }
   /* ronda 30: en «Red», el panel queda en la barra y el lienzo se ve debajo */
-  #lexSide.en-red{ bottom:auto; max-height:calc(100% - var(--header-h)); background:var(--night); border-bottom:1px solid var(--line-dim); padding-bottom:10px; }
+  #lexSide.en-red{ bottom:auto; max-height:calc(100% - var(--header-h)); background:var(--night); border-bottom:1px solid var(--line-dim); padding-bottom:10px;
+  overflow:visible; }   /* ronda 52: en Red la barra es del alto de su contenido; con overflow-y:auto cortaba los paneles de Opciones y «Cómo usar esta vista» */
   #lexSide.en-red .lx-red-ayuda{ margin:0; }
   /* ronda 31 (D-104): la fila de la vista */
   #vistaHead.lx-sin{ height:0; padding:0; border:0; overflow:hidden; }
