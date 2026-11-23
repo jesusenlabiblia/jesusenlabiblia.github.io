@@ -52,12 +52,15 @@
     /* ── escala tipográfica (ronda 2): 7 pasos + display ── */
     --t-display:92px;  /* solo "JESÚS" al centro de la nube */
     --orig-k:1.3;   /* ronda 29: el hebreo y el griego, más grandes que el castellano (Gemini); «A+» lo sube */
---t-1:28px;        /* título de ficha · título de vista */
-    --t-2:21px;        /* encabezado de libro · título de sección */
-    --t-3:17px;        /* versículo · texto de lectura */
-    --t-4:15px;        /* interfaz por defecto (ronda 37: era 14,5) */
-    --t-5:13px;        /* metadatos · controles; el mínimo para leer (ronda 37: era 12,5) */
-    --t-6:12px;        /* ronda 37: solo contadores, abreviaturas, atajos y rótulos en mayúscula (era 11, para chips y etiquetas) */
+/* ronda 53 (D-193): en rem (siguen al ajuste de letra del navegador) y por --letra (el control «Letra»: 1, 1,15 o 1,3);
+       con 16 px de base y la letra normal, lo de siempre: 28, 21, 17, 15, 13 y 12 px */
+    --letra:1;
+    --t-1:calc(1.75rem * var(--letra));      /* 28 px · título de ficha · título de vista */
+    --t-2:calc(1.3125rem * var(--letra));    /* 21 px · encabezado de libro · título de sección */
+    --t-3:calc(1.0625rem * var(--letra));    /* 17 px · versículo · texto de lectura */
+    --t-4:calc(0.9375rem * var(--letra));    /* 15 px · interfaz por defecto y, desde la ronda 53, lo que se lee de corrido */
+    --t-5:calc(0.8125rem * var(--letra));    /* 13 px · metadatos · controles (ronda 37: era 12,5) */
+    --t-6:calc(0.75rem * var(--letra));      /* 12 px · solo contadores, abreviaturas, atajos y rótulos en mayúscula */
 
     /* ── superficies (ronda 2) ── noche navega, papel lee, cristal flota.
        Cada una define su tinta y su anillo de foco; ver .sur-* más abajo.
@@ -2550,14 +2553,83 @@ body.light{ --accent-blue-ink:#34608B; }
     .idx-libro-q{ width:100%; min-height:40px; padding:0 12px; border-radius:10px; border:1px dashed var(--gold-texto); background:var(--sup-hundida);
       color:var(--ink-1); font:inherit; font-family:'Source Sans 3', sans-serif; font-size:var(--t-4); }
   }
+
+  /* ── ronda 53 (D-193) ── */
+  /* L2 · lo que se lee de corrido, a 15 px (los rótulos, contadores y chips quedan en 13 y 12) */
+  #vistaHead .vh-f, #vistaHead .vh-d, #acercaDe p, #acercaDe .ac-lista, .nota-box, #panel .nota-box, .cx-nota, #panel .fx-cx .cx-nota,
+  .cx-nota-par, #panel .evid-expl, #panel .evid-dios, #panel .og-expr, #recLayer .rc-ayuda, #recLayer .rc-frase, #mapaLayer .mp-ayuda,
+  #mapaLayer .mp-ley-t, #selLayer .sel-d, #selLayer .sel-nota-salidas, #selLayer .sel-vacia, #grafoElegir .ge-sub, #grafoElegir .ge-vacio{ font-size:var(--t-4); }
+  #panel.pantalla .nota-box{ font-size:var(--t-3); }   /* las notas, al tamaño de la descripción también con la ficha a pantalla completa */
+  /* L3 · el control «Letra» */
+  .letra-c{ display:inline-flex; gap:3px; align-items:center; font-size:var(--t-5); color:var(--parchment-dim); white-space:nowrap; }
+  .letra-c .letra-t{ margin-right:4px; }
+  .letra-c button{ font:inherit; line-height:1; color:var(--parchment); background:transparent; border:1px solid var(--line-dim); border-radius:6px;
+    min-width:32px; min-height:32px; padding:0 4px; cursor:pointer; }
+  .letra-c button[data-l="0"]{ font-size:.8125rem; } .letra-c button[data-l="1"]{ font-size:.9375rem; } .letra-c button[data-l="2"]{ font-size:1.0625rem; }
+  .letra-c button[aria-pressed="true"], .letra-c button[aria-checked="true"]{ border-color:var(--gold-texto); background:rgba(201,162,39,0.16); font-weight:600; }
+  .letra-c button:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:1px; }
+  #letraHdr{ margin:0 2px; }
+  .hdr-menu .hm-letra{ display:none; }
+  #panel .letra-c{ color:var(--ink-3); } #panel .letra-c button{ color:var(--ink-1); border-color:var(--papel-borde, rgba(0,0,0,0.18)); }
+  #panel .og-letras{ display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center; margin:4px 0 8px; } #panel .og-letras .orig-tam{ margin:0; }
+  #panel .ficha-menu-lista .fm-letra{ display:flex; padding:6px 12px 8px; border-bottom:1px solid var(--papel-linea); margin-bottom:4px; }
+  #panel .ficha-menu-lista .fm-letra button{ display:inline-flex; align-items:center; justify-content:center; width:auto; min-width:36px; min-height:36px; padding:0 4px; text-align:center; }
+  @media (max-width: 720px){
+    #letraHdr{ display:none; }
+    .hdr-menu .hm-letra{ display:flex; padding:6px 12px 8px; }
+    .hdr-menu .hm-letra button{ display:inline-flex; align-items:center; justify-content:center; width:auto; min-width:40px; min-height:40px; }
+  }
+  /* L3b · en el teléfono, desde «Grande»: «Génesis 1:1 · en el texto» no se parte; el chip del tema baja a su renglón (con la letra normal, como siempre) */
+  @media (max-width: 720px){
+    html[data-letra] .idx-row .idx-ref{ white-space:nowrap; }
+    html[data-letra] .idx-row .idx-cats{ grid-row:2; grid-column:1 / 5; justify-self:start; }
+    html[data-letra] .idx-row .idx-icon, html[data-letra] .idx-row .idx-title, html[data-letra] .idx-row .idx-sel{ grid-row:3; }
+  }
+  /* L4 · las celdas de la tabla del Mapa crecen con la letra */
+  #mapaLayer .mp-tc{ min-width:calc(44px * var(--letra)); height:calc(34px * var(--letra)); }
+  #mapaLayer .mp-celda{ min-height:calc(34px * var(--letra)); }
+  @media (max-width:719px){ #mapaLayer .mp-tc{ min-width:calc(36px * var(--letra)); } }
+  /* C2 · con un filtro o una búsqueda, sin el recuadro de «Por dónde empezar» (quedaba el marco vacío) */
+  .idx-puertas.con-filtro{ display:none; }
+  #indexEmpty .idx-vacio-borrar{ font:inherit; color:var(--gold-bright); background:none; border:1px solid var(--line-dim); border-radius:100px; padding:6px 14px;
+    min-height:36px; margin-top:10px; cursor:pointer; }
+  /* C3 · el teléfono: el encabezado de cada libro en un renglón; leer, repasar y buscar, al tocar «⋯» */
+  .idx-acc-mas{ display:none; font:inherit; font-size:var(--t-4); }
+  @media (max-width: 720px){
+    .idx-book-header .idx-acc-mas{ display:inline-flex; align-items:center; justify-content:center; margin-left:auto; min-width:40px; min-height:34px; padding:0 8px;
+      font:inherit; font-family:'Source Sans 3', sans-serif; font-size:var(--t-4); line-height:1; color:var(--gold-bright); background:none; border:1px solid var(--line-dim);
+      border-radius:100px; cursor:pointer; }
+    .idx-book-header .idx-acc-mas[hidden]{ display:none; }
+    .idx-book-header:not(.acc-abierto) .idx-acc{ display:none; }
+  }
+  /* C4 · Novedades (y las otras secciones de «Acerca de»): el título, debajo de la ✕ */
+  #acercaDe h3[id]{ scroll-margin-top:56px; }
+  /* C6 · Entre Testamentos: el libro sin títulos, no disponible */
+  #grafoEnf .ge-libros button.vacio{ cursor:default; }
+  /* C7 · Mapa: el aviso de lo elegido, fijo arriba; en el teléfono, que la tabla se desliza */
+  #mapaLayer .mp-filtro.mp-fijo{ position:sticky; top:-14px; z-index:3; background:var(--night); margin:0 0 10px; padding:10px 0 8px; border-bottom:1px solid var(--line-dim); }
+  #mapaLayer .mp-a-tabla{ font:inherit; font-size:var(--t-5); color:var(--gold-bright); background:none; border:1px solid var(--line-dim); border-radius:100px; padding:4px 12px;
+    min-height:32px; cursor:pointer; }
+  #mapaLayer .mp-tabla-c{ position:relative; }
+  #mapaLayer .mp-desliza{ display:none; }
+  #mapaLayer .mp-tabla-c.desborda .mp-desliza{ display:flex; position:absolute; top:6px; right:0; bottom:0; width:40px; align-items:center; justify-content:flex-end;
+    padding-right:2px; pointer-events:none; background:linear-gradient(to right, transparent, var(--night) 75%); color:var(--gold-bright); font-size:var(--t-2); }
+  @media (max-width:719px){ #mapaLayer .mp-filtro.mp-fijo{ top:-10px; } }
+  /* C8 · con el menú «⋯» abierto, el encabezado por encima de los paneles de las vistas (#lexSide, #redLista… tienen z-index 6 a 8) */
+  header:has(#hdrMore[aria-expanded="true"]){ z-index:9; }
+  /* C9 · Conexiones anotadas: en el tema oscuro, tarjetas oscuras (como la ficha, D-25; antes, papel claro a propósito) */
+  body:not(.light) .cx-par{ --ink-1:#F2EDE0; --ink-2:#D2C59E; --ink-3:#AEA27E; --foco:#E8C468;
+    --panel-bg:var(--sup-elevada); --papel:var(--sup-elevada); --papel-alto:var(--sup-anidada); --papel-linea:var(--sup-borde); }
+  body:not(.light) .cx-puente .fl{ color:var(--gold-bright); }
 </style>
+<script>try { const i = parseInt(localStorage.getItem("jeb-letra"), 10) || 0, k = [1, 1.15, 1.3][i]; if (k && k !== 1){ document.documentElement.style.setProperty("--letra", k); document.documentElement.setAttribute("data-letra", i); } } catch (e) {}</script>
 </head>
 <body>
 <div id="app">
   <header>
     <div class="header-row">
       <div class="brand">Jesús en la <em>Biblia</em></div>
-      <span id="searchWrap"><input id="search" type="text" placeholder='Buscar un título, un versículo o un libro' title='Texto libre (también la palabra hebrea o griega y su pronunciación), un código Strong (H2233) o una referencia (Is 9:6, Juan 3), o filtros con prefijo:&#10;  libro:isaías (o book:) · categoría:realeza (o cat:) · testamento:AT&#10;  lectura:lexico | profecia | tipologia&#10;  sujeto:cristo | yhwh | otro&#10;  conexion:cita | alusion | cumplimiento | figura | yhwh | continuidad&#10;Se combinan entre sí; sin valor (lectura:) trae las que no tienen dato.'><button id="searchClear" type="button" aria-label="Borrar la búsqueda" title="Borrar la búsqueda">✕</button></span>
+      <span id="searchWrap"><input id="search" type="text" aria-label="Buscar un título, un versículo o un libro" placeholder='Buscar un título, un versículo o un libro' title='Texto libre (también la palabra hebrea o griega y su pronunciación), un código Strong (H2233) o una referencia (Is 9:6, Juan 3), o filtros con prefijo:&#10;  libro:isaías (o book:) · categoría:realeza (o cat:) · testamento:AT&#10;  lectura:lexico | profecia | tipologia&#10;  sujeto:cristo | yhwh | otro&#10;  conexion:cita | alusion | cumplimiento | figura | yhwh | continuidad&#10;Se combinan entre sí; sin valor (lectura:) trae las que no tienen dato.'><button id="searchClear" type="button" aria-label="Borrar la búsqueda" title="Borrar la búsqueda">✕</button></span>
       <button id="advToggleBtn" class="hbtn" title="Filtros combinables: categoría, libro, testamento, verificación, tipología, texto">Filtros</button>
       <select id="modeSelect" class="hbtn" aria-label="Vista">
         <optgroup label="Encontrar">
@@ -2585,11 +2657,13 @@ body.light{ --accent-blue-ink:#34608B; }
       </select>
       <button id="selBtn" class="hbtn ghost" onclick="selIr()" title="Tu lista de títulos guardados">☆ Mi selección<span id="selCuenta"></span></button>
       <button id="searchBtn" class="hbtn icon" title="Buscar" aria-label="Buscar" onclick="hdrBuscar()"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12.6 12.6 17 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      <span id="letraHdr" class="letra-c" role="group" aria-label="Tamaño de la letra de toda la página"><span class="letra-t">Letra</span><button type="button" data-l="0" aria-pressed="true" aria-label="Letra normal" onclick="letraPoner(0)">A</button><button type="button" data-l="1" aria-pressed="false" aria-label="Letra grande" onclick="letraPoner(1)">A</button><button type="button" data-l="2" aria-pressed="false" aria-label="Letra muy grande" onclick="letraPoner(2)">A</button></span>
       <button id="themeToggle" class="hbtn icon" title="Modo claro/oscuro">☀</button>
       <script>try { if (localStorage.getItem("jeb-theme") === "light"){ document.body.classList.add("light"); document.getElementById("themeToggle").textContent = "🌙"; } } catch (e) {}</script>
       <span class="hdr-menu-w"><button id="hdrMore" class="hbtn icon" title="Más" aria-label="Más" aria-haspopup="true" aria-expanded="false" onclick="hdrMenuToggle()">⋯</button>
         <div id="hdrMenu" class="hdr-menu" role="menu" hidden>
           <button type="button" role="menuitem" class="hm-tel" onclick="hdrMenuCerrar(); advToggle(true)">Filtros<span class="hm-n"></span></button>
+          <div class="hm-letra" role="group" aria-label="Tamaño de la letra de toda la página"><span class="letra-c"><span class="letra-t">Letra</span><button type="button" role="menuitemradio" data-l="0" aria-checked="true" aria-label="Letra normal" onclick="letraPoner(0)">A</button><button type="button" role="menuitemradio" data-l="1" aria-checked="false" aria-label="Letra grande" onclick="letraPoner(1)">A</button><button type="button" role="menuitemradio" data-l="2" aria-checked="false" aria-label="Letra muy grande" onclick="letraPoner(2)">A</button></span></div>
           <button type="button" role="menuitem" class="hm-tel hm-tema" onclick="hdrMenuCerrar(); document.getElementById('themeToggle').click()">Modo claro</button>
           <button type="button" role="menuitem" class="hm-tel hm-fold" onclick="hdrMenuCerrar(); idxFoldAll(true)">Plegar todos los libros</button>
           <button type="button" role="menuitem" class="hm-tel hm-fold" onclick="hdrMenuCerrar(); idxFoldAll(false)">Desplegar todos los libros</button>
@@ -2665,6 +2739,7 @@ body.light{ --accent-blue-ink:#34608B; }
     <button class="b" id="dibujoReintentar" type="button" hidden>Reintentar dibujo</button>
   </div>
   <span id="dibujoVoz" class="dibujo-voz" role="status" aria-live="polite"></span>
+  <span id="buscaVoz" class="dibujo-voz" role="status" aria-live="polite"></span>
   <div id="legend"></div>
   <div id="hint">931 títulos reales. Zoom para leer etiquetas.</div>
   <div id="zoomControls" style="position:absolute; bottom:var(--zoom-bottom,100px); right:24px; z-index:5; display:flex; flex-direction:var(--zoom-dir,column); gap:6px;">
@@ -2820,7 +2895,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v155-1553ba4c.js" data-resto="datos-v155-resto-1ee353ba.js"></script>
+<script src="datos-v156-0f0031cf.js" data-resto="datos-v156-resto-d4d4d225.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
 // y se recuerda en este navegador (localStorage funciona porque este archivo
@@ -3476,7 +3551,7 @@ function fraseBuscada(s, qs){
 const IDX_FRASE_EN = { "en el versículo": "", "en la descripción": "descripcion", "en la nota": "notas" };
 function idxFrase(d){
   const qs = buscaPalabras(); if (!qs.length) return null;
-  const notas = (d.notas || "").replace(/\[(NOTA|TIPOLOGIA|REVISAR)\]/g, " ").replace(/\s+/g, " ").trim();
+  const notas = notaPlano((d.notas || "").replace(/\[(NOTA|TIPOLOGIA|REVISAR)\]/g, " "));   // ronda 53: «#334» → su título, como en la ficha
   const f = d.texto && fraseBuscada(d.texto, qs); if (f) return { html: `“${f}”`, donde: "en el versículo" };
   const g = d.descripcion && fraseBuscada(d.descripcion, qs); if (g) return { html: `<span class="idx-frase-de">en la descripción:</span> ${g}`, donde: "en la descripción" };
   const h = notas && fraseBuscada(notas, qs); if (h) return { html: `<span class="idx-frase-de">en la nota:</span> ${h}`, donde: "en la nota" };
@@ -3551,7 +3626,10 @@ function renderIndexFilter(){
     header.style.display = (vacio ? !filtrado : bookHasVisible[book]) ? null : "none";
   });
   const empty = document.getElementById("indexEmpty");
-  if (empty) empty.style.display = anyVisible ? "none" : "block";
+  if (empty){ empty.style.display = anyVisible ? "none" : "block";
+    if (!anyVisible){ const q = (document.getElementById("search").value || "").trim();   // ronda 53: sin resultados, qué se buscó y qué probar
+      empty.innerHTML = q ? `No hay títulos con «${escHtml(q)}»${filtrosActivos() ? " y los filtros elegidos" : ""}. Probá con otra palabra o con una referencia, como Juan 10.<br><button type="button" class="idx-vacio-borrar">Borrar la búsqueda</button>`
+        : "Ningún título coincide con el filtro activo."; } }
   const puertas = document.getElementById("idxPuertas");   // con un filtro, las puertas quedan en el buscador: los resultados, arriba
   if (puertas) puertas.classList.toggle("con-filtro", filtrado);
 }
@@ -3810,8 +3888,36 @@ function origTamPoner(i){
   try { localStorage.setItem("jeb-orig-tam", String(i)); } catch (e) {}
   document.querySelectorAll(".orig-tam button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.t === i)));
 }
+// ronda 53 (D-193): «Letra», toda la página en tres pasos (normal, grande y muy grande), recordado (jeb-letra; el <head> la pone
+// antes de dibujar). Multiplica las seis medidas (--letra); «Letra del hebreo y el griego» sigue aparte y los dos se multiplican
+const LETRA = [1, 1.15, 1.3];
+let letraPaso = 0;
+try { letraPaso = Math.min(LETRA.length - 1, Math.max(0, parseInt(localStorage.getItem("jeb-letra"), 10) || 0)); } catch (e) {}
+function letraBotones(){
+  document.querySelectorAll(".letra-c button[data-l]").forEach(b => b.setAttribute(b.getAttribute("role") === "menuitemradio" ? "aria-checked" : "aria-pressed", String(+b.dataset.l === letraPaso)));
+}
+function letraRearmar(){   // los dibujos que miden su letra se vuelven a armar (el HTML se acomoda solo)
+  if (typeof syncHeader === "function") syncHeader();
+  if (layoutMode === "entre" && typeof grafoEnfActiva === "function" && grafoEnfActiva()) grafoEnfUbicar();
+  else if (layoutMode === "categorias" && typeof renderCatred === "function") renderCatred();
+  else if (layoutMode === "lexica" && typeof lexicaStarted !== "undefined" && lexicaStarted) lexRender();
+  else if (typeof refitCurrentView === "function") refitCurrentView();
+}
+function letraPoner(i){
+  letraPaso = i; document.documentElement.style.setProperty("--letra", LETRA[i]);
+  if (i) document.documentElement.setAttribute("data-letra", i); else document.documentElement.removeAttribute("data-letra");   // para lo que se acomoda distinto con la letra más grande
+  try { localStorage.setItem("jeb-letra", String(i)); } catch (e) {}
+  letraBotones();
+  requestAnimationFrame(() => requestAnimationFrame(letraRearmar));
+}
+function letraHtml(rol){
+  const r = rol ? ` role="${rol}"` : "", a = rol ? "aria-checked" : "aria-pressed";
+  return `<span class="letra-c" role="group" aria-label="Tamaño de la letra de toda la página"><span class="letra-t">Letra</span>${["normal", "grande", "muy grande"].map((t, i) =>
+    `<button type="button"${r} data-l="${i}" ${a}="${i === letraPaso}" aria-label="Letra ${t}" onclick="letraPoner(${i})">A</button>`).join("")}</span>`;
+}
+letraBotones();
 function origTamHtml(){
-  return `<span class="orig-tam" role="group" aria-label="Tamaño de la letra del hebreo y el griego"><span class="orig-tam-t">Letra del original</span>${["A", "A+", "A++"].map((t, i) => `<button type="button" data-t="${i}" aria-pressed="${i === origTam}" onclick="origTamPoner(${i})">${t}</button>`).join("")}</span>`;
+  return `<span class="orig-tam" role="group" aria-label="Tamaño de la letra del hebreo y el griego"><span class="orig-tam-t">Letra del hebreo y el griego</span>${["A", "A+", "A++"].map((t, i) => `<button type="button" data-t="${i}" aria-pressed="${i === origTam}" onclick="origTamPoner(${i})">${t}</button>`).join("")}</span>`;
 }
 function vocAttr(c){ return c[0] === "H" ? ' class="og-heb" dir="rtl" lang="he"' : ' class="og-grc" dir="auto" lang="grc"'; }
 // un puente de la traducción griega, en palabras: «δόξα ↔ כָּבוֹד, «gloria»»; si falta el dato, el par de códigos
@@ -6068,7 +6174,7 @@ function grafoEnfRender(){
   // vínculos del elegido que no se dibujan)
   const conFilas = new Set(N.map(n => n.book)), todos = entreLibrosTira();
   const nav = `<nav class="ge-libros" aria-label="Ir a un libro">${["AT", "NT"].map(t => `<span class="ge-lib-g" role="group" aria-label="${t === "AT" ? "Antiguo" : "Nuevo"} Testamento" style="display:contents">${todos[t]
-      .map(b => `<button type="button" data-book="${escHtml(b)}" data-t="${t}" title="${escHtml(b)}" class="${conFilas.has(b) ? "" : "vacio"}">${escHtml(corto(b))}</button>`).join("")}</span>`).join('<span class="ge-lib-sep" aria-hidden="true"></span>')}</nav>`;
+      .map(b => `<button type="button" data-book="${escHtml(b)}" data-t="${t}" title="${escHtml(b)}" class="${conFilas.has(b) ? "" : "vacio"}"${conFilas.has(b) ? "" : ' aria-disabled="true"'}>${escHtml(corto(b))}</button>`).join("")}</span>`).join('<span class="ge-lib-sep" aria-hidden="true"></span>')}</nav>`;
   grafoEnf.innerHTML = entreCabHtml(`<div class="ge-ctl"><span class="ge-ctl-et">El Nuevo Testamento:</span>
       <span class="ge-seg en-orden" role="group" aria-label="Orden del Nuevo Testamento"><button data-v="par" class="${grafoEnfOrden === "par" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "par"}">a la altura de su par</button><button data-v="canon" class="${grafoEnfOrden === "canon" ? "on" : ""}" aria-pressed="${grafoEnfOrden === "canon"}">en orden bíblico</button></span>
       <span class="ge-ctl-et en-cifras">${entreCifrasHtml(N, ev, capaE)}</span></div><div class="ge-ctl en-ctl2">${entreContBoton()}</div>`) + `
@@ -6190,7 +6296,11 @@ function grafoEnfIrLibro(libro, t){
   const col = grafoEnf.querySelector(".ge-col." + (t === "NT" ? "nt" : "at")); if (!col) return;
   const dest = [...col.querySelectorAll(".ge-libro")].find(x => x.dataset.book === libro)
     || [...col.querySelectorAll(".ge-t")].filter(b => nodeById[b.dataset.id].book === libro).sort((a, b) => a.offsetTop - b.offsetTop)[0];
-  if (!dest) return;
+  if (!dest){   // ronda 53: antes volvía sin avisar (28 libros con el filtro de entrada)
+    const nota = grafoEnf.querySelector(".en-tira-nota");
+    if (nota){ nota.hidden = false; nota.setAttribute("role", "status"); nota.textContent = `${libro}: sin títulos ${entreFiltro ? "con este filtro" : "con las capas elegidas"}.`; }
+    return;
+  }
   const cab = grafoEnf.querySelector(".ge-cab"), fijo = grafoEnf.querySelector(".en-fijo");
   const alto = (cab ? cab.offsetHeight : 0) + (fijo && getComputedStyle(fijo).position === "sticky" ? fijo.offsetHeight : 0);
   grafoEnf.scrollTo({ top: dest.getBoundingClientRect().top - grafoEnf.getBoundingClientRect().top + grafoEnf.scrollTop - alto - 8, behavior: movSuave() });
@@ -6346,7 +6456,9 @@ function mapaLeyendaHtml(scope){
   const parte = mapaParte ? ` en ${escHtml(MAPA_GRUPO[mapaParte] || mapaParte)}` : "";   // ronda 28a: la celda de la tabla
   const con = mapaCat ? `con «${escHtml(mapaCat)}»${parte}${isFiltered() ? " y el filtro" : ""}` : "con el filtro";
   const marcados = mapaParte ? scope.filter(mapaPasa) : [];
-  return `<div class="mp-ley">${mapaFiltrando() ? `<div class="mp-filtro"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}${marcados.length ? accionesConjunto(marcados.map(n => n.id), `${mapaCat}${parte.replace(/<[^>]+>/g, "")}`, true) : ""}</div>` : ""}<details class="mp-ley-d"${mapaLeyAbierta || mapaCat ? " open" : ""} ontoggle="mapaLeyGuardar(this.open)"><summary>Los colores: el tema de cada título <span class="mp-ley-pts" aria-hidden="true">${cats.map(c => `<i style="background:${mapaColor(c)}"></i>`).join("")}</span></summary><div class="mp-chips" role="group" aria-label="Resaltar un tema">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></details><label class="mp-resaltar"><select class="mp-res-sel" aria-label="Resaltar un tema"><option value="">Resaltar un tema…</option>${cats.map(c => `<option value="${escHtml(c)}"${c === mapaCat ? " selected" : ""}>${escHtml(c)}</option>`).join("")}</select></label></div>`;
+  // ronda 53 (Fable §12): desde la tabla (una celda), el aviso queda fijo arriba, fuera de la leyenda, con «Volver a la tabla»
+  const filtro = mapaFiltrando() ? `<div class="mp-filtro${mapaParte ? " mp-fijo" : ""}"><span class="mp-cuenta" role="status">${scope.filter(mapaPasa).length} de ${scope.length}</span> ${con}${mapaCat ? `<button type="button" class="mp-todas">Ver todas</button>` : ""}${mapaParte ? `<button type="button" class="mp-a-tabla">Volver a la tabla</button>` : ""}${marcados.length ? accionesConjunto(marcados.map(n => n.id), `${mapaCat}${parte.replace(/<[^>]+>/g, "")}`, true) : ""}</div>` : "";
+  return `${mapaParte ? filtro : ""}<div class="mp-ley">${mapaParte ? "" : filtro}<details class="mp-ley-d"${mapaLeyAbierta || mapaCat ? " open" : ""} ontoggle="mapaLeyGuardar(this.open)"><summary>Los colores: el tema de cada título <span class="mp-ley-pts" aria-hidden="true">${cats.map(c => `<i style="background:${mapaColor(c)}"></i>`).join("")}</span></summary><div class="mp-chips" role="group" aria-label="Resaltar un tema">${cats.map(c => `<button type="button" class="mp-cat${c === mapaCat ? " on" : mapaCat ? " apagada" : ""}" data-cat="${escHtml(c)}" aria-pressed="${c === mapaCat}"><i style="background:${mapaColor(c)}"></i>${escHtml(c)}</button>`).join("")}</div></details><label class="mp-resaltar"><select class="mp-res-sel" aria-label="Resaltar un tema"><option value="">Resaltar un tema…</option>${cats.map(c => `<option value="${escHtml(c)}"${c === mapaCat ? " selected" : ""}>${escHtml(c)}</option>`).join("")}</select></label></div>`;
 }
 function mapaGridHtml(){
   const D = mapaDatos();
@@ -6405,9 +6517,9 @@ function mapaTablaHtml(){
     const a = (0.14 + 0.6 * Math.sqrt(k / max)).toFixed(2);
     return `<td class="mp-tc"><button type="button" class="mp-celda" data-tcat="${escHtml(c)}" data-tparte="${escHtml(p)}" style="--c:${mapaColor(c)};--a:${a}" aria-label="${escHtml(c)} en ${escHtml(MAPA_GRUPO[p] || p)}: ${grafoPlural(k, "título", "títulos")}">${k}</button></td>`; };
   return `<p class="mp-ley-t">Cuántos títulos de cada tema hay en cada parte de la Biblia (un título con varios temas cuenta en cada uno)${isFiltered() ? ", con el filtro" : ""}. ${toca(true)} una celda para marcar esos títulos en el mapa.</p>
-    <div class="mp-tabla-w"><table class="mp-tabla"><thead><tr><th scope="col" class="mp-tt0">Tema</th>${partes.map(p => `<th scope="col" title="${escHtml(MAPA_GRUPO[p] || p)}">${escHtml(tel ? MAPA_PARTE_CORTA[p] : (MAPA_GRUPO[p] || p))}</th>`).join("")}</tr></thead>
+    <div class="mp-tabla-c"><div class="mp-tabla-w"><table class="mp-tabla"><thead><tr><th scope="col" class="mp-tt0">Tema</th>${partes.map(p => `<th scope="col" title="${escHtml(MAPA_GRUPO[p] || p)}">${escHtml(tel ? MAPA_PARTE_CORTA[p] : (MAPA_GRUPO[p] || p))}</th>`).join("")}</tr></thead>
     <tbody>${filas.map(c => `<tr><th scope="row" title="${escHtml(c)}"><i style="background:${mapaColor(c)}"></i>${escHtml(corto(c))}</th>${partes.map(p => celda(c, p)).join("")}</tr>`).join("")}</tbody>
-    <tfoot><tr><th scope="row">Títulos</th>${partes.map(p => `<td>${porParte[p] || 0}</td>`).join("")}</tr></tfoot></table></div>
+    <tfoot><tr><th scope="row">Títulos</th>${partes.map(p => `<td>${porParte[p] || 0}</td>`).join("")}</tr></tfoot></table></div><span class="mp-desliza" aria-hidden="true">›</span></div>
     <p class="mp-ley-t mp-ley-tabla"><span class="mp-ley-m mp-ley-lleno"></span> Más intenso el color, más títulos de ese tema en esa parte. <span class="mp-ley-m mp-ley-vacia"></span> Vacía: ningún título de ese tema en esa parte.</p>`;   // ronda 29a (D-95)
 }
 function mapaManeraElegir(m){ mapaManera = m; mapaLibro = null; mapaRender(); saveViewState(); if (typeof renderVistaHead === "function") renderVistaHead(); }
@@ -6430,6 +6542,8 @@ function mapaRender(){
     + (mapaLibro ? mapaLibroHtml(D[mapaLibro]) : temas ? mapaTablaHtml()
        : `<p class="mp-ley-t">Cada cuadradito es un título, con el color de su tema principal. Elegí un libro para ver en qué capítulos están sus títulos; ${toca()} un tema para resaltarlos.</p>${mapaLeyendaHtml(canonSorted)}${mapaGridHtml()}`);
   mapaLayer.scrollTop = mapaScroll[mapaLibro || (temas ? "temas" : "")] || 0;
+  { const w = mapaLayer.querySelector(".mp-tabla-w");   // ronda 53: el degradé al borde mientras quede tabla a la derecha
+    if (w){ const f = () => w.parentNode.classList.toggle("desborda", w.scrollWidth - w.clientWidth - w.scrollLeft > 2); w.addEventListener("scroll", f, { passive: true }); requestAnimationFrame(f); } }
   if (lastPanelId && document.getElementById("panel").classList.contains("open")) tiempoHighlight(lastPanelId);
 }
 function mapaIr(book){
@@ -6454,6 +6568,7 @@ mapaLayer.addEventListener("click", e => {
   else if (x.dataset.id){ const n = nodeById[x.dataset.id]; if (n){ tiempoHighlight(n.id); openPanel(n); } }
   else if (x.dataset.cat){ mapaParte = null; mapaFiltrar(x.dataset.cat === mapaCat ? null : x.dataset.cat); }
   else if (x.classList.contains("mp-todas")){ mapaParte = null; mapaFiltrar(null); }
+  else if (x.classList.contains("mp-a-tabla")){ mapaParte = null; mapaCat = null; mapaManeraElegir("temas"); }   // ronda 53
   else if (x.dataset.manera) mapaManeraElegir(x.dataset.manera);   // ronda 28a
   else if (x.dataset.tcat) mapaMarcar(x.dataset.tcat, x.dataset.tparte);
 });
@@ -7315,7 +7430,7 @@ function dashMarked(){
   document.getElementById("modeSelect").value = "indice"; setMode("indice"); syncHeader(); applyFilters(); saveViewState();
 }
 function dashCard(c){
-  const click = c.go ? ` onclick="${c.go}"` : "";
+  const click = c.go ? ` onclick="${c.go.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}"` : "";   // ronda 53: go puede traer JSON con comillas dobles
   return `<div class="dash-card${c.go ? " go" : ""}${c.tone ? " " + c.tone : ""}"${click} title="${c.tip || ""}">
     <div class="dash-val">${c.value}${c.of != null ? `<span class="dash-of"> / ${c.of}</span>` : ""}</div>
     <div class="dash-label">${c.label}</div>
@@ -8684,6 +8799,17 @@ function isFiltered(){
     currentFilterState.onlyTip || currentFilterState.onlyRev || advIsActive();
 }
 
+// ronda 53 (M1): el buscador avisa cuántos títulos hay, o que ninguno, al lector de pantalla (un rato después de dejar de escribir)
+let buscaVozT = null, buscaVozUlt = "";
+function buscaVozAvisar(q, n){
+  clearTimeout(buscaVozT);
+  buscaVozT = setTimeout(() => {
+    const el = document.getElementById("buscaVoz"); if (!el) return;
+    const msg = !q ? "" : n ? `${n} ${n === 1 ? "título" : "títulos"} con «${q}»` : `Ningún título con «${q}»`;
+    if (msg !== buscaVozUlt){ el.textContent = msg; buscaVozUlt = msg; }
+  }, 700);
+}
+document.addEventListener("click", e => { if (e.target.closest && e.target.closest(".idx-vacio-borrar")){ const x = document.getElementById("searchClear"); if (x) x.click(); } });
 function applyFilters(){
   if (filtroPausa && filtroHayGuardado()) filtroPausa = null;   // ronda 19: tocó un filtro durante la pausa: gana lo elegido
   const raw = document.getElementById("search").value.trim();
@@ -8703,6 +8829,7 @@ function applyFilters(){
   document.getElementById("stats").textContent = isFiltered()
     ? `${visibleCount} de ${rawNodes.length} títulos (filtrado)`
     : `${rawNodes.length} títulos · ${catsWithNodes.length} categorías`;
+  buscaVozAvisar(raw, visibleCount);   // ronda 53 (M1)
 
   // mismos filtros aplicados a la matriz: filas = categorías (se atenúan por
   // activeCats), columnas = libros (se atenúan si algún token de la búsqueda
@@ -9243,7 +9370,9 @@ function urlCopy(){
   urlSync();
   const abierta = lastPanelId && nodeById[lastPanelId] && document.getElementById("panel").classList.contains("open") ? lastPanelId : null;
   const url = abierta ? SITIO_URL + "t/" + abierta + ".html" : location.href;
-  const done = () => { const b = document.getElementById("urlCopyBtn"); if (b){ b.textContent = "Copiado"; setTimeout(() => b.textContent = "Copiar enlace", 1500); } };
+  const done = () => { const b = document.getElementById("urlCopyBtn"); if (b){ b.textContent = "Copiado"; setTimeout(() => b.textContent = "Copiar enlace", 1500); }
+    selAviso("Enlace copiado.");   // ronda 53 (M3): se avisa como «Guardar»
+  };
   if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(() => prompt("Copiá el enlace:", url));
   else prompt("Copiá el enlace:", url);
 }
@@ -9365,7 +9494,7 @@ function vozHtml(d){
 function exprTexto(d){
   const x = d.expr; if (!x) return "";
   const T = x.t === "AT" ? "el Antiguo Testamento" : "el Nuevo Testamento";
-  if (x.n === 1) return `Es la única vez que aparece en ${T}.`;
+  if (x.n === 1) return (x.p || 0) >= 3 ? "" : `Es la única vez que aparece en ${T}.`;   // ronda 53: no, si la expresión tiene tres palabras o más (p, del migrate)
   return `Esta expresión aparece ${x.n} veces en ${T}, en ${x.v === 1 ? "1 versículo" : x.v + " versículos"}: ${x.l.map(([b, k]) => `${b} (${k})`).join(", ")}.`;
 }
 function exprHtml(d){ const t = exprTexto(d); return t ? `<p class="og-expr">${escHtml(t)}</p>` : ""; }
@@ -9626,7 +9755,7 @@ function fichaOriginal(d){
     const stepP = stepPalabra(g);
     const completa = corta && (stepP || stepV) ? ` <a href="${stepP || stepV}" target="_blank" rel="noopener">completa en STEP ↗</a>` : "";
     const freq = validFreq(c, g.freq);
-    return `<div class="og-str">${texto ? `<div class="og-glosa">${texto}${corta ? "…" : ""}${completa}</div>` : ""}
+    return `<div class="og-str">${texto && !corta ? `<div class="og-glosa">${texto}</div>` : ""}
       <div class="og-pie"><span>${freq ? `${freq} ${freq == 1 ? "aparición" : "apariciones"} del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
         <span class="og-strong">Strong ${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${c} ↗</a>` : c}</span></div></div>`;
   };
@@ -9649,7 +9778,7 @@ function fichaOriginal(d){
   }).join("");
   return `<details class="og" data-plegable="original">
     <summary>El texto original${lengua ? ` <span class="og-meta">· ${lengua}, ${P.length} ${P.length === 1 ? "palabra" : "palabras"}</span>` : ""}${ogEsta(d) ? `<span class="og-esta">${ogEsta(d)}</span>` : ""}<span class="og-nohace">No hace falta leer hebreo o griego para entender esta ficha.</span></summary>
-    ${origTamHtml()}
+    <div class="og-letras">${letraHtml()}${origTamHtml()}</div>
     ${filas}
     ${exprHtml(d)}
     ${stepV ? `<a class="og-step-v" href="${stepV}" target="_blank" rel="noopener">${d.ref} en ${lengua || "el original"}, en STEP Bible ↗</a>` : ""}
@@ -9737,11 +9866,20 @@ function fichaRecorridos(d){
   const lista = rs.length === 1 ? uno(rs[0]) : rs.slice(0, -1).map(uno).join(", ") + " y " + uno(rs[rs.length - 1]);
   return `<p class="ficha-rec">${desde ? "También está" : "Está"} en ${rs.length === 1 ? "el recorrido" : "los recorridos"} ${lista}.</p>`;
 }
+// ronda 53: «Ver el pasaje completo» abre el capítulo (el enlace del dato, BibleGateway, trae el versículo)
+// (a mano, sin el constructor de direcciones: control_publicado toma la llamada a ese constructor por una referencia a un archivo)
+function pasajeCapitulo(enlace){
+  const m = /([?&]search=)([^&#]*)/.exec(enlace); if (!m) return enlace;
+  let q = ""; try { q = decodeURIComponent(m[2].replace(/\+/g, " ")); } catch (e) { return enlace; }
+  const c = /^(.+?\s\d+):\S+$/.exec(q.trim());
+  return c ? enlace.slice(0, m.index) + m[1] + encodeURIComponent(c[1]) + enlace.slice(m.index + m[0].length) : enlace;
+}
 function fichaMenu(d){
   const id = JSON.stringify(d.id);
   return `<div class="ficha-menu">
     <button type="button" class="fbtn ghost ficha-menu-btn niv-borde" aria-haspopup="true" aria-expanded="false" onclick="fichaMenuToggle(this)">⋯ Más</button>
     <div class="ficha-menu-lista" role="menu" hidden>
+      <div class="fm-letra" role="group" aria-label="Tamaño de la letra de toda la página">${letraHtml("menuitemradio")}</div>
       <div class="fm-fila"><button type="button" role="menuitem" class="fm-notas" onclick='fichaCopiarNotas(${id}, this)' title="Al portapapeles: el título, la referencia, el versículo, la descripción, la marca, las notas y las conexiones que se ven">Copiar texto para notas</button><button type="button" role="menuitem" class="fm-sec" onclick='fichaMenuCerrar(); openExport([${id}])' title="Un archivo de texto (.md), que se abre con cualquier editor">descargar</button></div>
       <button type="button" role="menuitem" id="compBtn-${d.id}" onclick='compToggle(${id})'>${compHas(d.id) ? "✓ En la comparación" : "Comparar con otro título"}</button>
       <div class="fm-sep">Ver en</div>
@@ -9983,7 +10121,7 @@ function tradUrl(d, grupo){
 // tres grupos (antes, un plegable abajo y «Ver el pasaje completo» en la fila de acciones)
 function fichaVersoLinea(d){
   const v = d.version ? `<span class="fv-v" title="${escHtml(d.version)}">${escHtml(TRAD_NOMBRES[d.version] || d.version)}</span>` : "";
-  const pas = d.url ? `<a class="fv-l passage-link" href="${escHtml(d.url)}" target="_blank" rel="noopener">Ver el pasaje completo ↗</a>` : "";
+  const pas = d.url ? `<a class="fv-l passage-link" href="${escHtml(pasajeCapitulo(d.url))}" target="_blank" rel="noopener">Ver el pasaje completo ↗</a>` : "";
   const grupos = TRAD_GRUPOS.map(g => [g, tradUrl(d, g)]).filter(x => x[1]);
   const comp = grupos.length ? `<span class="fv-trad"><button type="button" class="fv-l fv-trad-b" aria-haspopup="true" aria-expanded="false" onclick="fichaTradToggle(this)">Comparar traducciones ↗</button><span class="fv-trad-m" role="menu" hidden>${grupos.map(([g, u]) =>
     `<a role="menuitem" href="${escHtml(u)}" target="_blank" rel="noopener" title="${escHtml(g.join(" · "))}">${escHtml(g.map(x => TRAD_NOMBRES[x] || x).join(" · "))} ↗</a>`).join("")}<span class="fv-trad-n">En BibleGateway, en una pestaña nueva.</span></span></span>` : "";
@@ -10288,18 +10426,38 @@ function fichaFocoEstado(){
   fichaInertes.forEach(e => { e.inert = false; }); fichaInertes = [];
   if (tapa) FICHA_DETRAS.forEach(s => document.querySelectorAll(s).forEach(e => { e.inert = true; fichaInertes.push(e); }));
   if (abierta && !p.contains(document.activeElement)){
-    if (!fichaVuelta) fichaVuelta = document.activeElement;
+    if (!fichaVuelta){ let v = document.activeElement; const fila = fichaFilaDe(lastPanelId);   // ronda 53 (A2): si era la lista o nada, la fila
+      if (fila && (!v || v === document.body || (v !== fila && v.contains(fila)))) v = fila;
+      fichaVuelta = v; }
     // como en la bienvenida (ronda 33): el foco después de pintar, para no diseñar la página a medio arranque
     requestAnimationFrame(() => setTimeout(() => { if (p.classList.contains("open") && !p.contains(document.activeElement)) p.focus({ preventScroll: true }); }, 0));
   }
-  if (!abierta && fichaVuelta){ const v = fichaVuelta; fichaVuelta = null; if (v.isConnected && v !== document.body && !v.closest("[inert]")) v.focus({ preventScroll: true }); }
+  if (!abierta && fichaVuelta){ const v = fichaVuelta; fichaVuelta = null; fichaDevolver(v); }   // ronda 53 (A2)
+  p.inert = !abierta;   // ronda 53 (A1): cerrada, la ficha no recibe el Tab ni la lee el lector de pantalla
+}
+// ronda 53 (A2): el foco, a lo que lo tenía; si la vista se volvió a dibujar al cerrar (el atrás del historial vuelve a pintar el Mapa),
+// al mismo control del mismo título (la misma etiqueta, la misma clase y el mismo data-id), un momento después
+function fichaDevolver(v){
+  const pon = () => { let x = v;
+    if (!x.isConnected && x.dataset && x.dataset.id){ const k = x.classList[0];
+      x = document.querySelector(`${x.tagName.toLowerCase()}${k ? "." + CSS.escape(k) : ""}[data-id="${CSS.escape(x.dataset.id)}"]`) || x; }
+    if (x.isConnected && x !== document.body && !x.closest("[inert]") && x.getClientRects().length) x.focus({ preventScroll: true }); };
+  pon(); setTimeout(() => { const a = document.activeElement; if (!a || a === document.body) pon(); }, 150);
+}
+// ronda 53 (A2): la fila de Por libro del título abierto, para devolverle el foco al cerrar (no está en el orden del Tab)
+function fichaFilaDe(id){
+  const r = id && typeof indexRowByNodeId !== "undefined" ? indexRowByNodeId[id] : null;
+  if (!r || !r.isConnected || !r.getClientRects().length) return null;
+  if (!r.hasAttribute("tabindex")) r.setAttribute("tabindex", "-1");
+  return r;
 }
 new MutationObserver(fichaFocoEstado).observe(document.getElementById("panel"), { attributes: true, attributeFilter: ["class"] });
+document.getElementById("panel").inert = !document.getElementById("panel").classList.contains("open");   // ronda 53 (A1): de entrada, cerrada
 document.getElementById("panel").addEventListener("keydown", e => {   // el Tab da la vuelta dentro de la ficha
   if (e.key !== "Tab") return;
   const p = document.getElementById("panel"), L = [...p.querySelectorAll('button, [href], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])')]
     .filter(x => !x.disabled && x.getClientRects().length && !x.closest("[inert], [hidden]"));
-  if (!L.length) return;
+  if (!L.length || !p.classList.contains("open")) return;   // ronda 53 (A1): la vuelta, solo con la ficha abierta
   const i = L.indexOf(document.activeElement);
   if (e.shiftKey && (i <= 0)){ e.preventDefault(); L[L.length - 1].focus(); }
   else if (!e.shiftKey && (i === -1 || i === L.length - 1)){ e.preventDefault(); L[0].focus(); }
@@ -10560,7 +10718,7 @@ function buildAdvPanel(){
     </div>
     <div class="adv-group">
       <div class="adv-label">Texto libre</div>
-      <details class="adv-avz"><summary>Búsqueda avanzada</summary><div class="adv-mini" style="margin-bottom:6px; color:var(--ink-3);">En el buscador de arriba también valen prefijos: <b>libro:</b> (o book:) <b>categoría:</b> (o cat:) <b>testamento:</b> <b>lectura:</b> (lexico · profecia · tipologia) <b>sujeto:</b> (cristo · yhwh · otro) <b>voz:</b> (dios · jesus-de-si · profeta…). Se combinan; sin valor traen las que no tienen dato.</div></details>
+      <details class="adv-avz"><summary>Búsqueda avanzada</summary><div class="adv-mini" style="margin-bottom:6px; color:var(--ink-3);">En el buscador de arriba también valen una referencia (Is 9:6, Juan 3), un código Strong (H2233) y estas palabras delante de lo que se busca: <b>libro:</b> (libro:isaías), <b>categoría:</b> (categoría:realeza) y <b>testamento:</b> (testamento:AT). Se combinan entre sí. La marca, de quién habla el pasaje y quién lo dice se eligen más abajo.</div></details>
       <input id="advText" type="text" placeholder="ej. pastor, ποιμήν, poimen…">
       <div class="adv-fields">${fieldRows}</div>
     </div>
@@ -10649,7 +10807,7 @@ function buildAdvPanel(){
   // móvil: cada grupo se pliega tocando su título (el primero queda abierto)
   // ronda 39 (3): en el teléfono las categorías también abiertas; «Libro», plegado dentro de su grupo; los prefijos, abiertos en la compu
   p.querySelectorAll(".adv-sub > .adv-label").forEach(lb => lb.addEventListener("click", () => lb.parentElement.classList.toggle("open")));
-  { const avz = p.querySelector(".adv-avz"); if (avz && !esTelefono()) avz.open = true; }
+  // ronda 53: «Búsqueda avanzada», cerrada también en la compu (antes se abría sola)
   p.querySelectorAll(".adv-group").forEach((g, i) => { if (i === 0 || g.classList.contains("adv-two") || g.querySelector(".adv-cats")){ g.classList.add("open"); return; } const lb = g.querySelector(".adv-label"); if (lb) lb.addEventListener("click", (e) => { if (e.target.tagName === "A") return; g.classList.toggle("open"); }); });
   p.querySelectorAll("input[data-verif]").forEach(cb => cb.addEventListener("change", () => { cb.checked ? advFilter.verif.add(cb.dataset.verif) : advFilter.verif.delete(cb.dataset.verif); upd(); }));
   document.getElementById("advNoTip").addEventListener("change", (e) => { advFilter.noTip = e.target.checked; upd(); });
@@ -10940,6 +11098,8 @@ function idxLibroFiltrar(book, q){
   Object.entries(indexRowByNodeId).forEach(([id, r]) => { if (r.dataset.book === book) r.classList.toggle("idx-fuera-libro", !!nq && !generalMatch(nodeById[id], nq)); });
 }
 document.addEventListener("click", e => {   // en la captura, como las acciones: el encabezado no se pliega
+  const m = e.target.closest && e.target.closest(".idx-acc-mas");   // ronda 53
+  if (m){ e.stopPropagation(); const h = m.closest(".idx-book-header"), on = !h.classList.contains("acc-abierto"); h.classList.toggle("acc-abierto", on); m.setAttribute("aria-expanded", on); return; }
   const b = e.target.closest && e.target.closest(".idx-libro-b, .idx-libro-q"); if (!b) return;
   e.stopPropagation();
   if (!b.classList.contains("idx-libro-b")) return;
@@ -10963,6 +11123,12 @@ function idxAccionesLibros(){
     if (c && !c.dataset.total) c.dataset.total = c.textContent;
     if (c) c.textContent = isFiltered() ? `${ids.length} de ${c.dataset.total}` : c.dataset.total;   // con filtro: «1 de 22 títulos»
     // ronda 39 (9): «Buscar en Salmos», en el renglón de «Leer estos N» (no suma alto); su campo, una vez por libro, debajo y a pedido
+    // ronda 53: en el teléfono, «⋯» despliega leer, repasar y buscar (el encabezado pegado, en un renglón)
+    let mas = header.querySelector(".idx-acc-mas");
+    if (!mas){ mas = document.createElement("button"); mas.type = "button"; mas.className = "idx-acc-mas"; mas.textContent = "⋯";
+      mas.setAttribute("aria-label", `Más de ${book}: leer, repasar y buscar`); mas.setAttribute("aria-expanded", "false"); header.insertBefore(mas, s); }
+    mas.hidden = idxFolded.has(book) || !ids.length;
+    if (mas.hidden){ header.classList.remove("acc-abierto"); mas.setAttribute("aria-expanded", "false"); }
     let q = header.querySelector(".idx-libro-busca");
     if (!q){ q = document.createElement("span"); q.className = "idx-libro-busca"; q.hidden = true;
       q.innerHTML = `<input type="search" class="idx-libro-q" placeholder="Buscar en ${escHtml(book)}…" aria-label="Buscar solo en ${escHtml(book)}">`;
