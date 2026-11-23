@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Jesús en la Biblia — Títulos, nombres y figuras de Cristo</title>
-<meta name="description" content="Catálogo gratuito de 946 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis, con su versículo, la palabra en hebreo o griego y recorridos guiados.">
+<meta name="description" content="Catálogo gratuito de 947 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis, con su versículo, la palabra en hebreo o griego y recorridos guiados.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jesusenlabiblia.github.io/">
 <meta property="og:image" content="https://jesusenlabiblia.github.io/og-image.png">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="Jesús en la Biblia">
 <meta property="og:title" content="Jesús en la Biblia — Títulos, nombres y figuras de Cristo">
-<meta property="og:description" content="Catálogo gratuito de 946 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis, con su versículo, la palabra en hebreo o griego y recorridos guiados.">
+<meta property="og:description" content="Catálogo gratuito de 947 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis, con su versículo, la palabra en hebreo o griego y recorridos guiados.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0E1229">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%230E1229'/%3E%3Ctext%20x='32'%20y='46'%20text-anchor='middle'%20font-family='Georgia%2Cserif'%20font-size='42'%20font-style='italic'%20fill='%23E8C468'%3EJ%3C/text%3E%3C/svg%3E">
@@ -93,6 +93,11 @@
     --cat-05-ink:#476692; --cat-06-ink:#645B71; --cat-07-ink:#A4370B; --cat-08-ink:#356B65;
     --cat-09-ink:#6C5F47; --cat-10-ink:#652F35; --cat-11-ink:#2C4D6C; --cat-12-ink:#436745;
     --cat-13-ink:#915916; --cat-14-ink:#33267B; --cat-15-ink:#7A2B56; --cat-00-ink:#4A4A4A;
+    /* ronda 54 (D-196): el número de cada círculo de Por tema, oscuro o blanco según su relleno; el borde, solo donde no llega a 4,5:1 */
+    --cat-01-num:#1a1710; --cat-01-halo:none; --cat-02-num:#FFFFFF; --cat-02-halo:none; --cat-03-num:#1a1710; --cat-03-halo:none; --cat-04-num:#1a1710; --cat-04-halo:none;
+    --cat-05-num:#1a1710; --cat-05-halo:none; --cat-06-num:#FFFFFF; --cat-06-halo:none; --cat-07-num:#1a1710; --cat-07-halo:none; --cat-08-num:#1a1710; --cat-08-halo:none;
+    --cat-09-num:#1a1710; --cat-09-halo:none; --cat-10-num:#FFFFFF; --cat-10-halo:none; --cat-11-num:#1a1710; --cat-11-halo:none; --cat-12-num:#FFFFFF; --cat-12-halo:none;
+    --cat-13-num:#1a1710; --cat-13-halo:none; --cat-14-num:#FFFFFF; --cat-14-halo:#1a1710; --cat-15-num:#1a1710; --cat-15-halo:none; --cat-00-num:#FFFFFF; --cat-00-halo:none;
   }
   body.light{
     --sup-fondo:#F7F2E4; --sup-hundida:#ECE2C8; --sup-elevada:#FFFDF8; --sup-anidada:#F3ECDB; --sup-borde:#DED6C0;   /* ronda 37 */
@@ -108,12 +113,20 @@
     --accent-blue:#3F6F9E; --accent-violet:#7A4FA6; --danger:#B23B37; --amber:#B7761C; --ok:#4E7F4B;
     /* la superficie de fondo pasa a ser clara: la tinta y el foco se dan vuelta */
     --ink-1:#241E12; --ink-2:#4A4326; --ink-3:#6B6142; --foco:#8E731C; --enlace-raya:#8E731C;
-    /* paleta de categorías en claro: mismos matices, oscurecidos hasta
-       ≥4.5:1 contra blanco (texto de .cat-tag) y ≥4.1:1 contra --night */
-    --cat-01:#453A0A; --cat-02:#85031A; --cat-03:#496E46; --cat-04:#71439E;
-    --cat-05:#5676A3; --cat-06:#695C7C; --cat-07:#A4370B; --cat-08:#2E6862;
-    --cat-09:#80735A; --cat-10:#652F35; --cat-11:#2C4D6C; --cat-12:#445C40;
-    --cat-13:#A36416; --cat-14:#33267B; --cat-15:#7A2B56; --cat-00:#525252;
+    /* paleta de categorías en claro. Ronda 54 (D-196): la paleta B. Estos colores son solo rellenos y fondos (los puntos, los
+       cuadraditos, los círculos, las celdas del Mapa); la letra de los chips usa --cat-NN-ink. Antes eran los de la letra, todos
+       oscuros (4,5:1 contra blanco), y en un cuadradito de 8 px se confundían (el par más parecido, ΔE 5,4). Ahora, de tonos medios
+       (el tono, a lo sumo 20° del de su color en el oscuro), ningún par a menos de ΔE 10 (el más parecido, 10,6) y con las reglas de
+       D-114: 3,5:1 o más contra --night y --night-deep, a ΔE 6 o más de los dos dorados de la marca y los pares que se pisaban, a 7 o
+       más (tmp/r54/paleta_b2.py, en el worktree de la 54) */
+    --cat-01:#565E0B; --cat-02:#A9112B; --cat-03:#02870C; --cat-04:#723E8A;
+    --cat-05:#1750B5; --cat-06:#A74FBC; --cat-07:#CF413D; --cat-08:#196369;
+    --cat-09:#A6611A; --cat-10:#B83275; --cat-11:#257CAD; --cat-12:#687B5D;
+    --cat-13:#804629; --cat-14:#6864DD; --cat-15:#946784; --cat-00:#525252;
+    --cat-01-num:#FFFFFF; --cat-01-halo:none; --cat-02-num:#FFFFFF; --cat-02-halo:none; --cat-03-num:#FFFFFF; --cat-03-halo:none; --cat-04-num:#FFFFFF; --cat-04-halo:none;
+    --cat-05-num:#FFFFFF; --cat-05-halo:none; --cat-06-num:#FFFFFF; --cat-06-halo:none; --cat-07-num:#FFFFFF; --cat-07-halo:none; --cat-08-num:#FFFFFF; --cat-08-halo:none;
+    --cat-09-num:#FFFFFF; --cat-09-halo:none; --cat-10-num:#FFFFFF; --cat-10-halo:none; --cat-11-num:#FFFFFF; --cat-11-halo:none; --cat-12-num:#FFFFFF; --cat-12-halo:none;
+    --cat-13-num:#FFFFFF; --cat-13-halo:none; --cat-14-num:#FFFFFF; --cat-14-halo:none; --cat-15-num:#FFFFFF; --cat-15-halo:none; --cat-00-num:#FFFFFF; --cat-00-halo:none;
     /* ronda 37: los puntos y los chips de los temas (--cat-NN-bg), con el color del claro; antes quedaban los del oscuro */
     --cat-00-bg:var(--cat-00); --cat-01-bg:var(--cat-01); --cat-02-bg:var(--cat-02); --cat-03-bg:var(--cat-03);
     --cat-04-bg:var(--cat-04); --cat-05-bg:var(--cat-05); --cat-06-bg:var(--cat-06); --cat-07-bg:var(--cat-07);
@@ -1026,7 +1039,8 @@
   .catred-node circle{ stroke:rgba(0,0,0,0.35); stroke-width:1px; transition:opacity 0.2s; }
   .catred-node.off circle{ opacity:0.2; }
   .catred-node.on circle{ stroke:var(--gold-bright); stroke-width:3px; filter:url(#goldGlow); }
-  .catred-count{ text-anchor:middle; font-family:'Source Sans 3', sans-serif; font-size:var(--t-6); font-weight:600; fill:#1a1710; pointer-events:none; }
+  .catred-count{ text-anchor:middle; font-family:'Source Sans 3', sans-serif; font-size:var(--t-6); font-weight:600; fill:#1a1710; pointer-events:none;
+    paint-order:stroke; stroke-width:2.5px; stroke-linejoin:round; }   /* ronda 54: el color y el borde, de cada tema (--cat-NN-num, --cat-NN-halo) */
   .catred-label{ font-family:'Source Sans 3', sans-serif; font-size:var(--t-5); fill:var(--parchment); pointer-events:none; }
   .catred-node.on .catred-label{ fill:var(--gold-bright); font-weight:600; }
   .catred-side-head{ margin-bottom:12px; }
@@ -1731,7 +1745,7 @@ body.light{ --accent-blue-ink:#34608B; }
   #modeSelect.hbtn{ border-color:var(--gold-texto); background-color:rgba(201,162,39,0.10); }
   #modeSelect.hbtn:hover{ background-color:rgba(201,162,39,0.20); }
   @media (max-width: 370px){ header .brand{ font-size:calc(var(--t-3) - 1.5px); } header .header-row{ gap:6px; } }   /* ronda 37: el logo, excepción de identidad */
-  @media (max-width: 380px){ .idx-row{ contain-intrinsic-size:auto 57px; } }   /* ronda 37: a 360 px, más títulos en dos renglones */   /* ronda 28a: en 360 px, más lugar para el selector */
+  /* ronda 54: la reserva de 380 px o menos, más abajo (después de la de 720 px, que la pisaba) */   /* ronda 28a: en 360 px, más lugar para el selector */
   .hdr-extra #stats[hidden]{ display:none; }
   #filterChips .fc-tel{ display:none; }
   /* la línea de la vista */
@@ -1867,7 +1881,7 @@ body.light{ --accent-blue-ink:#34608B; }
     .idx-row .idx-icon{ grid-row:2; grid-column:1; }
     .idx-row .idx-title{ grid-row:2; grid-column:2 / 4; white-space:normal; line-height:1.25; }
     .idx-row{ grid-template-columns:auto 1fr auto auto; }   /* ronda 25: la estrella, al final */
-    .idx-row{ contain-intrinsic-size:auto 52.8px; }   /* ronda 37: 52,8 px, el promedio con la escala nueva a 412 (era 49) */   /* ronda de carga (D); ronda 36: 49 px, el contenido de una fila con las letras reales */
+    .idx-row{ contain-intrinsic-size:auto 53.3px; }   /* ronda 54: 53,3 px, el promedio con «envuelve» a 412 (ronda 37: 52,8; era 49) */   /* ronda de carga (D); ronda 36: 49 px, el contenido de una fila con las letras reales */
     .idx-row .idx-cats{ grid-column:3 / 5; }
     .idx-row .idx-title{ grid-column:2 / 4; }
     .idx-row .idx-sel{ grid-row:2; grid-column:4; align-self:center; }
@@ -2579,12 +2593,17 @@ body.light{ --accent-blue-ink:#34608B; }
     .hdr-menu .hm-letra{ display:flex; padding:6px 12px 8px; }
     .hdr-menu .hm-letra button{ display:inline-flex; align-items:center; justify-content:center; width:auto; min-width:40px; min-height:40px; }
   }
-  /* L3b · en el teléfono, desde «Grande»: «Génesis 1:1 · en el texto» no se parte; el chip del tema baja a su renglón (con la letra normal, como siempre) */
+  /* L3b · ronda 54 (D-196, «envuelve»): en el teléfono, con cualquier letra, «Génesis 1:1 · en el texto» no se parte; la referencia y
+     el tema van en una caja (.idx-l1) que se parte sola: el tema baja a su renglón solo si no entra al lado. En la compu la caja no
+     cuenta y el orden de la fila es el de siempre (el tema y la estrella, al final; la frase de lo buscado, debajo) */
+  .idx-row .idx-l1{ display:contents; }
+  .idx-row .idx-cats{ order:1; } .idx-row .idx-sel{ order:2; } .idx-row .idx-frase{ order:3; }
   @media (max-width: 720px){
-    html[data-letra] .idx-row .idx-ref{ white-space:nowrap; }
-    html[data-letra] .idx-row .idx-cats{ grid-row:2; grid-column:1 / 5; justify-self:start; }
-    html[data-letra] .idx-row .idx-icon, html[data-letra] .idx-row .idx-title, html[data-letra] .idx-row .idx-sel{ grid-row:3; }
+    .idx-row .idx-l1{ grid-row:1; grid-column:1 / 5; display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:2px 10px; min-width:0; }
+    .idx-row .idx-l1 .idx-ref{ white-space:nowrap; }
+    .idx-row .idx-l1 .idx-cats{ margin-left:auto; }
   }
+  @media (max-width: 380px){ .idx-row{ contain-intrinsic-size:auto 58.6px; } }   /* a 360 px, el promedio con «envuelve» (ronda 37: 57, que no se aplicaba) */
   /* L4 · las celdas de la tabla del Mapa crecen con la letra */
   #mapaLayer .mp-tc{ min-width:calc(44px * var(--letra)); height:calc(34px * var(--letra)); }
   #mapaLayer .mp-celda{ min-height:calc(34px * var(--letra)); }
@@ -2621,6 +2640,35 @@ body.light{ --accent-blue-ink:#34608B; }
   body:not(.light) .cx-par{ --ink-1:#F2EDE0; --ink-2:#D2C59E; --ink-3:#AEA27E; --foco:#E8C468;
     --panel-bg:var(--sup-elevada); --papel:var(--sup-elevada); --papel-alto:var(--sup-anidada); --papel-linea:var(--sup-borde); }
   body:not(.light) .cx-puente .fl{ color:var(--gold-bright); }
+  /* ═══ ronda 54 (D-196) ═══ */
+  /* 1 · «Sobre el libro»: debajo del encabezado de cada libro, plegado; se esconde con el libro plegado (y, con hidden, con una
+     búsqueda o un filtro). En la ficha, antes de «Para estudiar más», con el aspecto de los otros plegables */
+  #indexLayer .idx-sobre{ margin:2px 0 6px; padding:0 6px; font-family:'Source Sans 3', sans-serif; }
+  @media (min-width: 720px){ #indexLayer .idx-sobre{ max-width:1080px; margin-left:auto; margin-right:auto; } }
+  #indexLayer .idx-sobre > summary{ cursor:pointer; display:inline-block; font-size:var(--t-5); color:var(--gold-texto); list-style:none; padding:2px 0; }
+  #indexLayer .idx-sobre > summary::-webkit-details-marker{ display:none; }
+  #indexLayer .idx-sobre > summary::after{ content:" ▸"; }
+  #indexLayer .idx-sobre[open] > summary::after{ content:" ▾"; }
+  #indexLayer .idx-sobre > summary:focus-visible{ outline:2px solid var(--foco); outline-offset:2px; border-radius:2px; }
+  #indexLayer .idx-sobre p{ max-width:72ch; margin:2px 0 4px; font-size:var(--t-4); line-height:1.5; color:var(--parchment); }
+  #indexLayer .idx-book-header.folded + .idx-sobre{ display:none; }
+  #panel details.fx-sobre{ margin:20px 0 0; border-top:1px solid var(--papel-linea); padding-top:4px; }
+  #panel details.fx-sobre > summary{ cursor:pointer; font-size:var(--t-5); color:var(--ink-1); font-weight:600; padding:8px 0; }
+  #panel details.fx-sobre p{ margin:4px 0 6px; line-height:1.55; }
+  /* 2 · A3: el título de cada fila y el nombre de cada libro son botones, con el aspecto de antes (:where no gana a .idx-title) */
+  :where(button.idx-title){ font:inherit; color:inherit; background:none; border:0; padding:0; margin:0; text-align:start; cursor:pointer; }
+  .idx-row .idx-title:focus-visible{ outline:2px solid var(--foco); outline-offset:2px; border-radius:2px; }
+  .idx-book-header .idx-h{ display:inline-flex; align-items:baseline; flex-wrap:wrap; gap:4px 10px; margin:0; }
+  .idx-book-header .idx-pliega{ font:inherit; color:inherit; background:none; border:0; padding:0; margin:0; cursor:pointer; text-align:start;
+    display:inline-flex; align-items:baseline; flex-wrap:wrap; gap:4px 10px; }
+  .idx-book-header .idx-pliega:focus-visible{ outline:2px solid var(--foco); outline-offset:2px; border-radius:2px; }
+  /* 4 · Novedades: las cuatro últimas arriba, con su frase; las demás, plegadas */
+  #acNovedades .nv-top{ border-top:1px solid var(--papel-linea); padding:10px 0 8px; }
+  #acNovedades .nv-top .nv-texto{ margin:4px 0 4px; }
+  #acNovedades .nv-ant{ border-top:1px solid var(--papel-linea); padding:10px 0 4px; }
+  #acNovedades .nv-ant > summary{ cursor:pointer; color:var(--ink-2); font-weight:600; }
+  #acNovedades .nv-ant > .nv:first-of-type{ border-top:0; }
+  @media (max-width: 720px){ #acNovedades .nv-res{ display:block; } #acNovedades .nv-punto{ display:none; } }
 </style>
 <script>try { const i = parseInt(localStorage.getItem("jeb-letra"), 10) || 0, k = [1, 1.15, 1.3][i]; if (k && k !== 1){ document.documentElement.style.setProperty("--letra", k); document.documentElement.setAttribute("data-letra", i); } } catch (e) {}</script>
 </head>
@@ -2741,7 +2789,7 @@ body.light{ --accent-blue-ink:#34608B; }
   <span id="dibujoVoz" class="dibujo-voz" role="status" aria-live="polite"></span>
   <span id="buscaVoz" class="dibujo-voz" role="status" aria-live="polite"></span>
   <div id="legend"></div>
-  <div id="hint">946 títulos reales. Zoom para leer etiquetas.</div>
+  <div id="hint">947 títulos reales. Zoom para leer etiquetas.</div>
   <div id="zoomControls" style="position:absolute; bottom:var(--zoom-bottom,100px); right:24px; z-index:5; display:flex; flex-direction:var(--zoom-dir,column); gap:6px;">
     <button id="zoomIn" title="Acercar" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-3); cursor:pointer;">+</button>
     <button id="zoomOut" title="Alejar" style="width:32px; height:32px; border-radius:8px; background:rgba(201,162,39,0.15); border:1px solid var(--gold); color:var(--gold-bright); font-size:var(--t-3); cursor:pointer;">−</button>
@@ -2845,7 +2893,7 @@ body.light{ --accent-blue-ink:#34608B; }
 </div></div>
 <div id="bienvenida" role="dialog" aria-modal="true" aria-labelledby="bvTitulo"><div class="bv sur-papel" tabindex="-1">
   <h2 id="bvTitulo">Jesús en la <em>Biblia</em></h2>
-  <p>Un catálogo de 946 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis. Cada uno trae su versículo y la palabra en hebreo o griego y, cuando las tiene, notas y conexiones con el resto de la Escritura.</p>
+  <p>Un catálogo de 947 títulos, nombres y figuras de Cristo, de Génesis a Apocalipsis. Cada uno trae su versículo y la palabra en hebreo o griego y, cuando las tiene, notas y conexiones con el resto de la Escritura.</p>
   <p>Cada ficha dice cómo se relaciona con Jesús: si el versículo le da ese nombre, si es un título que la Escritura le da a Dios, o si la lectura cristiana lo ve como un anuncio o como una figura.</p>
   <div class="bv-puertas"><button class="bv-go" data-q="rec" data-t="Empezar por un recorrido" onclick="bvTocar('rec')">Empezar por un recorrido</button><button class="bv-go bv-sec" data-q="ver" data-t="Ver los títulos" onclick="bvTocar('ver')">Ver los títulos</button></div>
   <button class="bv-mas" type="button" onclick="bvTocar('acerca')">Más sobre este catálogo: quién lo hace, de dónde sale el texto y qué falta&nbsp;→</button>
@@ -2895,7 +2943,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v157-2b630019.js" data-resto="datos-v157-resto-3593fc3e.js"></script>
+<script src="datos-v158-8c6d0a9d.js" data-resto="datos-v158-resto-8810c465.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
 // y se recuerda en este navegador (localStorage funciona porque este archivo
@@ -3394,6 +3442,8 @@ const duplicateTitleCount = Object.values(titleTextCounts).filter(c => c > 1).le
 const canonMax = Math.max(...rawNodes.map(n => n.canonIdx));
 const canonSorted = [...rawNodes].sort((a,b) => a.canonIdx - b.canonIdx);
 
+// ronda 54 (D-196): el número de un círculo de Por tema, del color que mejor se lee sobre su relleno, con su borde si hace falta
+function catNumEstilo(c){ const k = (catColors[c] || "").slice(10, -1); return k ? `fill:var(--cat-${k}-num);stroke:var(--cat-${k}-halo)` : ""; }
 // ---------- Vista índice: lista completa en HTML (no SVG), agrupada por
 // libro en orden canónico. Construida una sola vez; el filtrado solo
 // atenúa/oculta filas ya existentes, igual que el resto de la app.
@@ -3401,6 +3451,8 @@ const indexLayer = document.getElementById("indexLayer");
 const curacionLayer = document.getElementById("curacionLayer");
 const indexRowByNodeId = {};
 const indexBookHeaders = {};
+const indexSobre = {};   // ronda 54: el «Sobre el libro» de cada libro, debajo de su encabezado
+var idxTabListo = false;   // ronda 54 (A3): el índice ya está armado (var: lo pregunta idxApplyFold, que corre antes)
 // los 66 libros en orden canónico, sacados de PERIOD_DEFS (que ya los tiene
 // todos y en orden): el índice los recorre enteros, con o sin títulos cargados.
 const CANON_ALL = PERIOD_DEFS.flatMap(p => p.books);
@@ -3409,6 +3461,12 @@ const idxLibrosVacios = new Set();
 function libroVacioLinea(b){
   const t = typeof matrixData !== "undefined" && matrixData.librosVacios && matrixData.librosVacios[b];
   return t && !canonSorted.some(n => n.book === b) ? t : "";
+}
+// ronda 54 (D-195, D-196): «Sobre el libro» (datos/sobre-libro.tsv, en matrixData.sobreLibro); sin el archivo, nada
+function sobreLibroTexto(b){ return (typeof matrixData !== "undefined" && matrixData.sobreLibro && matrixData.sobreLibro[b]) || ""; }
+function fichaSobreLibro(d){
+  const t = sobreLibroTexto(d.book);
+  return t ? `<details class="fx-sobre"><summary>Sobre ${escHtml(d.book)}</summary><p>${escHtml(t)}</p></details>` : "";
 }
 // ronda 20: las secciones del salto del índice (primer y último libro de cada una)
 const IDX_SECCIONES = [["Pentateuco", "Génesis", "Deuteronomio"], ["Históricos", "Josué", "Ester"], ["Poéticos", "Job", "Cantares"],
@@ -3466,11 +3524,15 @@ function idxArmar(){
     const filas = porLibro[book] || [];
     const header = document.createElement("div");
     header.className = "idx-book-header" + (filas.length ? "" : " vacio");
+    // ronda 54 (A3): el nombre del libro es un encabezado; con títulos, adentro, un botón que pliega (el texto, el mismo de antes)
     header.innerHTML = filas.length
-      ? `${book}<span class="idx-count">${filas.length} título${filas.length!==1?'s':''}</span>`
-      : `${book}<span class="idx-count">sin título en el catálogo</span>${libroVacioLinea(book) ? `<span class="idx-vacio-linea"><span>${escHtml(libroVacioLinea(book))}</span></span>` : ""}`;   // ronda 43
+      ? `<span class="idx-h" role="heading" aria-level="3"><button type="button" class="idx-pliega" aria-expanded="true">${book}<span class="idx-count">${filas.length} título${filas.length!==1?'s':''}</span></button></span>`
+      : `<span class="idx-h" role="heading" aria-level="3">${book}<span class="idx-count">sin título en el catálogo</span></span>${libroVacioLinea(book) ? `<span class="idx-vacio-linea"><span>${escHtml(libroVacioLinea(book))}</span></span>` : ""}`;   // ronda 43
     indexLayer.appendChild(header);
     indexBookHeaders[book] = header;
+    const sobre = filas.length ? sobreLibroTexto(book) : "";   // ronda 54: «Sobre el libro», plegado, debajo del encabezado
+    if (sobre){ const s = document.createElement("details"); s.className = "idx-sobre"; s.dataset.book = book;
+      s.innerHTML = `<summary>Sobre el libro</summary><p>${escHtml(sobre)}</p>`; indexLayer.appendChild(s); indexSobre[book] = s; }
     if (!filas.length) idxLibrosVacios.add(book);
     filas.forEach(n => {
       const row = document.createElement("div");
@@ -3486,6 +3548,7 @@ function idxArmar(){
   empty.id = "indexEmpty";
   empty.textContent = "Ningún título coincide con el filtro activo.";
   indexLayer.appendChild(empty);
+  idxTabListo = true;   // ronda 54
 }
 
 // ronda 28a: la fila de Por libro (la referencia, la marca en palabras, el título, sus categorías y la estrella de Mi selección)
@@ -3493,7 +3556,9 @@ function idxFilaHtml(n){
   const dotsHtml = catChipDot(n);
   // ronda 20: la clase en palabras junto al signo (en el teléfono, junto a la referencia), con la frase de la ficha
   const k = n.tipoLectura || "", clase = LECTURA_LABELS[k] || LECTURA_LABELS[""], frase = glosa({ lexico: "en-el-texto", profecia: "anuncio", tipologia: "figura-marca" }[k], (LECTURA_FRASE[k] || LECTURA_FRASE[""]).replace(/<[^>]+>/g, ""));
-  return `<span class="idx-ref">${n.ref}<span class="idx-clase-tel"> · ${clase}</span></span><span class="idx-icon">${qualityIcon(n)}</span><span class="idx-clase" title="${escHtml(frase)}">${clase}</span><span class="idx-title">${n.title}</span><span class="idx-cats">${dotsHtml}</span><button type="button" class="idx-sel${selTiene(n.id) ? " on" : ""}" tabindex="-1" aria-pressed="${selTiene(n.id)}" title="Guardar en Mi selección" aria-label="Guardar en Mi selección">${selTiene(n.id) ? "★" : "☆"}</button>`;
+  // ronda 54: la referencia y el tema, en una caja (el renglón del teléfono, «envuelve»); el título, un botón (A3), fuera del Tab
+  // salvo el de la fila del cursor (idxTabFila)
+  return `<span class="idx-l1"><span class="idx-ref">${n.ref}<span class="idx-clase-tel"> · ${clase}</span></span><span class="idx-cats">${dotsHtml}</span></span><span class="idx-icon">${qualityIcon(n)}</span><span class="idx-clase" title="${escHtml(frase)}">${clase}</span><button type="button" class="idx-title" tabindex="-1" data-fila="${escHtml(n.id)}">${n.title}</button><button type="button" class="idx-sel${selTiene(n.id) ? " on" : ""}" tabindex="-1" aria-pressed="${selTiene(n.id)}" title="Guardar en Mi selección" aria-label="Guardar en Mi selección">${selTiene(n.id) ? "★" : "☆"}</button>`;
 }
 // ronda 19: en el índice, si lo buscado no está en el título, una marca dice dónde coincidió
 function buscaDonde(d, q){
@@ -3625,6 +3690,8 @@ function renderIndexFilter(){
     const vacio = idxLibrosVacios.has(book);
     header.style.display = (vacio ? !filtrado : bookHasVisible[book]) ? null : "none";
   });
+  Object.values(indexSobre).forEach(s => { s.hidden = filtrado; });   // ronda 54: con una búsqueda o un filtro, sin «Sobre el libro»
+  idxTabFila();
   const empty = document.getElementById("indexEmpty");
   if (empty){ empty.style.display = anyVisible ? "none" : "block";
     if (!anyVisible){ const q = (document.getElementById("search").value || "").trim();   // ronda 53: sin resultados, qué se buscó y qué probar
@@ -7172,7 +7239,7 @@ function renderCatred(){
     .on("mousemove", (e, c) => tipShow(e, `${c}\n${count[c]} título${count[c] !== 1 ? "s" : ""}${catredSel && catredSel.type === "cat" && catredSel.cat !== c ? `\n${(pair[[catredSel.cat, c].sort().join("|")] || 0)} compartidos con ${catredSel.cat}` : ""}`)).on("mouseleave", tipHide)
     .on("click", (e, c) => { e.stopPropagation(); catredElegir({ type: "cat", cat: c }, true); });
   node.append("circle").attr("r", c => rScale(count[c])).attr("fill", c => catColors[c] || "#888");
-  node.append("text").attr("class", "catred-count").attr("dy", "0.35em").text(c => count[c]);
+  node.append("text").attr("class", "catred-count").attr("dy", "0.35em").attr("style", catNumEstilo).text(c => count[c]);   // ronda 54
   const lab = node.append("text").attr("class", "catred-label")
     .attr("text-anchor", c => Math.cos(ang[c]) > 0.2 ? "start" : Math.cos(ang[c]) < -0.2 ? "end" : "middle");
   // ronda 28b (D-85): un círculo (el mismo radio a lo ancho y a lo alto), el más grande en que cada nombre entra entero, del
@@ -8162,6 +8229,7 @@ function acercaCita(){
 // ronda 21 (e): «Novedades». matrixData.novedades (del migrate): por versión publicada, de la más nueva a la más vieja,
 // { v, fecha, texto, entran: [[id, título]], salen: [[id, título]], cambian: [[id, antes, ahora]] }
 function fechaLarga(iso){ const f = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); return f ? `${+f[3]} de ${MESES[+f[2] - 1]} de ${f[1]}` : ""; }
+const NOVEDADES_ARRIBA = 4;   // ronda 54: las versiones que se ven sin desplegar nada
 function acercaNovedades(){
   // ronda 26 (b): una versión sin línea para lectores ni fichas que entran, salen o cambian no se muestra (v93, v94)
   const el = document.getElementById("acNovedades"), N = ((typeof matrixData !== "undefined" && matrixData.novedades) || [])
@@ -8173,15 +8241,19 @@ function acercaNovedades(){
   const lista = (et, items, pinta) => !items.length ? "" : (items.length > 12
     ? `<details class="nv-l"><summary>${et} (${items.length})</summary><ul>${items.map(pinta).join("")}</ul></details>`
     : `<div class="nv-l"><div class="nv-et">${et} (${items.length})</div><ul>${items.map(pinta).join("")}</ul></div>`);
-  el.innerHTML = N.map((v, i) => {
-    const res = [v.entran.length ? grafoPlural(v.entran.length, "ficha nueva", "fichas nuevas") : "", v.salen.length ? grafoPlural(v.salen.length, "sale", "salen") : "",
-                 v.cambian.length ? grafoPlural(v.cambian.length, "título cambia", "títulos cambian") : ""].filter(Boolean).join(" · ");
-    return `<details class="nv"${i === 0 ? " open" : ""}><summary><b>Versión ${escHtml(v.v.replace(/^v/, ""))}</b>${v.fecha ? " · " + escHtml(fechaLarga(v.fecha)) : ""}${res ? `<span class="nv-res"> · ${res}</span>` : ""}</summary>
-      ${v.texto ? `<p class="nv-texto">${escHtml(v.texto)}</p>` : ""}
-      ${lista("Fichas nuevas", v.entran, ([id, ti]) => `<li>${ir(id, ti)}${nodeById[id] ? ` <span class="nv-ref">${escHtml(nodeById[id].ref)}</span>` : ""}</li>`)}
-      ${lista("Títulos que cambian", v.cambian, ([id, a, b]) => `<li>${ir(id, b)} <span class="nv-antes">antes: «${escHtml(a)}»</span></li>`)}
-      ${lista("Fichas que salen", v.salen, ([id, ti]) => `<li>«${escHtml(ti)}» <span class="nv-antes">#${escHtml(id)}</span></li>`)}
-    </details>`; }).join("");
+  // ronda 54 (D-196): arriba, las cuatro últimas versiones con su frase (sus listas, plegadas); las demás, como antes, dentro de
+  // «Versiones anteriores (N)», plegado. En el teléfono, la cuenta en su renglón (sin el «·» colgado: .nv-punto)
+  const res = v => [v.entran.length ? grafoPlural(v.entran.length, "ficha nueva", "fichas nuevas") : "", v.salen.length ? grafoPlural(v.salen.length, "sale", "salen") : "",
+                    v.cambian.length ? grafoPlural(v.cambian.length, "título cambia", "títulos cambian") : ""].filter(Boolean).join(" · ");
+  const cab = v => `<b>Versión ${escHtml(v.v.replace(/^v/, ""))}</b>${v.fecha ? " · " + escHtml(fechaLarga(v.fecha)) : ""}${res(v) ? `<span class="nv-res"><span class="nv-punto"> · </span>${res(v)}</span>` : ""}`;
+  const listas = (v, L) => L("Fichas nuevas", v.entran, ([id, ti]) => `<li>${ir(id, ti)}${nodeById[id] ? ` <span class="nv-ref">${escHtml(nodeById[id].ref)}</span>` : ""}</li>`)
+    + L("Títulos que cambian", v.cambian, ([id, a, b]) => `<li>${ir(id, b)} <span class="nv-antes">antes: «${escHtml(a)}»</span></li>`)
+    + L("Fichas que salen", v.salen, ([id, ti]) => `<li>«${escHtml(ti)}» <span class="nv-antes">#${escHtml(id)}</span></li>`);
+  const plegada = (et, items, pinta) => !items.length ? "" : `<details class="nv-l"><summary>${et} (${items.length})</summary><ul>${items.map(pinta).join("")}</ul></details>`;
+  const arriba = N.slice(0, NOVEDADES_ARRIBA), antes = N.slice(NOVEDADES_ARRIBA);
+  el.innerHTML = arriba.map(v => `<div class="nv-top"><div class="nv-cab">${cab(v)}</div>${v.texto ? `<p class="nv-texto">${escHtml(v.texto)}</p>` : ""}${listas(v, plegada)}</div>`).join("")
+    + (antes.length ? `<details class="nv-ant"><summary>Versiones anteriores (${antes.length})</summary>${antes.map(v =>
+      `<details class="nv"><summary>${cab(v)}</summary>${v.texto ? `<p class="nv-texto">${escHtml(v.texto)}</p>` : ""}${listas(v, lista)}</details>`).join("")}</details>` : "");
   el.querySelectorAll(".nv-ir").forEach(a => a.addEventListener("click", (e) => {   // ronda 25: con dirección real; con Ctrl o el medio, la página de la ficha
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
     e.preventDefault(); acercaCerrar(); openPanel(nodeById[a.dataset.id]); }));
@@ -10208,6 +10280,7 @@ function openPanel(d){
     ${notasBoxes(d, true)}
     ${fichaConexiones(d)}
     ${fichaOtrosTitulos(d)}
+    ${fichaSobreLibro(d)}
     ${fichaEstudiar(d)}
     ${renderMarkSection(d)}
     ${avisoRVR(d, "rvr-pie rvr-pie-ficha")}
@@ -11144,22 +11217,23 @@ function idxApplyFold(){
     const folded = idxFolded.has(book);
     header.classList.toggle("folded", folded);
     const caret = header.querySelector(".idx-caret"); if (caret) caret.textContent = folded ? "▸" : "▾";
+    const pb = header.querySelector(".idx-pliega"); if (pb) pb.setAttribute("aria-expanded", String(!folded));   // ronda 54 (A3)
   });
   Object.values(indexRowByNodeId).forEach(row => row.classList.toggle("folded", idxFolded.has(row.dataset.book)));
   idxAccionesLibros();   // ronda 27
 }
-function idxToggleBook(book){ idxFolded.has(book) ? idxFolded.delete(book) : idxFolded.add(book); idxSaveFolded(); idxApplyFold(); }
-function idxFoldAll(fold){ idxFolded = fold ? new Set(Object.keys(indexBookHeaders).filter(b => !idxLibrosVacios.has(b))) : new Set(); idxSaveFolded(); idxApplyFold(); }
+function idxToggleBook(book){ idxFolded.has(book) ? idxFolded.delete(book) : idxFolded.add(book); idxSaveFolded(); idxApplyFold(); idxTabFila(); }   // ronda 54: idxTabFila
+function idxFoldAll(fold){ idxFolded = fold ? new Set(Object.keys(indexBookHeaders).filter(b => !idxLibrosVacios.has(b))) : new Set(); idxSaveFolded(); idxApplyFold(); idxTabFila(); }
 // ronda 33: los libros plegables, al armar el índice (idxAlArmar); la barra y las secciones, acá (van arriba de los libros)
 function idxCabeceras(){
   Object.entries(indexBookHeaders).forEach(([book, header]) => {
     if (idxLibrosVacios.has(book)) return;
-    header.insertAdjacentHTML("afterbegin", `<span class="idx-caret">▾</span> `);
+    (header.querySelector(".idx-pliega") || header).insertAdjacentHTML("afterbegin", `<span class="idx-caret" aria-hidden="true">▾</span> `);   // ronda 54: dentro del botón
     header.style.cursor = "pointer";
     header.addEventListener("click", () => idxToggleBook(book));
   });
 }
-function idxAlArmar(){ idxMarcasIniciales(); idxCabeceras(); idxApplyFold(); }
+function idxAlArmar(){ idxMarcasIniciales(); idxCabeceras(); idxApplyFold(); idxTabFila(); }   // ronda 54: idxTabFila
 (function idxSetup(){
   const bar = document.createElement("div");
   bar.className = "idx-bar";
@@ -11248,7 +11322,28 @@ function idxSetCursor(id, scroll){
   Object.values(indexRowByNodeId).forEach(r => r.classList.remove("cursor"));
   const row = indexRowByNodeId[id];
   if (row){ row.classList.add("cursor"); if (scroll) row.scrollIntoView({ block: "nearest" }); }
+  // ronda 54 (A3): el Tab lleva a esta fila; si el foco estaba en otro título de la lista, pasa a este
+  const a = document.activeElement, enLista = a && a.classList && a.classList.contains("idx-title") && indexLayer.contains(a);
+  idxTabFila();
+  const t = row && row.querySelector(".idx-title");
+  if (enLista && t && t !== a) t.focus({ preventScroll: true });
 }
+// ronda 54 (A3): el Tab entra a la lista una sola vez: solo el título de una fila lo recibe (la del cursor o, si no se ve, la
+// primera que se ve); con las flechas o J/K se pasa a las otras
+var idxTabId = null;   // var: idxTabFila se nombra antes de esta línea (corre recién con el índice armado)
+function idxTabFila(){
+  if (!idxTabListo) return;
+  const ve = r => r && !r.classList.contains("dim") && !r.classList.contains("folded") && !r.classList.contains("idx-fuera-libro");
+  let id = idxCursorId && ve(indexRowByNodeId[idxCursorId]) ? idxCursorId : null;
+  if (!id){ const n = canonSorted.find(n => ve(indexRowByNodeId[n.id])); id = n ? n.id : null; }
+  if (id === idxTabId) return;
+  [idxTabId, id].forEach((x, i) => { const t = x && indexRowByNodeId[x] && indexRowByNodeId[x].querySelector(".idx-title"); if (t) t.tabIndex = i ? 0 : -1; });
+  idxTabId = id;
+}
+indexLayer.addEventListener("focusin", e => {   // un título que recibe el foco (Tab, un clic) pasa a ser el cursor
+  const t = e.target.closest && e.target.closest(".idx-row .idx-title"); if (!t || !t.dataset.fila || t.dataset.fila === idxCursorId) return;
+  idxSetCursor(t.dataset.fila, false);
+});
 function idxMove(delta){
   const rows = idxVisibleRows(); if (!rows.length) return;
   let i = rows.findIndex(n => n.id === idxCursorId);
@@ -11266,14 +11361,17 @@ document.addEventListener("keydown", (e) => {
   if (layoutMode !== "indice") return;
   if (e.key === "j" || e.key === "J" || e.key === "ArrowDown"){ e.preventDefault(); idxMove(1); }
   else if (e.key === "k" || e.key === "K" || e.key === "ArrowUp"){ e.preventDefault(); idxMove(-1); }
-  else if (e.key === "Enter" && idxCursorId){ e.preventDefault(); openPanel(nodeById[idxCursorId]); }
+  else if (e.key === "Enter" && idxCursorId && idxEnterAbre()){ e.preventDefault(); openPanel(nodeById[idxCursorId]); }   // ronda 54: no desde otro botón
   else if (e.key === "Escape"){ closePanel(); }
 });
+// ronda 54 (A3): Enter abre la fila del cursor si el foco está en la página o en una fila del índice; en otro botón, hace lo suyo
+function idxEnterAbre(){ const a = document.activeElement; return !a || a === document.body || !!(a.closest && a.closest("#indexLayer .idx-row")); }
 // la fila del título abierto queda resaltada y a la vista
 function idxHighlight(id){
   Object.values(indexRowByNodeId).forEach(r => r.classList.remove("selected"));
   const row = indexRowByNodeId[id];
   if (row){ row.classList.add("selected"); if (layoutMode === "indice") row.scrollIntoView({ block: "nearest" }); idxCursorId = id; }
+  idxTabFila();   // ronda 54
 }
 
 // ---------- Nube: exportar SVG / PNG ----------
