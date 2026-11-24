@@ -2733,7 +2733,8 @@ body.light{ --accent-blue-ink:#34608B; }
     #grafoEnf .en-capas-opc{ display:block; margin:0 0 10px; }
     #grafoEnf .en-capas-opc .capas-auto{ display:flex; flex-wrap:wrap; position:static; gap:6px; padding:0; border-left:0; }
     #grafoEnf .en-capas-opc .capas-auto-t{ position:static; flex-basis:100%; white-space:normal; line-height:1.3; }
-    #grafoEnf .ge-col.at .ge-libro{ position:sticky; top:calc(var(--en-cab-h, 0px) - 10px); z-index:2; background:var(--night); }
+    #grafoEnf .ge-col.at .ge-libro{ position:sticky; top:calc(var(--en-cab-h, 0px) - 10px); z-index:2; background:var(--night);
+      width:fit-content; margin-left:auto; }   /* ronda 55b: la caja (y su fondo), del ancho del nombre: no tapa las líneas */
   }
 </style>
 <script>try { const i = parseInt(localStorage.getItem("jeb-letra"), 10) || 0, k = [1, 1.15, 1.3][i]; if (k && k !== 1){ document.documentElement.style.setProperty("--letra", k); document.documentElement.setAttribute("data-letra", i); } } catch (e) {}</script>
@@ -6076,6 +6077,20 @@ function entreCabHtml(extra){
     ${entrePasoHtml()}
     ${entreAviso ? `<p class="en-aviso" role="status">${entreAviso}</p>` : ""}`;
 }
+// ronda 55b: el panel de «Opciones» (Entre Testamentos, Conexiones anotadas), entero en la pantalla, en la compu: alineado a la
+// derecha de su botón si entra; si no, a su izquierda; si tampoco, corrido lo justo (a 8 px del borde). En el teléfono, el CSS de siempre
+function opcUbicar(d){
+  const c = d && d.querySelector(":scope > .en-opc-c, :scope > .cx-opc-c"); if (!c) return;
+  c.style.left = ""; c.style.right = "";
+  if (!d.open || innerWidth < 720) return;
+  const m = 8, b = d.getBoundingClientRect(), w = c.getBoundingClientRect().width;
+  if (b.right - w >= m) return;                                     // a la derecha del botón (right:0, el CSS)
+  c.style.right = "auto";
+  c.style.left = (b.left + w <= innerWidth - m ? 0 : Math.max(m, innerWidth - m - w) - b.left) + "px";   // a su izquierda, o corrido
+}
+function opcUbicarTodos(){ document.querySelectorAll("#grafoEnf .en-opc[open], .cx-opc[open]").forEach(opcUbicar); }
+document.addEventListener("toggle", e => { const d = e.target; if (d && d.matches && d.matches("#grafoEnf .en-opc, .cx-opc")) opcUbicar(d); }, true);
+addEventListener("resize", () => requestAnimationFrame(opcUbicarTodos));
 function entreCabEventos(){
   grafoEnf.querySelectorAll(".en-nivel button").forEach(b => b.addEventListener("click", () => { entreNivel = b.dataset.n; entreAviso = ""; entreRender(); saveViewState(); }));
   grafoEnf.querySelectorAll(".capas .capa-b").forEach(b => b.addEventListener("click", () => {
@@ -6098,6 +6113,7 @@ function entreCabEventos(){
     entreRender(); }));
   // ronda 24 (E25): la fila de los controles queda fija al bajar; la cabecera de las columnas va debajo de ella, y lo que se
   // lleva a la vista (un libro, un título) queda debajo de las dos (E23)
+  requestAnimationFrame(opcUbicarTodos);   // ronda 55b: si se dibujó con «Opciones» abierta
   requestAnimationFrame(() => { const f = grafoEnf.querySelector(".en-fijo"), c = grafoEnf.querySelector(".ge-cab");
     grafoEnf.style.setProperty("--en-fijo-h", (f ? f.offsetHeight : 0) + "px");
     grafoEnf.style.setProperty("--en-cab-h", ((f ? f.offsetHeight : 0) + (c ? c.offsetHeight : 0)) + "px"); });
