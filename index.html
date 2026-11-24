@@ -2736,6 +2736,19 @@ body.light{ --accent-blue-ink:#34608B; }
     #grafoEnf .ge-col.at .ge-libro{ position:sticky; top:calc(var(--en-cab-h, 0px) - 10px); z-index:2; background:var(--night);
       width:fit-content; margin-left:auto; }   /* ronda 55b: la caja (y su fondo), del ancho del nombre: no tapa las líneas */
   }
+  /* ─── ronda 56 (D-199, D-200) ─── */
+  /* c1: la etiqueta del tipo de conexión se toca: el subrayado de guiones de las siglas (.glosa-b) */
+  button.cx-tipo{ text-decoration-line:underline; text-decoration-style:dashed; text-decoration-thickness:1px; text-underline-offset:3px; }
+  /* c5: qué es STEP Bible, al pie */
+  #panel .step-nota{ margin:8px 0 0; font-size:var(--t-5); line-height:1.45; color:var(--ink-3); }
+  /* T1-06: Filtros, en la compu, entero en la pantalla (empieza en --header-h − 34 px; 12 px de aire abajo) */
+  @media (min-width:721px){ #advPanel{ max-height:calc(100% - var(--header-h) + 22px); } }
+  /* T1-11: la bienvenida, si no entra (poca altura, letra grande), se desplaza y empieza arriba */
+  #bienvenida{ overflow-y:auto; } #bienvenida.on{ align-items:flex-start; } #bienvenida .bv{ margin:auto; }
+  /* #fichaBorde: a 720 px la ficha ocupa toda la pantalla (el CSS de teléfono llega a 720): sin el borde para cambiar su ancho */
+  @media (max-width:720px){ #fichaBorde{ display:none !important; } }
+  /* T2-08: la red entera en el teléfono: el zoom, arriba de su panel (que llega a 42vh) */
+  @media (max-width:719px){ body:has(#redEntera.on) #zoomControls{ bottom:calc(42vh + 12px) !important; } }
 </style>
 <script>try { const i = parseInt(localStorage.getItem("jeb-letra"), 10) || 0, k = [1, 1.15, 1.3][i]; if (k && k !== 1){ document.documentElement.style.setProperty("--letra", k); document.documentElement.setAttribute("data-letra", i); } } catch (e) {}</script>
 </head>
@@ -3011,7 +3024,7 @@ function bvTocar(q){
   </div>
 </div>
 
-<script src="datos-v158-8c6d0a9d.js" data-resto="datos-v158-resto-8810c465.js"></script>
+<script src="datos-v159-ed7949e8.js" data-resto="datos-v159-resto-805c2674.js"></script>
 <script>
 // Modo claro/oscuro: se aplica lo antes posible para minimizar el parpadeo,
 // y se recuerda en este navegador (localStorage funciona porque este archivo
@@ -4039,7 +4052,7 @@ function letraBotones(){
 }
 function letraRearmar(){   // los dibujos que miden su letra se vuelven a armar (el HTML se acomoda solo)
   if (typeof syncHeader === "function") syncHeader();
-  if (layoutMode === "entre" && typeof grafoEnfActiva === "function" && grafoEnfActiva()) grafoEnfUbicar();
+  if (layoutMode === "entre" && typeof grafoEnfActiva === "function" && grafoEnfActiva()){ entreMedirFijos(); grafoEnfUbicar(); }   // ronda 56 (T2-03)
   else if (layoutMode === "categorias" && typeof renderCatred === "function") renderCatred();
   else if (layoutMode === "lexica" && typeof lexicaStarted !== "undefined" && lexicaStarted) lexRender();
   else if (typeof refitCurrentView === "function") refitCurrentView();
@@ -4812,7 +4825,7 @@ function lexFichaHtml(code, par){
       <div class="val lx-ts">${titles.map(t => `<button type="button" class="lx-t" data-id="${t.id}" onmouseenter="lexRedEncender(this.dataset.id)" onmouseleave="lexRedEncender(null)" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'><span class="lx-t-ti">${escHtml(t.title)}</span><span class="lx-t-rf">${escHtml(t.ref)}${forma(t) ? " · " + forma(t) : ""}</span></button>`).join("")}</div></section>
     ${lemaEntry && lemaEntry.text ? `<details class="field og-dicc-panel"><summary>Diccionario Strong${freq ? ` · ${freq} apariciones en la Biblia` : ""}</summary><blockquote class="dicc-strong">${lemaEntry.text}</blockquote></details>` : ""}
     ${tel ? `<div class="lx-letra-fin">${origTamHtml()}</div>` : ""}
-    <p class="lx-pie"><span class="lx-cod">Strong ${code}</span>${stepUrl ? ` · <a href="${stepUrl}" target="_blank" rel="noopener" title="Su diccionario y todas las veces que aparece. Abre una pestaña nueva.">Esta palabra en STEP Bible ↗</a>` : ""}</p>`;
+    <p class="lx-pie"><span class="lx-cod"><button type="button" class="glosa-b" data-glosa="strong" aria-expanded="false" title="Qué quiere decir: el glosario">Strong</button> ${code}</span>${stepUrl ? ` · <a href="${stepUrl}" target="_blank" rel="noopener" title="Su diccionario y todas las veces que aparece. Abre una pestaña nueva.">Esta palabra en STEP Bible ↗</a>` : ""}</p>${stepUrl ? stepNotaHtml() : ""}`;   // ronda 56 (c5)
 }
 function openPalabra(code, par){
   if (!strongToTitles[code]) return;
@@ -6079,18 +6092,40 @@ function entreCabHtml(extra){
 }
 // ronda 55b: el panel de «Opciones» (Entre Testamentos, Conexiones anotadas), entero en la pantalla, en la compu: alineado a la
 // derecha de su botón si entra; si no, a su izquierda; si tampoco, corrido lo justo (a 8 px del borde). En el teléfono, el CSS de siempre
+// ronda 56: en todos los anchos (en el teléfono, con 12 px de cada lado: T1-03), también Palabras (con la ficha abierta al costado, a su
+// izquierda: T1-04), y con su alto hasta 8 px antes del borde de abajo, desplazándose por dentro (T1-02)
+const OPC_SEL = "#grafoEnf .en-opc, .cx-opc, #lexSide .lx-opc";
 function opcUbicar(d){
-  const c = d && d.querySelector(":scope > .en-opc-c, :scope > .cx-opc-c"); if (!c) return;
-  c.style.left = ""; c.style.right = "";
-  if (!d.open || innerWidth < 720) return;
-  const m = 8, b = d.getBoundingClientRect(), w = c.getBoundingClientRect().width;
-  if (b.right - w >= m) return;                                     // a la derecha del botón (right:0, el CSS)
-  c.style.right = "auto";
-  c.style.left = (b.left + w <= innerWidth - m ? 0 : Math.max(m, innerWidth - m - w) - b.left) + "px";   // a su izquierda, o corrido
+  const c = d && d.querySelector(":scope > .en-opc-c, :scope > .cx-opc-c, :scope > .lx-ctl"); if (!c) return;
+  c.style.left = ""; c.style.right = ""; c.style.maxHeight = ""; c.style.maxWidth = ""; c.style.overflowY = "";
+  if (!d.open || getComputedStyle(c).position !== "absolute") return;
+  const tel = innerWidth < 720, m = tel ? 12 : 8, b = d.getBoundingClientRect(), P = document.getElementById("panel");
+  const lado = !tel && P && P.classList.contains("open") && !P.classList.contains("pantalla") && d.matches("#lexSide .lx-opc") ? P.getBoundingClientRect().left : innerWidth;
+  const der = Math.min(innerWidth, lado) - m;
+  if (c.getBoundingClientRect().width > der - m) c.style.maxWidth = Math.max(240, Math.floor(der - m)) + "px";   // si no entra a lo ancho, más angosta
+  let r = c.getBoundingClientRect(); const w = r.width;
+  if (r.left < m || r.right > der){
+    const x = b.right - w >= m && b.right <= der ? b.right - w : b.left >= m && b.left + w <= der ? b.left : Math.max(m, der - w);
+    c.style.right = "auto"; c.style.left = Math.round(x - b.left) + "px";   // a la derecha del botón, a su izquierda o corrido
+  }
+  r = c.getBoundingClientRect();   // el alto, siempre hasta 8 px antes del borde de abajo: si después crece (una ayuda que se abre), se desplaza por dentro
+  c.style.maxHeight = Math.max(160, Math.floor(innerHeight - 8 - r.top)) + "px"; c.style.overflowY = "auto";
 }
-function opcUbicarTodos(){ document.querySelectorAll("#grafoEnf .en-opc[open], .cx-opc[open]").forEach(opcUbicar); }
-document.addEventListener("toggle", e => { const d = e.target; if (d && d.matches && d.matches("#grafoEnf .en-opc, .cx-opc")) opcUbicar(d); }, true);
+function opcUbicarTodos(){ document.querySelectorAll("#grafoEnf .en-opc[open], .cx-opc[open], #lexSide .lx-opc[open]").forEach(opcUbicar); }
+document.addEventListener("toggle", e => { const d = e.target; if (d && d.matches && d.matches(OPC_SEL)) opcUbicar(d); }, true);
+// ronda 56 (D-200): «Opciones» se cierra al tocar afuera o con Escape, como «⋯»; un toque adentro (una capa, un tipo) no la cierra
+document.addEventListener("pointerdown", e => { document.querySelectorAll("#grafoEnf .en-opc[open], .cx-opc[open], #lexSide .lx-opc[open]").forEach(d => { if (!d.contains(e.target)) d.open = false; }); }, true);
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  const d = document.querySelector("#grafoEnf .en-opc[open], .cx-opc[open], #lexSide .lx-opc[open]"); if (!d) return;
+  d.open = false; const s = d.querySelector(":scope > summary"); if (s) s.focus(); e.stopImmediatePropagation(); e.preventDefault();
+}, true);
+new MutationObserver(() => requestAnimationFrame(opcUbicarTodos)).observe(document.getElementById("panel"), { attributes: true, attributeFilter: ["class"] });   // T1-04: la ficha que se abre o se cierra
 addEventListener("resize", () => requestAnimationFrame(opcUbicarTodos));
+// ronda 56 (T2-03): el alto de la fila fija y de la cabecera de las columnas (lo que usan los pegados); también al cambiar la letra
+function entreMedirFijos(){ const f = grafoEnf.querySelector(".en-fijo"), c = grafoEnf.querySelector(".ge-cab");
+  grafoEnf.style.setProperty("--en-fijo-h", (f ? f.offsetHeight : 0) + "px");
+  grafoEnf.style.setProperty("--en-cab-h", ((f ? f.offsetHeight : 0) + (c ? c.offsetHeight : 0)) + "px"); }
 function entreCabEventos(){
   grafoEnf.querySelectorAll(".en-nivel button").forEach(b => b.addEventListener("click", () => { entreNivel = b.dataset.n; entreAviso = ""; entreRender(); saveViewState(); }));
   grafoEnf.querySelectorAll(".capas .capa-b").forEach(b => b.addEventListener("click", () => {
@@ -6525,7 +6560,8 @@ function grafoEnfHilo(a, b, reubicar){
   if (!reubicar || teniaFoco) tj.querySelector(".ge-tj-x").focus({ preventScroll: true });
   if (!reubicar){ const r = tj.getBoundingClientRect(), v = grafoEnf.getBoundingClientRect(), pie = grafoEnf.querySelector(".ge-pie");
     const abajo = v.bottom - (pie ? pie.offsetHeight : 0);
-    if (r.top < v.top + 60 || r.bottom > abajo) grafoEnf.scrollBy({ top: r.top < v.top + 60 ? r.top - v.top - 80 : r.bottom - abajo + 16, behavior: movSuave() }); }
+    const tope = v.top + (parseFloat(getComputedStyle(grafoEnf).getPropertyValue("--en-cab-h")) || 60) + 8;   // ronda 56 (T1-07)
+    if (r.top < tope || r.bottom > abajo) grafoEnf.scrollBy({ top: r.top < tope || r.height > abajo - tope ? r.top - tope : r.bottom - abajo + 16, behavior: movSuave() }); }
 }
 grafoEnf.addEventListener("keydown", e => { if (e.key === "Escape" && grafoEnfHiloSel){ e.stopPropagation(); grafoEnfHilo(null); } });
 function grafoLibrosClave(x, y){ return x.canonIdx <= y.canonIdx ? x.book + "|" + y.book : y.book + "|" + x.book; }
@@ -8164,6 +8200,7 @@ function tipShow(e, text){
   let x = e.clientX + pad, y = e.clientY + pad;
   if (x + w > window.innerWidth - 8) x = e.clientX - w - pad;
   if (y + hgt > window.innerHeight - 8) y = e.clientY - hgt - pad;
+  x = Math.max(8, Math.min(x, window.innerWidth - w - 8)); y = Math.max(8, Math.min(y, window.innerHeight - hgt - 8));   // ronda 56 (T1-10)
   tipEl.style.left = x + "px"; tipEl.style.top = y + "px";
 }
 function tipHide(){ tipEl.style.display = "none"; }
@@ -8551,6 +8588,7 @@ function setMode(mode){
   if (mode !== layoutMode && document.getElementById("advPanel").style.display === "block") advToggle(false);   // ronda 22
   layoutMode = mode;
   vistaCambio(mode);   // ronda 55
+  requestAnimationFrame(zoomSobreBandeja);   // ronda 56 (T2-02): el zoom se ve o no según la vista
   document.getElementById("restoCargando").classList.remove("on");   // ronda 36b
   { const h = MODE_HINTS[mode]; document.getElementById("hint").innerHTML = (typeof h === "function" ? h() : h) || ""; }   // ronda 28a
   const isMatrix = mode === "matriz";
@@ -9787,7 +9825,7 @@ function notaEnlaces(txt, d, enlazar){
   return txt.replace(/#(\d+)\b/g, (m, n) => {
     const t = nodeById[n];
     if (!t) return m;
-    const nombre = "«" + escHtml(fichaTitulo(t).t) + "»";
+    const ft = fichaTitulo(t), nombre = "«" + escHtml(ft.sub ? `${ft.t} (${ft.sub})` : ft.t) + "»";   // ronda 56 (c2): con su traducción
     if (!enlazar || t.id === d.id) return nombre;
     return `<button type="button" class="ficha-link" onclick='openPanel(nodeById[${JSON.stringify(t.id)}])'>${nombre}</button>`;
   });
@@ -9915,22 +9953,24 @@ const STEP_LIBRO = {"Génesis":"Gen","Éxodo":"Exod","Levítico":"Lev","Números
   "2 Pedro":"2Pet","1 Juan":"1John","2 Juan":"2John","3 Juan":"3John","Judas":"Jude","Apocalipsis":"Rev"};
 // El versículo en STEP: la RV1909 manda la numeración y el hebreo o el griego se alinea
 // al lado (con THOT solo, Jl 2:28 de la RVR no existe y STEP cae en Génesis 1).
+// ronda 56 (c5, B14, D-199): qué es STEP Bible, al pie de «El texto original» y de la ficha de la palabra (el texto de Curación)
+function stepNotaHtml(){ return `<p class="step-nota">Los enlaces con ↗ abren otra página en una pestaña nueva. STEP Bible es un sitio gratuito de estudio de la Biblia, con el hebreo y el griego palabra por palabra; buena parte está en inglés.</p>`; }
 function stepVersiculo(d){
   const lib = STEP_LIBRO[d.book], m = /(\d+):(\d+)(?:-(\d+))?\s*$/.exec(d.ref || "");
   if (!lib || !m) return "";
   return "https://www.stepbible.org/?q=version=SpaRV1909@version=" + (d.testamento === "AT" ? "THOT" : "SBLG")
-    + "@reference=" + lib + "." + m[1] + "." + m[2] + (m[3] ? "-" + m[3] : "") + "&options=HNVUG";
+    + "@reference=" + lib + "." + m[1] + "." + m[2] + (m[3] ? "-" + m[3] : "") + "&options=HNVUG&lang=es";   // ronda 56 (c5b): en castellano
 }
 // La palabra en STEP pide el código propio de STEP (H2233H, G2424G, G0037): con el
 // Strong del CSV (H2233) la búsqueda da cero resultados. Sin ese dato, sin enlace.
 function stepPalabra(g){
   if (!g.step) return "";
-  return "https://www.stepbible.org/?q=version=" + (g.code[0] === "H" ? "THOT" : "SBLG") + "@strong=" + g.step + "&options=HNVUG";
+  return "https://www.stepbible.org/?q=version=" + (g.code[0] === "H" ? "THOT" : "SBLG") + "@strong=" + g.step + "&options=HNVUG&lang=es";
 }
 // ronda 10: una palabra en STEP, con el código de STEP que trae `palabras[].s` (relleno y
 // letra, G0746 / H2233H): el diccionario de la palabra y todas las veces que aparece
 function stepCodigo(s){
-  return s ? "https://www.stepbible.org/?q=version=" + (s[0] === "H" ? "THOT" : "SBLG") + "@strong=" + s + "&options=HNVUG" : "";
+  return s ? "https://www.stepbible.org/?q=version=" + (s[0] === "H" ? "THOT" : "SBLG") + "@strong=" + s + "&options=HNVUG&lang=es" : "";
 }
 function ogStepPalabra(p){
   const S = (p.s || []).map((s, i) => ({ url: stepCodigo(s), c: p.c[i] })).filter(x => x.url);
@@ -9963,7 +10003,7 @@ function ogPalabras(term){ return (term || "").split(/\s+\/\s+|\s+/).filter(w =>
 function ogEsta(d){
   if (!d.term) return "";
   if (d.verificacion === "variante o lematización distinta") return "La palabra original está en el versículo, en una forma algo distinta de la del diccionario.";
-  if (d.verificacion === "sin lema") return "La palabra original está en el versículo; todavía no se le encontró lema.";
+  if (d.verificacion === "sin lema") return "La palabra original está en el versículo; todavía no se la encontró en el diccionario.";
   return "La palabra original está en este mismo versículo.";
 }
 function fichaOriginal(d){
@@ -9984,8 +10024,8 @@ function fichaOriginal(d){
     const completa = corta && (stepP || stepV) ? ` <a href="${stepP || stepV}" target="_blank" rel="noopener">completa en STEP ↗</a>` : "";
     const freq = validFreq(c, g.freq);
     return `<div class="og-str">${texto && !corta ? `<div class="og-glosa">${texto}</div>` : ""}
-      <div class="og-pie"><span>${freq ? `${freq} ${freq == 1 ? "aparición" : "apariciones"} del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
-        <span class="og-strong">Strong ${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${c} ↗</a>` : c}</span></div></div>`;
+      <div class="og-pie"><span>${freq ? `${freq} ${freq == 1 ? "aparición" : "apariciones"} de esta palabra en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
+        <span class="og-strong"><button type="button" class="glosa-b" data-glosa="strong" aria-expanded="false" title="Qué quiere decir: el glosario">Strong</button> ${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${c} ↗</a>` : c}</span></div></div>`;
   };
   const filas = P.map(p => {
     const voc = p.c.map(c => VOC[c]).filter(Boolean);
@@ -10010,6 +10050,7 @@ function fichaOriginal(d){
     ${filas}
     ${exprHtml(d)}
     ${stepV ? `<a class="og-step-v" href="${stepV}" target="_blank" rel="noopener">${d.ref} en ${lengua || "el original"}, en STEP Bible ↗</a>` : ""}
+    ${stepV ? stepNotaHtml() : ""}
   </details>`;
 }
 // la sección por código de la ronda 6, para un CSV sin PalabrasOriginal
@@ -10049,8 +10090,8 @@ function fichaOriginalCodigos(d){
       ${pal.map(p => `<div class="og-pal">${p}</div>`).join("")}
       ${g.simple ? `<div class="og-simple">${escHtml(g.simple)}</div>` : ""}
       ${texto ? `<div class="og-glosa">${texto}${corta ? "…" : ""}${completa}</div>` : ""}
-      <div class="og-pie"><span>${freq ? `${freq} ${freq == 1 ? "aparición" : "apariciones"} del lema en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
-        <span class="og-strong">${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${g.code} ↗</a>` : g.code}</span></div>
+      <div class="og-pie"><span>${freq ? `${freq} ${freq == 1 ? "aparición" : "apariciones"} de esta palabra en el ${H ? "Antiguo" : "Nuevo"} Testamento` : ""}</span>
+        <span class="og-strong"><button type="button" class="glosa-b" data-glosa="strong" aria-expanded="false" title="Qué quiere decir: el glosario">Strong</button> ${stepP ? `<a href="${stepP}" target="_blank" rel="noopener" title="Esta palabra en STEP Bible">${g.code} ↗</a>` : g.code}</span></div>
     </div>`;
   }).join("");
   return `<details class="og" data-plegable="original">
@@ -10059,6 +10100,7 @@ function fichaOriginalCodigos(d){
     ${filas}
     ${exprHtml(d)}
     ${stepV ? `<a class="og-step-v" href="${stepV}" target="_blank" rel="noopener">${d.ref} en ${lengua || "el original"}, en STEP Bible ↗</a>` : ""}
+    ${stepV ? stepNotaHtml() : ""}
   </details>`;
 }
 function origAbierto(){
@@ -11603,7 +11645,7 @@ function renderCompTray(){
   const tray = document.getElementById("compTray");
   const vis = rawNodes.filter(isVisible);
   const canUseFiltered = isFiltered() && vis.length >= 2 && vis.length <= COMP_MAX && !(vis.length === compSet.length && vis.every(n => compHas(n.id)));
-  if (!compSet.length && !canUseFiltered){ tray.style.display = "none"; return; }
+  if (!compSet.length && !canUseFiltered){ tray.style.display = "none"; requestAnimationFrame(zoomSobreBandeja); return; }   // ronda 56 (T2-02)
   tray.style.display = "flex";
   tray.innerHTML = `
     <span class="comp-tray-label">Comparar</span>
@@ -11612,7 +11654,17 @@ function renderCompTray(){
     ${canUseFiltered ? `<button class="comp-btn ghost" onclick="compUseFiltered()">usar los ${vis.length} filtrados</button>` : ""}
     ${compSet.length ? `<button class="comp-btn ghost" onclick="compClear()">vaciar</button>` : ""}
     <button class="comp-btn" ${compSet.length >= 2 ? "" : "disabled"} onclick="openCompare()">Comparar${compSet.length ? ` (${compSet.length})` : ""}</button>`;
+  requestAnimationFrame(zoomSobreBandeja);   // ronda 56 (T2-02)
 }
+// ronda 56 (T2-02): si la bandeja de Comparar pisa el zoom, el zoom sube arriba de ella (su --zoom-bottom, en el elemento)
+function zoomSobreBandeja(){
+  const z = document.getElementById("zoomControls"), t = document.getElementById("compTray"); if (!z || !t) return;
+  z.style.removeProperty("--zoom-bottom");
+  if (t.style.display === "none" || !t.getClientRects().length || !z.getClientRects().length) return;
+  const a = t.getBoundingClientRect(), q = z.getBoundingClientRect();
+  if (q.left < a.right && a.left < q.right && q.top < a.bottom && a.top < q.bottom) z.style.setProperty("--zoom-bottom", Math.ceil(innerHeight - a.top + 8) + "px");
+}
+addEventListener("resize", () => requestAnimationFrame(zoomSobreBandeja));
 function compCodes(n){ return (n.strong || "").split("+").map(s => s.trim()).filter(Boolean); }
 // ronda 7: las glosas traen entidades HTML (Strong-PLUS). La pantalla las resuelve sola
 // (innerHTML); las salidas a .md las necesitan resueltas acá.
@@ -11691,7 +11743,7 @@ function openCompare(){
         ${row("Término original", n => n.term || "<i>(pendiente)</i>", "lex")}
         ${row("Transliteración", n => n.translit || "<i>(pendiente)</i>")}
         ${row(esTaller() ? "Strong" : "Palabras", n => compCodes(n).length ? compCodes(n).map(codeTag).join(" ") : "<i>—</i>")}
-        ${row("Glosa del lema", n => compCodes(n).map(c => { const g = compGlosa(n, c); return `<div class="comp-glosa"><b style="color:${groupColor[c] || "inherit"}">${compNom(c)}</b>${g.text ? ` <span>${esTaller() ? g.text : glosaSinCodigos(g.text)}</span>` : " <i>(sin glosa)</i>"}</div>`; }).join("") || "<i>—</i>")}
+        ${row("Qué significa", n => compCodes(n).map(c => { const g = compGlosa(n, c); return `<div class="comp-glosa"><b style="color:${groupColor[c] || "inherit"}">${compNom(c)}</b>${g.text ? ` <span>${esTaller() ? g.text : glosaSinCodigos(g.text)}</span>` : " <i>(sin glosa)</i>"}</div>`; }).join("") || "<i>—</i>")}
         ${row("Frecuencia en la Biblia", n => compCodes(n).map(c => { const g = compGlosa(n, c); return `<div><b>${compNom(c)}</b> ${g.freq ? `${g.freq} apariciones` : "<i>sin dato</i>"}</div>`; }).join("") || "<i>—</i>")}
         ${esTaller() ? row("Verificación", n => verifBadge(n) || n.verificacion || "") : ""}
         ${row("Categorías", n => n.cats.map(c => `<span class="cat-tag" style="background:${catColors[c] || catColors["Sin categoría"]}">${c}</span>`).join(" "))}
